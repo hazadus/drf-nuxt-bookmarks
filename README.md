@@ -3,10 +3,6 @@
 Site bookmarking service consisting of Telegram bot to receive URLs, DRF API, Celery worker (process tasks passed by 
 telegram bot), and Nuxt/Vue UI.
 
-## ToDo's
-
-- Decide whether to use custom user model, or separate profile model. Check Djoser docs on how to use custom model.
-
 ## Tech stack used
 
 ### Frameworks and libraries

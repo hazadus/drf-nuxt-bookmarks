@@ -3,5 +3,7 @@ ignore-init-module = true
 ignore-module = true
 exclude = [
     "manage.py",
+    "users/migrations", "users/admin.py", "users/apps.py",
+    "bookmarks/migrations", "bookmarks/admin.py", "bookmarks/apps.py",
 ]
 ignore-regex = ["Meta", "__str__", "setUpTestData", "setUp", "get_absolute_url"]
