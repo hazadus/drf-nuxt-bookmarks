@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from .models import Bookmark
 from .serializers import BookmarkCreateFromTelegramSerializer, BookmarkListSerializer
+from .utils import parse_url_info
 
 
 class BookmarksListView(APIView):
@@ -40,7 +41,14 @@ def bookmark_create_from_telegram(request: Request) -> Response:
 
     if serializer.is_valid():
         # NB: we check existence of user with `telegram_id` in `CustomUserTelegramIDSerializer.validate_telegram_id()`
-        serializer.save()
+        bookmark = serializer.save()
+
+        title, description, image_url = parse_url_info(serializer.data.get("url"))
+        bookmark.title = title
+        bookmark.description = description
+        bookmark.image_url = image_url
+        bookmark.save()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
