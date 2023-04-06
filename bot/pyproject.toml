@@ -1,0 +1,3 @@
+[tool.interrogate]
+ignore-init-module = true
+ignore-module = false
