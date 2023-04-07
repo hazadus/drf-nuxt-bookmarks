@@ -1,15 +1,53 @@
+from django.db.models import Count
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Bookmark
-from .serializers import BookmarkCreateFromTelegramSerializer, BookmarkListSerializer
+from .models import Bookmark, Tag, Folder
+from .serializers import (
+    BookmarkCreateFromTelegramSerializer,
+    BookmarkListSerializer,
+    TagListSerializer,
+    FolderSerializer,
+)
 from .utils import parse_url_info
 
 
-class BookmarksListView(APIView):
+class TagListView(APIView):
+    """
+    List all Tags.
+    """
+
+    @staticmethod
+    def get(request: Request) -> Response:
+        """
+        Return all Tags.
+        """
+        tags = Tag.objects.all().annotate(
+            bookmarks_qty=Count("bookmarks"),
+        )
+        serializer = TagListSerializer(tags, many=True)
+        return Response(serializer.data)
+
+
+class FolderListView(APIView):
+    """
+    List all Folders.
+    """
+
+    @staticmethod
+    def get(request: Request) -> Response:
+        """
+        Return all Folders.
+        """
+        folders = Folder.objects.all()
+        serializer = FolderSerializer(folders, many=True)
+        return Response(serializer.data)
+
+
+class BookmarkListView(APIView):
     """
     List all bookmarks.
     """

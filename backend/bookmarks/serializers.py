@@ -33,6 +33,22 @@ class TagSerializer(serializers.ModelSerializer):
         ]
 
 
+class TagListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Tag model with `bookmarks_qty` field - count of bookmarks with each tag.
+    """
+
+    bookmarks_qty = serializers.IntegerField()
+
+    class Meta:
+        model = Tag
+        fields = [
+            "id",
+            "title",
+            "bookmarks_qty",
+        ]
+
+
 class BookmarkListSerializer(serializers.ModelSerializer):
     """
     Serializer for Bookmark model - for list view.

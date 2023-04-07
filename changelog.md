@@ -1,3 +1,7 @@
+### 08.04.2023, Sat
+
+- 00:15 - Endpoints `tags/` and `folders/` added.
+
 ### 07.04.2023, Fr
 
 - 11:00 - App deployed to Timeweb.cloud.
