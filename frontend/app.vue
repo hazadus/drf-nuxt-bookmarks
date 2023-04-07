@@ -1,45 +1,80 @@
 <script setup lang="ts">
-import type { Bookmark } from './types';
+import type { Bookmark, Tag, Folder } from './types';
 
 const config = useRuntimeConfig();
-const { data } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
+
+const bookmarksPromise = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
+const tagsPromise = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
+const userFoldersPromise = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`);
 
 console.log("API base is " + config.public.apiBase);
 
-let folder = ref("inbox");
-let filter = ref("all");
+let selectedFolder = ref("inbox");
+let selectedFilter = ref("all");
+let selectedUserFolderId = ref(1);
+
+/*
+  Bookmark-related properties
+*/
+const totalBookmarksQty = computed(() => {
+  // Total number of bookmarks in DB
+  return bookmarksPromise.data?.value?.length;
+});
 
 const inboxBookmarks = computed(() => {
-  return data.value?.filter((bookmark) => !bookmark.folder);
+  // Array of bookmarks with no folder assigned and not archived
+  return bookmarksPromise.data.value?.filter((bookmark) => !bookmark.folder && !bookmark.is_archived);
 });
 
 const favoriteBookmarks = computed(() => {
-  return data.value?.filter((bookmark) => bookmark.is_favorite);
+  // Array of all "favorite" bookmarks in DB
+  return bookmarksPromise.data.value?.filter((bookmark) => bookmark.is_favorite);
 });
 
 const archivedBookmarks = computed(() => {
-  return data.value?.filter((bookmark) => bookmark.is_archived);
+  // Array of all "archived" bookmarks in DB
+  return bookmarksPromise.data.value?.filter((bookmark) => bookmark.is_archived);
 });
 
 const bookmarksInSelectedFolder = computed(() => {
-  if (folder.value === "inbox") {
+  if (selectedFolder.value === "inbox") {
     return inboxBookmarks.value;
-  } else if (folder.value === "favorites") {
+  } else if (selectedFolder.value === "favorites") {
     return favoriteBookmarks.value;
-  } else if (folder.value === "archived") {
+  } else if (selectedFolder.value === "archived") {
     return archivedBookmarks.value;
+  } else if (selectedFolder.value === "userFolder") {
+    return bookmarksPromise.data.value?.filter(
+      (bookmark) => bookmark.folder?.id === selectedUserFolderId.value && !bookmark.is_archived
+    );
   }
 });
 
 const bookmarks = computed(() => {
-  if (filter.value === "all") {
+  // This list we will render in the table.
+  if (selectedFilter.value === "all") {
     return bookmarksInSelectedFolder.value;
-  } else if (filter.value === "unread") {
+  } else if (selectedFilter.value === "unread") {
     return bookmarksInSelectedFolder.value?.filter((bookmark) => !bookmark.is_read);
-  } else if (filter.value === "read") {
+  } else if (selectedFilter.value === "read") {
     return bookmarksInSelectedFolder.value?.filter((bookmark) => bookmark.is_read);
   }
+});
 
+/*
+  Tag-related properties
+*/
+const allTags = computed(() => {
+  // List of all existing tags in DB
+  return tagsPromise.data.value;
+});
+
+/*
+  Folder-related properties
+*/
+const allUserFolders = computed(() => {
+  // List of all user-created folders in DB
+  return userFoldersPromise.data.value;
 });
 
 </script>
@@ -98,14 +133,16 @@ const bookmarks = computed(() => {
 
   <section class="section">
     <div class="columns">
-      <div class="column is-4-tablet is-3-desktop is-2-widescreen">
+      <!-- Left Sidebar -->
+      <div class="column sidebar is-4-tablet is-3-desktop is-2-widescreen">
+        <!-- Built-in Folders list -->
         <nav class="menu">
           <p class="menu-label">
             Folders
           </p>
           <ul class="menu-list">
             <li>
-              <a :class="folder === 'inbox' ? 'is-active' : ''" href="#" @click="folder = 'inbox'">
+              <a :class="selectedFolder === 'inbox' ? 'is-active' : ''" href="#" @click="selectedFolder = 'inbox'">
                 <span class="icon">
                   <Icon name="mdi:inbox" />
                 </span>
@@ -113,7 +150,8 @@ const bookmarks = computed(() => {
               </a>
             </li>
             <li>
-              <a :class="folder === 'favorites' ? 'is-active' : ''" href="#" @click="folder = 'favorites'">
+              <a :class="selectedFolder === 'favorites' ? 'is-active' : ''" href="#"
+                @click="selectedFolder = 'favorites'">
                 <span class="icon">
                   <Icon name="material-symbols:star" />
                 </span>
@@ -121,7 +159,7 @@ const bookmarks = computed(() => {
               </a>
             </li>
             <li>
-              <a :class="folder === 'archived' ? 'is-active' : ''" href="#" @click="folder = 'archived'">
+              <a :class="selectedFolder === 'archived' ? 'is-active' : ''" href="#" @click="selectedFolder = 'archived'">
                 <span class="icon">
                   <Icon name="mdi:archive" />
                 </span>
@@ -130,16 +168,50 @@ const bookmarks = computed(() => {
             </li>
           </ul>
         </nav>
+
+        <!-- User-created folders list -->
+        <nav class="menu mt-4">
+          <p class="menu-label">
+            Your Folders
+          </p>
+          <ul class="menu-list">
+            <li v-for="folder in allUserFolders" :key="folder.id">
+              <a href="#"
+                :class="selectedFolder === 'userFolder' && selectedUserFolderId === folder.id ? 'is-active' : ''" @click="{
+                  selectedFolder='userFolder';
+                  selectedUserFolderId=folder.id;
+                }">
+                <span class="icon">
+                  <Icon name="mdi:folder" />
+                </span>
+                {{ folder.title }}
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Tags list -->
+        <nav class="menu mt-5">
+          <p class="menu-label mb-3">
+            Tags
+          </p>
+        </nav>
+        <template v-if="allTags?.length">
+          <span class="tag is-info is-light ml-1" v-for="tag in allTags">
+            {{ tag.title }} ({{ tag.bookmarks_qty }})
+          </span>
+        </template>
       </div>
 
       <div class="column">
         <h1 class="title ">Bookmarks</h1>
 
         <nav class="level">
+          <!-- Search block -->
           <div class="level-left">
             <div class="level-item">
               <p class="subtitle is-5">
-                <strong>{{ data?.length }}</strong> total
+                <strong>{{ totalBookmarksQty }}</strong> total
               </p>
             </div>
             <div class="level-item is-hidden-tablet-only">
@@ -156,22 +228,25 @@ const bookmarks = computed(() => {
             </div>
           </div>
 
+          <!-- Filters right block -->
           <div class="level-right">
+            <p class="level-item">Show:</p>
             <p class="level-item">
-              <strong v-if="filter === 'all'">All</strong>
-              <a v-else @click="filter = 'all'">All</a>
+              <strong v-if="selectedFilter === 'all'">All</strong>
+              <a v-else @click="selectedFilter = 'all'">All</a>
             </p>
             <p class="level-item">
-              <strong v-if="filter === 'unread'">Unread</strong>
-              <a v-else @click="filter = 'unread'">Unread</a>
+              <strong v-if="selectedFilter === 'unread'">Unread</strong>
+              <a v-else @click="selectedFilter = 'unread'">Unread</a>
             </p>
             <p class="level-item">
-              <strong v-if="filter === 'read'">Read</strong>
-              <a v-else @click="filter = 'read'">Read</a>
+              <strong v-if="selectedFilter === 'read'">Read</strong>
+              <a v-else @click="selectedFilter = 'read'">Read</a>
             </p>
           </div>
         </nav>
 
+        <!-- Bookmarks list -->
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
@@ -217,5 +292,17 @@ const bookmarks = computed(() => {
 </template>
 
 <style>
-@import 'bulma/css/bulma.css'
+@import 'bulma/css/bulma.css';
+
+.sidebar {
+  position: sticky;
+  display: inline-block;
+  vertical-align: top;
+  max-height: 100vh;
+  overflow-y: hidden;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 1;
+}
 </style> 

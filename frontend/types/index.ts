@@ -14,6 +14,7 @@ export interface Folder {
 export interface Tag {
   id: ID;
   title: string;
+  bookmarks_qty?: number;
 }
 
 export interface Bookmark {
