@@ -1,15 +1,52 @@
 <script setup lang="ts">
-import { createDOMCompilerError } from '@vue/compiler-dom';
 import type { Bookmark } from './types';
 
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 const { data } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
 
-console.log(config.public.apiBase)
+console.log("API base is " + config.public.apiBase);
+
+let folder = ref("inbox");
+let filter = ref("all");
+
+const inboxBookmarks = computed(() => {
+  return data.value?.filter((bookmark) => !bookmark.folder);
+});
+
+const favoriteBookmarks = computed(() => {
+  return data.value?.filter((bookmark) => bookmark.is_favorite);
+});
+
+const archivedBookmarks = computed(() => {
+  return data.value?.filter((bookmark) => bookmark.is_archived);
+});
+
+const bookmarksInSelectedFolder = computed(() => {
+  if (folder.value === "inbox") {
+    return inboxBookmarks.value;
+  } else if (folder.value === "favorites") {
+    return favoriteBookmarks.value;
+  } else if (folder.value === "archived") {
+    return archivedBookmarks.value;
+  }
+});
+
+const bookmarks = computed(() => {
+  if (filter.value === "all") {
+    return bookmarksInSelectedFolder.value;
+  } else if (filter.value === "unread") {
+    return bookmarksInSelectedFolder.value?.filter((bookmark) => !bookmark.is_read);
+  } else if (filter.value === "read") {
+    return bookmarksInSelectedFolder.value?.filter((bookmark) => bookmark.is_read);
+  }
+
+});
 
 </script>
 
 <template>
+  <Title>Bookmarks</Title>
+
   <nav class="navbar has-shadow">
     <div class="navbar-brand">
       <a class="navbar-item">
@@ -64,31 +101,31 @@ console.log(config.public.apiBase)
       <div class="column is-4-tablet is-3-desktop is-2-widescreen">
         <nav class="menu">
           <p class="menu-label">
-            Menu
+            Folders
           </p>
           <ul class="menu-list">
             <li>
-              <a class="is-active" href="#">
+              <a :class="folder === 'inbox' ? 'is-active' : ''" href="#" @click="folder = 'inbox'">
                 <span class="icon">
-                  <i class="fa fa-tachometer"></i>
+                  <Icon name="mdi:inbox" />
                 </span>
-                Inbox
+                Inbox ({{ inboxBookmarks?.length }})
               </a>
             </li>
             <li>
-              <a href="books.html">
+              <a :class="folder === 'favorites' ? 'is-active' : ''" href="#" @click="folder = 'favorites'">
                 <span class="icon">
-                  <i class="fa fa-book"></i>
+                  <Icon name="material-symbols:star" />
                 </span>
-                Favorites
+                Favorites ({{ favoriteBookmarks?.length }})
               </a>
             </li>
             <li>
-              <a href="customers.html">
+              <a :class="folder === 'archived' ? 'is-active' : ''" href="#" @click="folder = 'archived'">
                 <span class="icon">
-                  <i class="fa fa-address-book"></i>
+                  <Icon name="mdi:archive" />
                 </span>
-                Trash
+                Archived ({{ archivedBookmarks?.length }})
               </a>
             </li>
           </ul>
@@ -120,9 +157,18 @@ console.log(config.public.apiBase)
           </div>
 
           <div class="level-right">
-            <p class="level-item"><strong>All</strong></p>
-            <p class="level-item"><a>Unread</a></p>
-            <p class="level-item"><a>Read</a></p>
+            <p class="level-item">
+              <strong v-if="filter === 'all'">All</strong>
+              <a v-else @click="filter = 'all'">All</a>
+            </p>
+            <p class="level-item">
+              <strong v-if="filter === 'unread'">Unread</strong>
+              <a v-else @click="filter = 'unread'">Unread</a>
+            </p>
+            <p class="level-item">
+              <strong v-if="filter === 'read'">Read</strong>
+              <a v-else @click="filter = 'read'">Read</a>
+            </p>
           </div>
         </nav>
 
@@ -146,7 +192,7 @@ console.log(config.public.apiBase)
             </tr>
           </tfoot>
           <tbody>
-            <tr v-for="bookmark in data" :key="bookmark.id">
+            <tr v-for="bookmark in bookmarks" :key="bookmark.id">
               <td>
                 <Icon name="material-symbols:star" v-if="bookmark.is_favorite" />
               </td>
@@ -156,7 +202,12 @@ console.log(config.public.apiBase)
                   <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags">{{ tag.title }}</span>
                 </template>
               </td>
-              <td></td>
+              <td>
+                <a class="button is-link is-small is-inverted"
+                  :href="`${config.public.apiBase}/admin/bookmarks/bookmark/${bookmark.id}/change/`" target="_blank">
+                  <Icon name="mdi:book-edit" />
+                </a>
+              </td>
             </tr>
           </tbody>
         </table>

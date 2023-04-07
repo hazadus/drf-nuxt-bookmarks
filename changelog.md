@@ -5,6 +5,8 @@
 - 16:10 - `Bookmark` model extended with `is_read` field.
 - 16:50 - `Tag`s added to `Bookmark`s. Serializers adjusted.
 - 19:30 - Created basic Nuxt frontend, added Node to Compose.
+- 22:10 - Frontend: buttons in left sidebar (Inbox, Favorites, Archived) and filters (All, Unread, Read) were implemented.
+- 23:00 - Frontend: added button with a link to admin view for each bookmark in the list.
 
 ### 06.04.2023, Thu
 
