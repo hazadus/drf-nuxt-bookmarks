@@ -196,11 +196,16 @@ const allUserFolders = computed(() => {
             Tags
           </p>
         </nav>
-        <template v-if="allTags?.length">
-          <span class="tag is-info is-light ml-1" v-for="tag in allTags">
-            {{ tag.title }} ({{ tag.bookmarks_qty }})
-          </span>
-        </template>
+
+        <div v-if="allTags?.length" class="field is-grouped is-grouped-multiline">
+          <div class="control" v-for="tag in allTags">
+            <div class="tags has-addons">
+              <a class="tag is-info is-light">{{ tag.title }}</a>
+              <a class="tag">{{ tag.bookmarks_qty }}</a>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="column">
