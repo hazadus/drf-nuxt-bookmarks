@@ -42,7 +42,7 @@ class Bookmark(models.Model):
     url = models.URLField(verbose_name=_("URL"))
     title = models.CharField(
         verbose_name=_("title"),
-        max_length=64,
+        max_length=256,
     )
     description = models.TextField(
         verbose_name=_("description"),
@@ -65,6 +65,10 @@ class Bookmark(models.Model):
     )
     is_favorite = models.BooleanField(
         verbose_name=_("favorite"),
+        default=False,
+    )
+    is_read = models.BooleanField(
+        verbose_name=_("read"),
         default=False,
     )
     is_archived = models.BooleanField(

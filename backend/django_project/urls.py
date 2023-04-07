@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
+from django.utils.translation import gettext_lazy as _
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -16,3 +17,8 @@ urlpatterns = [
     path("api/v1/", include("djoser.urls")),
     path("api/v1/", include("djoser.urls.authtoken")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Configure Admin panel titles
+admin.site.site_header = _("Bookmarks Administration Dashboard")
+admin.site.site_title = _("Bookmarks Administration")
+admin.site.index_title = _("Bookmarks Administration")

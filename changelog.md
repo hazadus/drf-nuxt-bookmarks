@@ -1,3 +1,9 @@
+### 07.04.2023, Fr
+
+- 11:00 - App deployed to Timeweb.cloud.
+- 16:00 - Admin section for Bookmarks tweaked.
+- 16:10 - `Bookmark` model extended with `is_read` field.
+
 ### 06.04.2023, Thu
 
 - 22:00 - Basic Telegram bot features implemented.

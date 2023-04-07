@@ -29,7 +29,10 @@ class BookmarkAdmin(admin.ModelAdmin):
         "user",
         "folder",
         "is_favorite",
+        "is_read",
         "is_archived",
         "created",
     ]
-    ordering = ["-created"]
+    list_filter = ["is_archived", "is_favorite", "is_read"]
+    search_fields = ["title"]
+    ordering = ["is_archived", "-is_favorite", "is_read", "-created"]

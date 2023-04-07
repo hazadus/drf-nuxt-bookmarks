@@ -17,7 +17,7 @@ def parse_url_info(url: str) -> List[str]:
     image_url = html.find("meta", property="og:image")
 
     return [
-        title,
+        title if title else "No title set",
         description["content"] if description else "",
         image_url["content"] if image_url else "",
     ]
