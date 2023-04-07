@@ -3,7 +3,7 @@ from rest_framework import serializers
 from users.models import CustomUser
 from users.serializers import CustomUserTelegramIDSerializer
 
-from .models import Bookmark, Folder
+from .models import Bookmark, Folder, Tag
 
 
 class FolderSerializer(serializers.ModelSerializer):
@@ -20,12 +20,26 @@ class FolderSerializer(serializers.ModelSerializer):
         ]
 
 
+class TagSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Tag model.
+    """
+
+    class Meta:
+        model = Tag
+        fields = [
+            "id",
+            "title",
+        ]
+
+
 class BookmarkListSerializer(serializers.ModelSerializer):
     """
     Serializer for Bookmark model - for list view.
     """
 
     folder = FolderSerializer(many=False)
+    tags = TagSerializer(many=True)
 
     class Meta:
         model = Bookmark
@@ -37,7 +51,9 @@ class BookmarkListSerializer(serializers.ModelSerializer):
             "description",
             "image_url",
             "folder",
+            "tags",
             "is_favorite",
+            "is_read",
             "is_archived",
             "created",
             "updated",

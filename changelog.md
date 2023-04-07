@@ -3,6 +3,7 @@
 - 11:00 - App deployed to Timeweb.cloud.
 - 16:00 - Admin section for Bookmarks tweaked.
 - 16:10 - `Bookmark` model extended with `is_read` field.
+- 16:50 - `Tag`s added to `Bookmark`s. Serializers adjusted.
 
 ### 06.04.2023, Thu
 

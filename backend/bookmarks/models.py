@@ -28,6 +28,25 @@ class Folder(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    """
+    Represents a tag assigned to the bookmark.
+    """
+
+    title = models.CharField(
+        verbose_name=_("title"),
+        max_length=32,
+    )
+
+    class Meta:
+        ordering = ["title"]
+        verbose_name = _("tag")
+        verbose_name_plural = _("tags")
+
+    def __str__(self):
+        return self.title
+
+
 class Bookmark(models.Model):
     """
     Represents user-created site bookmark.
@@ -63,6 +82,12 @@ class Bookmark(models.Model):
         null=True,
         default=None,
     )
+    tags = models.ManyToManyField(
+        verbose_name=_("tags"),
+        to=Tag,
+        related_name="bookmarks",
+        blank=True,
+    )
     is_favorite = models.BooleanField(
         verbose_name=_("favorite"),
         default=False,
@@ -79,7 +104,7 @@ class Bookmark(models.Model):
     updated = models.DateTimeField(verbose_name=_("updated"), auto_now=True)
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["user", "is_archived", "-is_favorite", "is_read", "-created"]
         verbose_name = _("bookmark")
         verbose_name_plural = _("bookmarks")
 

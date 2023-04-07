@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Bookmark, Folder
+from .models import Bookmark, Folder, Tag
 
 
 @admin.register(Folder)
@@ -15,6 +15,19 @@ class FolderAdmin(admin.ModelAdmin):
         "user",
     ]
     ordering = ["user", "title"]
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    """
+    Configures admin panel views for Tags.
+    """
+
+    model = Tag
+    list_display = [
+        "title",
+    ]
+    ordering = ["title"]
 
 
 @admin.register(Bookmark)
@@ -35,4 +48,4 @@ class BookmarkAdmin(admin.ModelAdmin):
     ]
     list_filter = ["is_archived", "is_favorite", "is_read"]
     search_fields = ["title"]
-    ordering = ["is_archived", "-is_favorite", "is_read", "-created"]
+    ordering = ["user", "is_archived", "-is_favorite", "is_read", "-created"]
