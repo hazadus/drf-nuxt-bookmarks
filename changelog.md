@@ -1,6 +1,7 @@
 ### 06.04.2023, Thu
 
 - 22:00 - Basic Telegram bot features implemented.
+- 23:00 - Added Docker Compose config.
 
 ### 05.04.2023, Wed
 

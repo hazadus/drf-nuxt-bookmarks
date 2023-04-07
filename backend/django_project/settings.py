@@ -19,6 +19,8 @@ env.read_env()
 
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", False)
+BACKEND_HOST = env.str("BACKEND_HOST")
+BACKEND_HOST_DOCKER = env.str("BACKEND_HOST_DOCKER")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    BACKEND_HOST,
+    BACKEND_HOST_DOCKER,
+]
 
 
 # Application definition

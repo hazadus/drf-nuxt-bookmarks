@@ -12,3 +12,11 @@ telegram bot), and Nuxt/Vue UI.
   - [djoser](https://djoser.readthedocs.io/en/latest/introduction.html): REST implementation of Django authentication system. djoser library provides a set of Django Rest Framework views to handle basic actions such as registration, login, logout, password reset and account activation.
 - Telegram bot: [pyTelegramBotAPI](https://pypi.org/project/pyTelegramBotAPI/)
   - [requests](https://requests.readthedocs.io/en/latest/): Requests allows you to send HTTP/1.1 requests extremely easily. There’s no need to manually add query strings to your URLs, or to form-encode your POST data.
+
+### Running with Docker Compose
+
+...Yet to be written in detail...
+
+- Install docker & compose
+  - [Install Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04)
+  - [Install Docker Compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04)
