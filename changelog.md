@@ -1,7 +1,12 @@
+### 09.04.2023, Sun
+
+- 01:30 - Frontend: created bookmark filter by tags.
+
 ### 08.04.2023, Sat
 
 - 00:15 - Endpoints `tags/` and `folders/` added.
 - 01:00 - Frontend: added list of user-created folders and tags in sidebar.
+- 22:00 - Frontend: App.vue refactored to some components and pages.
 
 ### 07.04.2023, Fr
 

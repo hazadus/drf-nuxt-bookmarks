@@ -1,6 +1,6 @@
 # drf-nuxt-bookmarks
 
-Site bookmarking service consisting of Telegram bot to receive URLs, DRF API, Celery worker (process tasks passed by 
+Site bookmarking service consisting of Telegram bot to receive URLs, DRF API, Celery worker (process tasks passed by
 telegram bot), and Nuxt/Vue UI.
 
 ## Tech stack used
@@ -23,6 +23,17 @@ telegram bot), and Nuxt/Vue UI.
 
 - Nuxt
   - [Exposing Runtime Config](https://nuxt.com/docs/guide/going-further/runtime-config)
+- Vue
+  - [TypeScript with Composition API](https://vuejs.org/guide/typescript/composition-api.html)
+    - [Typing component props](https://vuejs.org/guide/typescript/composition-api.html#typing-component-props)
+
+### Notes
+
+#### Frontend
+
+##### Naming Conventions
+
+"The" in the component name means there's indended to be only one instance of this component in the app, e.g. `TheNavbar`.
 
 ## Deploying
 
