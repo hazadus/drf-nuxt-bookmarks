@@ -1,32 +1,47 @@
 <script setup lang="ts">
 import type { Bookmark, Tag, Folder } from '@/types';
-import { _AsyncData } from 'nuxt/dist/app/composables/asyncData';
-import { FetchError } from 'ofetch';
 
 const config = useRuntimeConfig();
-
-// Some code redundancy here, but I want to make them typed and reactive same time:
-let bookmarksPromise: _AsyncData<Bookmark[], FetchError<any> | null> = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
-let tagsPromise: _AsyncData<Tag[], FetchError<any> | null> = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
-let userFoldersPromise: _AsyncData<Folder[], FetchError<any> | null> = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`);
-
 console.log("API base is " + config.public.apiBase);
 
-let selectedFolder: Ref<string> = ref("inbox");
-let selectedFilter: Ref<string> = ref("all");
-let selectedUserFolderId: Ref<number> = ref(1);
-let filterByTagsList: Ref<Tag[]> = ref([]);
-let searchString: Ref<string> = ref("");
+// All data fetched from API endpoints will be stored in these arrays:
+const allBookmarks: Ref<Bookmark[] | null> = ref(null);
+const allTags: Ref<Tag[] | null> = ref(null);
+const allUserFolders: Ref<Folder[] | null> = ref(null);
+const fetchErrors: Ref<string[]> = ref([]);
+
+// App UI state:
+const selectedFolder: Ref<string> = ref("inbox");
+const selectedFilter: Ref<string> = ref("all");
+const selectedUserFolderId: Ref<number> = ref(1);
+const filterByTagsList: Ref<Tag[]> = ref([]);
+const searchString: Ref<string> = ref("");
 
 async function fetchData() {
-  bookmarksPromise = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
-  tagsPromise = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
-  userFoldersPromise = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`);
+  const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
+  const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
+  const { data: folders, error: foldersError } = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`);
+
+  allBookmarks.value = bookmarks.value;
+  allTags.value = tags.value;
+  allUserFolders.value = folders.value;
+
+  fetchErrors.value = [];
+
+  if (bookmarksError.value) {
+    fetchErrors.value.push(bookmarksError.value.message);
+  }
+  if (tagsError.value) {
+    fetchErrors.value.push(tagsError.value.message);
+  }
+  if (foldersError.value) {
+    fetchErrors.value.push(foldersError.value.message);
+  }
 }
 
 const isDataFetched = computed(() => {
   // Whether all needed data fetched from API, or not:
-  return bookmarksPromise?.data.value && userFoldersPromise?.data.value && tagsPromise?.data.value;
+  return allBookmarks.value && allTags.value && allUserFolders.value;
 });
 
 /*
@@ -34,80 +49,84 @@ const isDataFetched = computed(() => {
 */
 const totalBookmarksQty = computed(() => {
   // Total number of bookmarks in DB
-  return bookmarksPromise.data?.value?.length;
+  return allBookmarks.value?.length;
 });
 
 const inboxBookmarks = computed(() => {
   // Array of bookmarks with no folder assigned and not archived
-  return bookmarksPromise.data.value?.filter((bookmark) => !bookmark.folder && !bookmark.is_archived);
+  return allBookmarks.value?.filter((bookmark) => !bookmark.folder && !bookmark.is_archived);
 });
 
 const favoriteBookmarks = computed(() => {
   // Array of all "favorite" bookmarks in DB
-  return bookmarksPromise.data.value?.filter((bookmark) => bookmark.is_favorite);
+  return allBookmarks.value?.filter((bookmark) => bookmark.is_favorite);
 });
 
 const archivedBookmarks = computed(() => {
   // Array of all "archived" bookmarks in DB
-  return bookmarksPromise.data.value?.filter((bookmark) => bookmark.is_archived);
-});
-
-const bookmarksInSelectedFolder = computed(() => {
-  if (selectedFolder.value === "inbox") {
-    return inboxBookmarks.value;
-  } else if (selectedFolder.value === "favorites") {
-    return favoriteBookmarks.value;
-  } else if (selectedFolder.value === "archived") {
-    return archivedBookmarks.value;
-  } else if (selectedFolder.value === "userFolder") {
-    return bookmarksPromise.data.value?.filter(
-      (bookmark) => bookmark.folder?.id === selectedUserFolderId.value && !bookmark.is_archived
-    );
-  }
-});
-
-const bookmarksFiltered = computed(() => {
-  // This list we will render in the table.
-  if (selectedFilter.value === "all") {
-    return bookmarksInSelectedFolder.value;
-  } else if (selectedFilter.value === "unread") {
-    return bookmarksInSelectedFolder.value?.filter((bookmark) => !bookmark.is_read);
-  } else if (selectedFilter.value === "read") {
-    return bookmarksInSelectedFolder.value?.filter((bookmark) => bookmark.is_read);
-  }
+  return allBookmarks.value?.filter((bookmark) => bookmark.is_archived);
 });
 
 const bookmarks = computed(() => {
-  // Filter only bookmarks which have all selected tags
-  if (!filterByTagsList.value.length) {
-    return bookmarksFiltered.value;
-  } else {
-    // Here we check each `selected` tag, if it is present in bookmark's tag list. If so, we pass this bookmark to list.
-    return bookmarksFiltered.value?.filter((bookmark) => filterByTagsList.value.every((tag) => bookmark.tags.filter((bkmrkTag) => bkmrkTag.id === tag.id).length));
+  // Here we do ALL the filtering
+  let filteredBookmarks: Bookmark[] = allBookmarks.value ? allBookmarks.value : [];
+
+  // Filter by FOLDER
+  if (selectedFolder.value === "inbox") {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => !bookmark.folder && !bookmark.is_archived);
+  } else if (selectedFolder.value === "favorites") {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => bookmark.is_favorite);;
+  } else if (selectedFolder.value === "archived") {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => bookmark.is_archived);
+  } else if (selectedFolder.value === "userFolder") {
+    filteredBookmarks = filteredBookmarks.filter(
+      (bookmark) => bookmark.folder?.id === selectedUserFolderId.value && !bookmark.is_archived
+    );
   }
+
+  // Filter by ALL, READ, UNREAD status
+  if (selectedFilter.value === "unread") {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => !bookmark.is_read);
+  } else if (selectedFilter.value === "read") {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => bookmark.is_read);
+  }
+
+  // Filter by TAGS selected
+  if (filterByTagsList.value.length) {
+    // Here we check each `selected` tag, if it is present in bookmark's tag list. If so, we pass this bookmark to list.
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => filterByTagsList.value.every((tag) => bookmark.tags.filter((bkmrkTag) => bkmrkTag.id === tag.id).length));
+  }
+
+  // Filter by search string, look for substring in bookmark's title:
+  if (searchString.value?.trim().length >= 3) {
+    filteredBookmarks = filteredBookmarks.filter((bookmark) => bookmark.title.toLowerCase().includes(searchString.value.toLowerCase()));
+  }
+
+  return filteredBookmarks;
 });
 
 /*
-  Tag-related properties
+  Do the initial data fetching
 */
-const allTags = computed(() => {
-  // List of all existing tags in DB
-  return tagsPromise.data.value;
-});
-
-/*
-  Folder-related properties
-*/
-const allUserFolders = computed(() => {
-  // List of all user-created folders in DB
-  return userFoldersPromise.data.value;
-});
+fetchData();
 </script>
 
 <template>
   <Title>Bookmarks</Title>
 
-  <section class="section bookmarks" v-if="isDataFetched">
+  <section class="section errors" v-if="fetchErrors.length">
+    <div class="container is-widescreen">
+      <BulmaNotification type="danger">
+        <strong>Some errors occured while trying to fetch data from API.</strong>
+        <br>
+        <template v-for="error in fetchErrors" :key="error">
+          {{ error }}<br>
+        </template>
+      </BulmaNotification>
+    </div>
+  </section>
+
+  <section class="section bookmarks" v-if="isDataFetched && !fetchErrors.length">
     <div class="container is-widescreen">
       <div class="columns">
         <!-- Left Sidebar -->
@@ -118,6 +137,14 @@ const allUserFolders = computed(() => {
               Folders
             </p>
             <ul class="menu-list">
+              <li>
+                <a :class="selectedFolder === 'all' ? 'is-active' : ''" href="#" @click="selectedFolder = 'all'">
+                  <span class="icon">
+                    <Icon name="mdi:database" />
+                  </span>
+                  All ({{ totalBookmarksQty }})
+                </a>
+              </li>
               <li>
                 <a :class="selectedFolder === 'inbox' ? 'is-active' : ''" href="#" @click="selectedFolder = 'inbox'">
                   <span class="icon">
@@ -190,13 +217,13 @@ const allUserFolders = computed(() => {
             <div class="level-left">
               <div class="level-item">
                 <p class="subtitle is-5">
-                  <strong>{{ totalBookmarksQty }}</strong> total
+                  <strong>{{ bookmarks.length }}</strong> shown, {{ totalBookmarksQty }} total
                 </p>
               </div>
               <div class="level-item is-hidden-tablet-only">
                 <div class="field has-addons">
                   <p class="control">
-                    <input class="input" type="text" placeholder="Title, description…" v-model="searchString">
+                    <input class="input" type="text" placeholder="Start typing to search..." v-model="searchString">
                   </p>
                   <p class="control">
                     <button class="button">
@@ -234,7 +261,7 @@ const allUserFolders = computed(() => {
             <div class="level-left">
               <div class="level-item">
                 <p class="subtitle is-5">
-                  Filter by:
+                  Look for:
                 </p>
               </div>
               <div class="level-item">
@@ -318,27 +345,10 @@ const allUserFolders = computed(() => {
             </tbody>
           </table>
           <BulmaNotification v-else>
-            Sorry, the folder you selected is empty.
+            Sorry, there's no bookmarks matching applied filters.
           </BulmaNotification>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section v-else class="section errors">
-    <div class="container is-widescreen">
-      <BulmaNotification type="danger">
-        <strong>Some errors occured while trying to fetch data from API.</strong>
-        <template v-if="bookmarksPromise?.error.value">
-          <br>{{ bookmarksPromise.error.value }}
-        </template>
-        <template v-if="userFoldersPromise?.error.value">
-          <br>{{ userFoldersPromise.error.value }}
-        </template>
-        <template v-if="tagsPromise?.error.value">
-          <br>{{ tagsPromise.error.value }}
-        </template>
-      </BulmaNotification>
     </div>
   </section>
 </template>
