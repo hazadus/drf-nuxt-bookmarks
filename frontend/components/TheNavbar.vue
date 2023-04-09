@@ -29,7 +29,7 @@ const route = useRoute();
           <a class="navbar-item" href="#">
             Add
           </a>
-          <NuxtLink to="/" class="navbar-item" :class="route.path === '/' ? 'is-active' : ''">
+          <NuxtLink to="/bookmarks/" class="navbar-item" :class="route.path === '/bookmarks/' ? 'is-active' : ''">
             Bookmarks
           </NuxtLink>
           <NuxtLink to="/about/" class="navbar-item" :class="route.path === '/about/' ? 'is-active' : ''">
