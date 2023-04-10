@@ -24,6 +24,7 @@ telegram bot), and Nuxt/Vue UI.
 
 - Nuxt
   - [Exposing Runtime Config](https://nuxt.com/docs/guide/going-further/runtime-config)
+  - [Routing / Route Middleware](https://nuxt.com/docs/getting-started/routing#route-middleware)
 - Vue
   - [TypeScript with Composition API](https://vuejs.org/guide/typescript/composition-api.html)
     - [Typing component props](https://vuejs.org/guide/typescript/composition-api.html#typing-component-props)

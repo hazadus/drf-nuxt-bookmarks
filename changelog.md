@@ -2,6 +2,7 @@
 
 - 13:00 - Frontend: Basic Login page created.
 - 13:40 - Backend: `UserDetailView` (`/user/details/`) endpoint added.
+- 15:00 - Frontend: login page wired with backend. "Auth" middleware added.
 
 ### 09.04.2023, Sun
 

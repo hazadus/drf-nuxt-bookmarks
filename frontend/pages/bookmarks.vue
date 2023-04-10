@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { Bookmark, Tag, Folder } from '@/types';
 
+// "auth" middleware redirects user to login page if not authenticated:
+definePageMeta({
+  middleware: "auth",
+});
+
 const config = useRuntimeConfig();
 console.log("API base is " + config.public.apiBase);
 

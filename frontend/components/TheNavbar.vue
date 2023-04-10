@@ -5,7 +5,11 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-function logOut() {
+async function logOut() {
+  /*
+    Delete auth data from local storage.
+    Forward user to login page if succeeded.
+  */
   authStore.logOut();
   router.push("/login/");
 }
@@ -65,7 +69,7 @@ function logOut() {
               <figure class="image is-32x32 mr-2">
                 <img class="is-rounded" src="/images/logo.jpg">
               </figure>
-              hazadus
+              {{ authStore.user.username }}
             </div>
             <div class="navbar-dropdown is-right">
               <a class="navbar-item">

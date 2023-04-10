@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/AuthStore';
+import { useAuthStore } from '@/stores/AuthStore';
+import type { User } from "@/types";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
@@ -11,12 +12,6 @@ const error: Ref<string | undefined> = ref("");
 
 interface AuthToken {
   auth_token: string;
-}
-
-interface UserInfo {
-  id: number;
-  username: string;
-  email: string;
 }
 
 async function submitForm() {
@@ -37,24 +32,24 @@ async function submitForm() {
     return;
   }
 
-  // On success, save token in the store:
   const token = authData.value as AuthToken;
-  authStore.logIn(token.auth_token);
 
   // Fetch user info
-  // const { data: userData, error: userDataError } = await useFetch(() => `${config.public.apiBase}/api/v1/users/me/`, {
-  //   headers: [
-  //     ["Authorization", "Token " + token,],
-  //   ]
-  // });
+  const { data: userData, error: userDataError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/details/`, {
+    headers: [
+      ["Authorization", "Token " + token.auth_token,],
+    ]
+  });
 
-  // if (userDataError.value) {
-  //   error.value = "Error fetching user information " + userDataError.value?.message;
-  //   return;
-  // }
+  if (userDataError.value) {
+    error.value = "Error fetching user information " + userDataError.value?.message;
+    return;
+  }
 
-  // const userInfo = userData.value as UserInfo;
-  // console.log("userInfo: ", userInfo);
+  const user = userData.value as User;
+
+  // Save token and user info in store:
+  authStore.logIn(token.auth_token, user);
 
   // Forward user to the bookmark list
   router.push("/bookmarks/");
