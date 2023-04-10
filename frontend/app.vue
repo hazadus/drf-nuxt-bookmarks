@@ -2,7 +2,10 @@
 import { useAuthStore } from './stores/AuthStore';
 
 const authStore = useAuthStore();
-authStore.initializeStore();
+
+onBeforeMount(() => {
+  authStore.initializeStore();
+});
 </script>
 
 <template>

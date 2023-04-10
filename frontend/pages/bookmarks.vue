@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import type { Bookmark, Tag, Folder } from '@/types';
 
 // "auth" middleware redirects user to login page if not authenticated:
@@ -6,6 +7,7 @@ definePageMeta({
   middleware: "auth",
 });
 
+const authStore = useAuthStore();
 const config = useRuntimeConfig();
 console.log("API base is " + config.public.apiBase);
 
@@ -23,9 +25,17 @@ const filterByTagsList: Ref<Tag[]> = ref([]);
 const searchString: Ref<string> = ref("");
 
 async function fetchData() {
-  const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`);
+  const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
+  const { data: folders, error: foldersError } = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
   const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
-  const { data: folders, error: foldersError } = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`);
 
   allBookmarks.value = bookmarks.value;
   allTags.value = tags.value;
