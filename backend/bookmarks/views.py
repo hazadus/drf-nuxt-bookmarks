@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import authentication, permissions
 
 from .models import Bookmark, Tag, Folder
 from .serializers import (
@@ -34,30 +35,36 @@ class TagListView(APIView):
 
 class FolderListView(APIView):
     """
-    List all Folders.
+    List all user's Folders.
     """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request: Request) -> Response:
         """
-        Return all Folders.
+        Return all user's Folders.
         """
-        folders = Folder.objects.all()
+        folders = Folder.objects.filter(user_id__exact=request.user.pk)
         serializer = FolderSerializer(folders, many=True)
         return Response(serializer.data)
 
 
 class BookmarkListView(APIView):
     """
-    List all bookmarks.
+    List all user's bookmarks.
     """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request: Request) -> Response:
         """
-        Return all bookmarks.
+        Return all user's bookmarks.
         """
-        bookmarks = Bookmark.objects.all()
+        bookmarks = Bookmark.objects.filter(user_id__exact=request.user.pk)
         serializer = BookmarkListSerializer(bookmarks, many=True)
         return Response(serializer.data)
 
