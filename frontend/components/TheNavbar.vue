@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/AuthStore';
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+const config = useRuntimeConfig();
 
 async function logOut() {
   /*
@@ -67,19 +68,20 @@ async function logOut() {
           <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
             <div class="navbar-link">
               <figure class="image is-32x32 mr-2">
-                <img class="is-rounded" src="/images/logo.jpg">
+                <img class="is-rounded" v-if="!authStore.user.profile_image" src="/images/default_profile_pic.png">
+                <img class="is-rounded" v-else :src="config.apiBase + authStore.user.profile_image">
               </figure>
               {{ authStore.user.username }}
             </div>
             <div class="navbar-dropdown is-right">
-              <a class="navbar-item">
+              <NuxtLink to="/profile/" class="navbar-item">
                 <div>
                   <span class="icon">
                     <Icon name="mdi:book-account" />
                   </span>
                   Profile
                 </div>
-              </a>
+              </NuxtLink>
               <a class="navbar-item" @click="logOut()">
                 <div>
                   <span class="icon">
