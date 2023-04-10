@@ -2,6 +2,7 @@
 .idea/
 staticfiles/
 htmlcov/
+media/
 .coverage
 db.sqlite3
 .DS_Store

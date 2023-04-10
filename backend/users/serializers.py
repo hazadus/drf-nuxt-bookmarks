@@ -27,3 +27,29 @@ class CustomUserTelegramIDSerializer(serializers.ModelSerializer):
                 f"User with telegram_id={value} does not exist!"
             )
         return value
+
+
+from rest_framework import serializers
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    Detailed User model serializer.
+    """
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            "id",
+            "username",
+            "telegram_id",
+            "email",
+            "first_name",
+            "last_name",
+            "profile_image",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "last_login",
+            "date_joined",
+        )

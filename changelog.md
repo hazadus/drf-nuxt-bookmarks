@@ -1,6 +1,7 @@
 ## 10.04.2023, Mon
 
 - 13:00 - Frontend: Basic Login page created.
+- 13:40 - Backend: `UserDetailView` (`/user/details/`) endpoint added.
 
 ### 09.04.2023, Sun
 
