@@ -20,6 +20,23 @@ class FolderSerializer(serializers.ModelSerializer):
         ]
 
 
+class FolderListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Folder model with `bookmarks_qty` field - count of bookmarks in each folder.
+    """
+
+    bookmarks_qty = serializers.IntegerField()
+
+    class Meta:
+        model = Folder
+        fields = [
+            "id",
+            "user",
+            "title",
+            "bookmarks_qty",
+        ]
+
+
 class TagSerializer(serializers.ModelSerializer):
     """
     Serializer for Tag model.

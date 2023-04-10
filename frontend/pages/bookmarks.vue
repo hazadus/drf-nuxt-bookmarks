@@ -35,7 +35,11 @@ async function fetchData() {
       ["Authorization", "Token " + authStore.token,],
     ]
   });
-  const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`);
+  const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
 
   allBookmarks.value = bookmarks.value;
   allTags.value = tags.value;
@@ -205,7 +209,7 @@ fetchData();
                   <span class="icon">
                     <Icon name="mdi:folder" />
                   </span>
-                  {{ folder.title }}
+                  {{ folder.title }} ({{ folder.bookmarks_qty }})
                 </a>
               </li>
             </ul>

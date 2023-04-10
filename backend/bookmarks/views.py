@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
@@ -12,22 +12,38 @@ from .serializers import (
     BookmarkListSerializer,
     TagListSerializer,
     FolderSerializer,
+    FolderListSerializer,
 )
 from .utils import parse_url_info
 
 
 class TagListView(APIView):
     """
-    List all Tags.
+    List all Tags applied to user's bookmarks.
     """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request: Request) -> Response:
         """
-        Return all Tags.
+        Return all Tags applied to user's bookmarks.
+        Tags are annotated with `bookmarks_qty` - count of user's bookmarks marked with each tag.
         """
-        tags = Tag.objects.all().annotate(
-            bookmarks_qty=Count("bookmarks"),
+        tags = (
+            Tag.objects.filter(
+                bookmarks__user_id__exact=request.user.pk,
+            )
+            .annotate(
+                bookmarks_qty=Count(
+                    "bookmarks",
+                    filter=Q(
+                        bookmarks__user_id__exact=request.user.pk,
+                    ),
+                ),
+            )
+            .order_by("title")
         )
         serializer = TagListSerializer(tags, many=True)
         return Response(serializer.data)
@@ -45,9 +61,24 @@ class FolderListView(APIView):
     def get(request: Request) -> Response:
         """
         Return all user's Folders.
+        Folders are annotated with `bookmarks_qty` - count of bookmarks in each folder.
         """
-        folders = Folder.objects.filter(user_id__exact=request.user.pk)
-        serializer = FolderSerializer(folders, many=True)
+        folders = (
+            Folder.objects.filter(user_id__exact=request.user.pk)
+            .annotate(
+                bookmarks_qty=Count(
+                    "bookmarks",
+                    filter=Q(
+                        bookmarks__user_id__exact=request.user.pk,
+                    )
+                    & Q(
+                        bookmarks__is_archived=False,
+                    ),
+                ),
+            )
+            .order_by("title")
+        )
+        serializer = FolderListSerializer(folders, many=True)
         return Response(serializer.data)
 
 

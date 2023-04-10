@@ -4,6 +4,8 @@
 - 13:40 - Backend: `UserDetailView` (`/user/details/`) endpoint added.
 - 15:00 - Frontend: login page wired with backend. "Auth" middleware added.
 - 16:00 - Frontend: added auth token to bookmarks, folders fetches.
+- 16:55 - Front + Back: only tags applied to user's bookmarks are listed.
+- 17:05 - Front + Back: added count of bookmarks in each user folder. Archived bookmarks excluded from counting.
 
 ### 09.04.2023, Sun
 
