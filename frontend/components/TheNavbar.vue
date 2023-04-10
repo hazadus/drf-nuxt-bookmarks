@@ -1,5 +1,14 @@
 <script setup>
+import { useAuthStore } from '@/stores/AuthStore';
+
 const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+
+function logOut() {
+  authStore.logOut();
+  router.push("/login/");
+}
 </script>
 
 <template>
@@ -41,17 +50,17 @@ const route = useRoute();
           <!-- Buttons -->
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
+              <a class="button is-primary" v-if="!authStore.isAuthenticated">
                 <strong>Sign up</strong>
               </a>
-              <a class="button is-light">
+              <NuxtLink to="/login/" class="button is-light" v-if="!authStore.isAuthenticated">
                 Log in
-              </a>
+              </NuxtLink>
             </div>
           </div>
 
           <!-- Profile drop-down -->
-          <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
             <div class="navbar-link">
               <figure class="image is-32x32 mr-2">
                 <img class="is-rounded" src="/images/logo.jpg">
@@ -67,7 +76,7 @@ const route = useRoute();
                   Profile
                 </div>
               </a>
-              <a class="navbar-item">
+              <a class="navbar-item" @click="logOut()">
                 <div>
                   <span class="icon">
                     <Icon name="mdi:logout" />

@@ -14,6 +14,7 @@ telegram bot), and Nuxt/Vue UI.
   - [requests](https://requests.readthedocs.io/en/latest/): Requests allows you to send HTTP/1.1 requests extremely easily. There’s no need to manually add query strings to your URLs, or to form-encode your POST data.
 - Frontend:
   - [Nuxt 3](https://nuxt.com/)
+    - [@pinia/nuxt](https://pinia.vuejs.org/ssr/nuxt.html): [Pinia](https://pinia.vuejs.org/) state management library.
     - [@vueuse/nuxt](https://nuxt.com/modules/vueuse): Collection of essential Vue Composition Utilities.
     - [nuxt-icon](https://nuxt.com/modules/icon): Icon module for Nuxt with 100,000+ ready to use icons from Iconify.
       - [Icones](https://icones.js.org) catalogue.

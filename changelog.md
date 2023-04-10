@@ -1,8 +1,13 @@
+## 10.04.2023, Mon
+
+- 13:00 - Frontend: Basic Login page created.
+
 ### 09.04.2023, Sun
 
 - 01:30 - Frontend: created bookmark filter by tags.
 - 19:30 - `bookmarks.vue` significantly refactored.
 - 19:50 - Added bookmark search by it's title.
+- 23:50 - Pinia integrated into project.
 
 ### 08.04.2023, Sat
 

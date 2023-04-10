@@ -1,5 +1,6 @@
 <template>
-  <Title>About the project</Title>
+  <Title>About the project | Bookmarks</Title>
+
   <section class="section about">
     <div class="container is-widescreen">
       <h1 class="title is-size-1">About this project</h1>
