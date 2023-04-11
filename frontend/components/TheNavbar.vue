@@ -64,8 +64,9 @@ async function logOut() {
           <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
             <div class="navbar-link">
               <figure class="image mr-2">
-                <img class="is-rounded is-32x32 " v-if="!authStore.user.profile_image"
-                  src="/images/default_profile_pic.png">
+                <img class="is-rounded"
+                  style="width: 32px !important; height: 32px !important; max-height: 32px !important;"
+                  v-if="!authStore.user.profile_image" src="/images/default_profile_pic.png">
                 <img class="is-rounded is-32x32 " v-else :src="config.apiBase + authStore.user.profile_image">
               </figure>
               {{ authStore.user.username }}
