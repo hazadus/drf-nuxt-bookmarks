@@ -55,6 +55,11 @@ async function submitForm() {
   router.push("/bookmarks/");
 }
 
+onBeforeMount(() => {
+  if (authStore.isAuthenticated) {
+    router.push("/profile/");
+  }
+});
 </script>
 
 <template>
@@ -93,9 +98,9 @@ async function submitForm() {
           <hr />
 
           <p>
-
-            Sign up
-
+            <NuxtLink to="/signup/" class="is-link">
+              Sign up
+            </NuxtLink>
             if you don't have an account yet.
           </p>
         </form>

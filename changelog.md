@@ -1,3 +1,8 @@
+## 11.04.2023, Tue
+
+- 19:10 - Frontend: login page now redirects authenticated users to profile page.
+- 21:00 - Frontend: sign up page implemented.
+
 ## 10.04.2023, Mon
 
 - 13:00 - Frontend: Basic Login page created.

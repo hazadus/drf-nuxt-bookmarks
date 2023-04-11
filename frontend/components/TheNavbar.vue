@@ -20,10 +20,12 @@ async function logOut() {
   <nav class="navbar has-shadow is-link">
     <div class="container is-widescreen">
 
+      <!-- Site title -->
       <div class="navbar-brand">
-        <a class="navbar-item">
-          <img src="/images/logo.jpg">
-        </a>
+        <NuxtLink to="/" class="navbar-item">
+          <Icon name="mdi:bookmark-multiple" />
+          &nbsp;<h2 class="title is-size-3 has-text-light">Bookmarks</h2>
+        </NuxtLink>
         <div class="navbar-burger burger">
           <span></span>
           <span></span>
@@ -33,12 +35,6 @@ async function logOut() {
 
       <div class="navbar-menu">
         <div class="navbar-start">
-          <!-- Site title -->
-          <div class="navbar-item">
-            <div>
-              <small>Hazadus Bookmarks App</small>
-            </div>
-          </div>
           <!-- Menu items -->
           <a class="navbar-item" href="#">
             Add
@@ -55,9 +51,9 @@ async function logOut() {
           <!-- Buttons -->
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary" v-if="!authStore.isAuthenticated">
+              <NuxtLink to="/signup/" class="button is-primary" v-if="!authStore.isAuthenticated">
                 <strong>Sign up</strong>
-              </a>
+              </NuxtLink>
               <NuxtLink to="/login/" class="button is-light" v-if="!authStore.isAuthenticated">
                 Log in
               </NuxtLink>
