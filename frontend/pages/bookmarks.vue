@@ -152,34 +152,62 @@ fetchData();
         <ul class="menu-list">
           <li>
             <a :class="selectedFolder === 'all' ? 'is-active' : ''" href="#" @click="selectedFolder = 'all'">
-              <span class="icon">
-                <Icon name="mdi:database" />
+              <span class="icon-text">
+                <span class="icon">
+                  <Icon name="mdi:database" />
+                </span>
+                <span class="mr-3">
+                  All
+                </span>
+                <span class="tag is-light">
+                  {{ totalBookmarksQty }}
+                </span>
               </span>
-              All ({{ totalBookmarksQty }})
             </a>
           </li>
           <li>
             <a :class="selectedFolder === 'inbox' ? 'is-active' : ''" href="#" @click="selectedFolder = 'inbox'">
-              <span class="icon">
-                <Icon name="mdi:inbox" />
+              <span class="icon-text">
+                <span class="icon">
+                  <Icon name="mdi:inbox" />
+                </span>
+                <span class="mr-3">
+                  Inbox
+                </span>
+                <span class="tag is-light">
+                  {{ inboxBookmarks?.length }}
+                </span>
               </span>
-              Inbox ({{ inboxBookmarks?.length }})
             </a>
           </li>
           <li>
             <a :class="selectedFolder === 'favorites' ? 'is-active' : ''" href="#" @click="selectedFolder = 'favorites'">
-              <span class="icon">
-                <Icon name="material-symbols:star" />
+              <span class="icon-text">
+                <span class="icon">
+                  <Icon name="material-symbols:star" />
+                </span>
+                <span class="mr-3">
+                  Favorites
+                </span>
+                <span class="tag is-light">
+                  {{ favoriteBookmarks?.length }}
+                </span>
               </span>
-              Favorites ({{ favoriteBookmarks?.length }})
             </a>
           </li>
           <li>
             <a :class="selectedFolder === 'archived' ? 'is-active' : ''" href="#" @click="selectedFolder = 'archived'">
-              <span class="icon">
-                <Icon name="mdi:archive" />
+              <span class="icon-text">
+                <span class="icon">
+                  <Icon name="mdi:archive" />
+                </span>
+                <span class="mr-3">
+                  Archived
+                </span>
+                <span class="tag is-light">
+                  {{ archivedBookmarks?.length }}
+                </span>
               </span>
-              Archived ({{ archivedBookmarks?.length }})
             </a>
           </li>
         </ul>
@@ -197,10 +225,17 @@ fetchData();
                 selectedFolder='userFolder';
                 selectedUserFolderId=folder.id;
               }">
-              <span class="icon">
-                <Icon name="mdi:folder" />
+              <span class="icon-text">
+                <span class="icon">
+                  <Icon name="mdi:folder" />
+                </span>
+                <span class="mr-3">
+                  {{ folder.title }}
+                </span>
+                <span class="tag is-light">
+                  {{ folder.bookmarks_qty }}
+                </span>
               </span>
-              {{ folder.title }} ({{ folder.bookmarks_qty }})
             </a>
           </li>
         </ul>
@@ -209,7 +244,7 @@ fetchData();
       <!-- Tags list -->
       <nav class="menu mt-5">
         <p class="menu-label mb-3">
-          All Tags
+          Your Tags
         </p>
       </nav>
       <BulmaTagList v-if="allTags?.length">
@@ -318,7 +353,7 @@ fetchData();
       <table class="table is-hoverable is-fullwidth" v-if="bookmarks?.length">
         <thead>
           <tr>
-            <th>
+            <th class="has-text-centered">
               <Icon name="material-symbols:star" />
             </th>
             <th>Title</th>
@@ -327,7 +362,7 @@ fetchData();
         </thead>
         <tfoot>
           <tr>
-            <th>
+            <th class="has-text-centered">
               <Icon name="material-symbols:star" />
             </th>
             <th>Title</th>
@@ -336,7 +371,7 @@ fetchData();
         </tfoot>
         <tbody>
           <tr v-for="bookmark in bookmarks" :key="`bookmark-id-${bookmark.id}`">
-            <td>
+            <td class="has-text-centered">
               <Icon name="material-symbols:star" v-if="bookmark.is_favorite" />
             </td>
             <td>
@@ -366,7 +401,6 @@ fetchData();
   position: sticky;
   display: inline-block;
   vertical-align: top;
-  max-height: 100vh;
   overflow-y: hidden;
   top: 0;
   bottom: 0;

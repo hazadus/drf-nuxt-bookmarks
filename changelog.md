@@ -2,6 +2,7 @@
 
 - 19:10 - Frontend: login page now redirects authenticated users to profile page.
 - 21:00 - Frontend: sign up page implemented.
+- 23:10 - Frontend: UI fixes (icons in sidebar,drop-down menu in navbar). "About" page updated.
 
 ## 10.04.2023, Mon
 

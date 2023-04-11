@@ -23,7 +23,7 @@ async function logOut() {
       <!-- Site title -->
       <div class="navbar-brand">
         <NuxtLink to="/" class="navbar-item">
-          <Icon name="mdi:bookmark-multiple" />
+          <Icon name="mdi:bookmark-multiple" class="has-text-primary" />
           &nbsp;<h2 class="title is-size-3 has-text-light">Bookmarks</h2>
         </NuxtLink>
         <div class="navbar-burger burger">
@@ -63,28 +63,33 @@ async function logOut() {
           <!-- Profile drop-down -->
           <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
             <div class="navbar-link">
-              <figure class="image is-32x32 mr-2">
-                <img class="is-rounded" v-if="!authStore.user.profile_image" src="/images/default_profile_pic.png">
-                <img class="is-rounded" v-else :src="config.apiBase + authStore.user.profile_image">
+              <figure class="image mr-2">
+                <img class="is-rounded is-32x32 " v-if="!authStore.user.profile_image"
+                  src="/images/default_profile_pic.png">
+                <img class="is-rounded is-32x32 " v-else :src="config.apiBase + authStore.user.profile_image">
               </figure>
               {{ authStore.user.username }}
             </div>
             <div class="navbar-dropdown is-right">
               <NuxtLink to="/profile/" class="navbar-item">
-                <div>
+                <span class="icon-text">
                   <span class="icon">
                     <Icon name="mdi:book-account" />
                   </span>
-                  Profile
-                </div>
+                  <span>
+                    Profile
+                  </span>
+                </span>
               </NuxtLink>
               <a class="navbar-item" @click="logOut()">
-                <div>
+                <span class="icon-text">
                   <span class="icon">
                     <Icon name="mdi:logout" />
                   </span>
-                  Sign Out
-                </div>
+                  <span>
+                    Sign Out
+                  </span>
+                </span>
               </a>
             </div>
           </div>
