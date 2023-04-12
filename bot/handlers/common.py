@@ -20,7 +20,18 @@ def message_url(message: Message) -> None:
     """
     log_message(message=message)
     result = create_bookmark(telegram_id=str(message.chat.id), url=message.text)
-    send_message(message.chat.id, str(result))
+
+    if result:
+        reply = "Added link: {url}".format(
+            url=result.get("url"),
+        )
+    else:
+        reply = (
+            "Something went wrong! It seems that link wasn't added to your bookmarks. "
+            "Check your link and try again."
+        )
+
+    send_message(message.chat.id, reply)
 
 
 @bot.message_handler(content_types=["text"])
@@ -30,4 +41,10 @@ def message_any(message: Message) -> None:
     :param message: сообщение от пользователя
     """
     log_message(message=message)
-    send_message(message.chat.id, "Send me a link to create new bookmark.")
+    send_message(
+        message.chat.id,
+        "Send me a link to create new bookmark.\n\nYour Telegram user ID is: {id}\n\n"
+        "Set your ID in your user's profile to add links sent to me to your bookmarks.".format(
+            id=message.chat.id,
+        ),
+    )
