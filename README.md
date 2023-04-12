@@ -51,6 +51,13 @@ Some interesting resources that I found and used while developing this project.
 
 ## Notes
 
+### Backend
+
+- [Serializers: Dealing with nested objects](https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-nested-objects).
+- [Serializers: Partial updates](https://www.django-rest-framework.org/api-guide/serializers/#partial-updates).
+  - [StackOverflow: Django Rest Framework partial update](https://stackoverflow.com/a/41112919)
+
+
 ### Frontend
 
 Naming Conventions: "The" in the component name means there's intended to be only one instance of this component in 
