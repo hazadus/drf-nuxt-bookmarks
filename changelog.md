@@ -1,3 +1,7 @@
+## 12.04.2023, Wed
+
+- 20:30 - Frontend: "Edit profile" form and buttons created.
+
 ## 11.04.2023, Tue
 
 - 19:10 - Frontend: login page now redirects authenticated users to profile page.

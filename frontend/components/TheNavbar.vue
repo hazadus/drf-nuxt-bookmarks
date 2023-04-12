@@ -71,7 +71,7 @@ async function logOut() {
               </figure>
               {{ authStore.user.username }}
             </div>
-            <div class="navbar-dropdown is-right">
+            <div class="navbar-dropdown is-right" :key="route.path">
               <NuxtLink to="/profile/" class="navbar-item">
                 <span class="icon-text">
                   <span class="icon">

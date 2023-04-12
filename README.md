@@ -51,10 +51,13 @@ Some interesting resources that I found and used while developing this project.
 
 ## Notes
 
-### Frontend - Naming Conventions
+### Frontend
 
-"The" in the component name means there's indended to be only one instance of this component in the app, e.g., 
-`TheNavbar` and `TheFooter`.
+Naming Conventions: "The" in the component name means there's intended to be only one instance of this component in 
+the app, e.g., `TheNavbar` and `TheFooter`.
+
+To hide dropdown menu in navbar when navigating from page to page, add `key` param like: `<div 
+class="navbar-dropdown is-right" :key="route.path">`.
 
 ## How to start the project
 
