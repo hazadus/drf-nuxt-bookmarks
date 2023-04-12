@@ -29,9 +29,6 @@ class CustomUserTelegramIDSerializer(serializers.ModelSerializer):
         return value
 
 
-from rest_framework import serializers
-
-
 class CustomUserSerializer(serializers.ModelSerializer):
     """
     Detailed User model serializer.
@@ -53,3 +50,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "last_login",
             "date_joined",
         )
+
+    def to_representation(self, instance):
+        """
+        Deliver consistent relative URLs of profile images.
+        Issue: https://forum.djangoproject.com/t/drf-imagefield-serializes-entire-url-with-domain-name/6975
+        """
+        ret = super().to_representation(instance)
+        ret["profile_image"] = instance.profile_image.url
+        return ret

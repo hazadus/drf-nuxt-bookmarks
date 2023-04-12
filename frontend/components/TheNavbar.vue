@@ -50,11 +50,11 @@ async function logOut() {
         <div class="navbar-end">
           <!-- Buttons -->
           <div class="navbar-item">
-            <div class="buttons">
-              <NuxtLink to="/signup/" class="button is-primary" v-if="!authStore.isAuthenticated">
+            <div class="buttons" v-if="!authStore.isAuthenticated">
+              <NuxtLink to="/signup/" class="button is-primary">
                 <strong>Sign up</strong>
               </NuxtLink>
-              <NuxtLink to="/login/" class="button is-light" v-if="!authStore.isAuthenticated">
+              <NuxtLink to="/login/" class="button is-light">
                 Log in
               </NuxtLink>
             </div>
@@ -71,6 +71,7 @@ async function logOut() {
               </figure>
               {{ authStore.user.username }}
             </div>
+            <!-- NB: `key` added to re-render menu (thus, hide dropdown) on each route change. -->
             <div class="navbar-dropdown is-right" :key="route.path">
               <NuxtLink to="/profile/" class="navbar-item">
                 <span class="icon-text">

@@ -2,6 +2,7 @@
 
 - 20:30 - Frontend: "Edit profile" form and buttons created.
 - 22:05 - Backend: added `/user/<int:pk>` endpoint for partial user profile updates with `PATCH` method.
+- 23:00 - Backend + Frontend: profile update form wired with API.
 
 ## 11.04.2023, Tue
 

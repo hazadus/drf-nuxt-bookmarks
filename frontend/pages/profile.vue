@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
+import type { User } from "@/types";
 
 // "auth" middleware redirects user to login page if not authenticated:
 definePageMeta({
@@ -14,7 +15,50 @@ const newFirstName: Ref<string | undefined> = ref(authStore.user?.first_name);
 const newLastName: Ref<string | undefined> = ref(authStore.user?.last_name);
 const newTelegramID: Ref<string | undefined> = ref(authStore.user?.telegram_id);
 
-function submitForm() { }
+function onClickCancel() {
+  newFirstName.value = authStore.user?.first_name;
+  newLastName.value = authStore.user?.last_name;
+  newTelegramID.value = authStore.user?.telegram_id;
+
+  isEditing.value = false;
+}
+
+async function submitForm() {
+  if (
+    (authStore.user?.first_name === newFirstName.value)
+    && (authStore.user?.last_name === newLastName.value)
+    && (authStore.user?.telegram_id === newTelegramID.value)
+  ) {
+    // If nothing changed, don't bother the API:
+    isEditing.value = false;
+    return;
+  }
+
+  const formData = {
+    first_name: newFirstName.value,
+    last_name: newLastName.value,
+    telegram_id: newTelegramID,
+  }
+
+  const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
+    method: "PATCH",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+
+  if (userUpdateError.value) {
+    console.error("Error updating user information: " + userUpdateError.value?.message);
+    alert("Something went wrong. Please try again!");
+    return;
+  }
+
+  const user = userData.value as User;
+  authStore.setUser(user);
+
+  isEditing.value = false;
+}
 </script>
 
 <template>
@@ -23,7 +67,7 @@ function submitForm() { }
   <h2 class="title is-size-2">Your profile</h2>
 
   <div class="columns">
-    <div class="column is-9">
+    <div class="column is-9" :key="authStore.user?.id">
 
       <template v-if="isEditing">
         <h4 class="title is-size-4">Edit your profile</h4>
@@ -67,7 +111,7 @@ function submitForm() { }
 
           <div class="field">
             <div class="control has-text-right">
-              <button class="button is-warning mr-2" @click="isEditing = false">Cancel</button>
+              <button class="button is-warning mr-2" @click="onClickCancel">Cancel</button>
               <button class="button is-success">Save</button>
             </div>
           </div>

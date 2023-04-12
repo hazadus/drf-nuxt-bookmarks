@@ -55,7 +55,9 @@ Some interesting resources that I found and used while developing this project.
 
 - [Serializers: Dealing with nested objects](https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-nested-objects).
 - [Serializers: Partial updates](https://www.django-rest-framework.org/api-guide/serializers/#partial-updates).
-  - [StackOverflow: Django Rest Framework partial update](https://stackoverflow.com/a/41112919)
+  - [StackOverflow: Django Rest Framework partial update](https://stackoverflow.com/a/41112919).
+- Issue: [DRF ImageField serializes entire URL with domain name](https://forum.djangoproject.com/t/drf-imagefield-serializes-entire-url-with-domain-name/6975).
+  - [Overriding serialization and deserialization behavior](https://www.django-rest-framework.org/api-guide/serializers/#to_representationself-instance).
 
 
 ### Frontend

@@ -8,13 +8,12 @@ interface StateShape {
 }
 
 export const useAuthStore = defineStore("AuthStore", {
-  state: (): StateShape => ({ 
+  state: (): StateShape => ({
     token: null,
     user: null,
-    isAuthenticated: false, 
+    isAuthenticated: false,
   }),
-  getters: {
-  },
+  getters: {},
   actions: {
     initializeStore() {
       if (localStorage.getItem("token")) {
@@ -32,19 +31,21 @@ export const useAuthStore = defineStore("AuthStore", {
         localStorage.setItem("user", JSON.stringify(this.user));
       }
     },
+    setUser(user: User | null) {
+      this.user = user;
+      localStorage.setItem("user", JSON.stringify(this.user));
+    },
     logIn(token: string, user: User) {
       this.token = token;
-      this.user = user;
       this.isAuthenticated = true;
+      this.setUser(user);
       localStorage.setItem("token", this.token);
-      localStorage.setItem("user", JSON.stringify(this.user));
     },
     logOut() {
       this.token = "";
-      this.user = null;
       this.isAuthenticated = false;
+      this.setUser(null);
       localStorage.setItem("token", this.token);
-      localStorage.setItem("user", JSON.stringify(this.user));
     },
   },
-})
+});
