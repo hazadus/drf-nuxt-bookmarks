@@ -57,5 +57,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         Issue: https://forum.djangoproject.com/t/drf-imagefield-serializes-entire-url-with-domain-name/6975
         """
         ret = super().to_representation(instance)
-        ret["profile_image"] = instance.profile_image.url
+        ret["profile_image"] = (
+            instance.profile_image.url if instance.profile_image else ""
+        )
         return ret
