@@ -117,3 +117,25 @@ class BookmarkCreateFromTelegramSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.filter(telegram_id=telegram_id).first()
         bookmark = Bookmark.objects.create(user=user, **validated_data)
         return bookmark
+
+
+class BookmarkUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Bookmark - for updating bookmarks via frontend.
+    Note: we dont mess with tags yet...
+    """
+
+    folder = FolderSerializer(many=False)
+
+    class Meta:
+        model = Bookmark
+        fields = [
+            "url",
+            "title",
+            "description",
+            "image_url",
+            "folder",
+            "is_favorite",
+            "is_read",
+            "is_archived",
+        ]

@@ -2,6 +2,7 @@
 
 - 19:00 - Frontend: implemented modal form for bookmark editing (tags only displayed for now, can't be changed 
   removed or added).
+- 19:20 - Backend: `BookmarkUpdateView` (`bookmarks/update/<int:pk>/`) endpoint created.
 
 ## 12.04.2023, Wed
 
