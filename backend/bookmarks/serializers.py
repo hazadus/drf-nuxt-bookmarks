@@ -11,6 +11,9 @@ class FolderSerializer(serializers.ModelSerializer):
     Serializer for Folder model.
     """
 
+    # NB: this is to get `id` field in nested serializers - we need it in `BookmarkUpdateSerializer.update()`
+    id = serializers.IntegerField(read_only=False)
+
     class Meta:
         model = Folder
         fields = [
@@ -139,3 +142,25 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
             "is_read",
             "is_archived",
         ]
+
+    def update(self, instance, validated_data):
+        """
+        Override `update` to deal with nested objects.
+        """
+        instance.url = validated_data.get("url")
+        instance.title = validated_data.get("title")
+        instance.description = validated_data.get("description")
+        instance.image_url = validated_data.get("image_url")
+        instance.is_favorite = validated_data.get("is_favorite")
+        instance.is_read = validated_data.get("is_read")
+        instance.is_archived = validated_data.get("is_archived")
+
+        # Take care of nested objects
+        if folder_data := validated_data.get("folder"):
+            if folder_id := folder_data.get("id"):
+                instance.folder = Folder.objects.get(pk=folder_id)
+        else:
+            instance.folder = None
+
+        instance.save()
+        return instance

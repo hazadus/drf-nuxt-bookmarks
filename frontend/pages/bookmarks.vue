@@ -143,7 +143,7 @@ fetchData();
   <!-- NB: `:key="selectedBookmark.id"` is to re-render component on each `selectedBookmark` change. -->
   <EditBookmarkModal v-if="selectedBookmark && allTags && allUserFolders" :bookmark="selectedBookmark" :allTags="allTags"
     :allFolders="allUserFolders" :key="selectedBookmark.id" :class="isEditBookmarkModalVisible ? 'is-active' : ''"
-    @close="isEditBookmarkModalVisible = $event" />
+    @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" />
 
   <BulmaNotification type="danger" v-if="fetchErrors.length">
     <strong>Some errors occured while trying to fetch data from API.</strong>
@@ -171,7 +171,7 @@ fetchData();
                 <span class="mr-3">
                   All
                 </span>
-                <span class="tag is-light">
+                <span class="tag is-light" :key="`totalBookmarksQty-${totalBookmarksQty}`">
                   {{ totalBookmarksQty }}
                 </span>
               </span>
@@ -186,7 +186,7 @@ fetchData();
                 <span class="mr-3">
                   Inbox
                 </span>
-                <span class="tag is-light">
+                <span class="tag is-light" :key="`inboxBookmarks-${inboxBookmarks?.length}`">
                   {{ inboxBookmarks?.length }}
                 </span>
               </span>
@@ -201,7 +201,7 @@ fetchData();
                 <span class="mr-3">
                   Favorites
                 </span>
-                <span class="tag is-light">
+                <span class="tag is-light" :key="`favoriteBookmarks-${favoriteBookmarks?.length}`">
                   {{ favoriteBookmarks?.length }}
                 </span>
               </span>
@@ -216,7 +216,7 @@ fetchData();
                 <span class="mr-3">
                   Archived
                 </span>
-                <span class="tag is-light">
+                <span class="tag is-light" :key="`archivedBookmarks-${archivedBookmarks?.length}`">
                   {{ archivedBookmarks?.length }}
                 </span>
               </span>
@@ -244,7 +244,7 @@ fetchData();
                 <span class="mr-3">
                   {{ folder.title }}
                 </span>
-                <span class="tag is-light">
+                <span class="tag is-light" :key="`folder-bookmarks_qty-${folder.bookmarks_qty}`">
                   {{ folder.bookmarks_qty }}
                 </span>
               </span>
@@ -260,8 +260,8 @@ fetchData();
         </p>
       </nav>
       <BulmaTagList v-if="allTags?.length">
-        <BulmaTag v-for="tag in allTags" :key="`tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false" :hasCounter="true"
-          @click="filterByTagsList.push(tag)" />
+        <BulmaTag v-for="tag in allTags" :key="`all-tags-tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
+          :hasCounter="true" @click="filterByTagsList.push(tag)" />
       </BulmaTagList>
     </div>
 
@@ -389,14 +389,17 @@ fetchData();
             <td>
               <a :href="bookmark.url" target="_blank">{{ bookmark.title }}</a>
               <template v-if="bookmark.tags.length">
-                <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags">{{ tag.title }}</span>
+                <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags"
+                  :key="`bkmrk-${bookmark.id}-tag-${tag.id}`">
+                  {{ tag.title }}
+                </span>
               </template>
             </td>
             <td>
               <button class="button is-link is-small is-inverted" @click="onClickEditBookmark(bookmark)">
                 <Icon name="mdi:book-edit" />
               </button>
-              <a class="button is-link is-small is-inverted"
+              <a class="button is-link is-small is-inverted" v-if="authStore.user?.is_superuser"
                 :href="`${config.public.apiBase}/admin/bookmarks/bookmark/${bookmark.id}/change/`" target="_blank">
                 <Icon name="mdi:cogs" />
               </a>

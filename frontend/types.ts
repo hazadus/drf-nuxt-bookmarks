@@ -40,7 +40,7 @@ export interface Bookmark {
   title: string;
   description: string;
   image_url: string;
-  folder: Folder;
+  folder: Folder | undefined;
   tags: Tag[];
   is_favorite: boolean;
   is_read: boolean;
