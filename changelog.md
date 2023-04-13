@@ -1,3 +1,8 @@
+## 13.04.2023, Thu
+
+- 19:00 - Frontend: implemented modal form for bookmark editing (tags only displayed for now, can't be changed 
+  removed or added).
+
 ## 12.04.2023, Wed
 
 - 20:30 - Frontend: "Edit profile" form and buttons created.

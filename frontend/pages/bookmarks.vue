@@ -23,6 +23,8 @@ const selectedFilter: Ref<string> = ref("all");
 const selectedUserFolderId: Ref<number> = ref(1);
 const filterByTagsList: Ref<Tag[]> = ref([]);
 const searchString: Ref<string> = ref("");
+const isEditBookmarkModalVisible: Ref<boolean> = ref(true);
+const selectedBookmark: Ref<Bookmark | null> = ref(null);
 
 async function fetchData() {
   const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
@@ -124,6 +126,11 @@ const bookmarks = computed(() => {
   return filteredBookmarks;
 });
 
+function onClickEditBookmark(bookmark: Bookmark) {
+  selectedBookmark.value = bookmark;
+  isEditBookmarkModalVisible.value = true;
+}
+
 /*
   Do the initial data fetching
 */
@@ -132,6 +139,11 @@ fetchData();
 
 <template>
   <Title>Your Bookmarks | Bookmarks</Title>
+
+  <!-- NB: `:key="selectedBookmark.id"` is to re-render component on each `selectedBookmark` change. -->
+  <EditBookmarkModal v-if="selectedBookmark && allTags && allUserFolders" :bookmark="selectedBookmark" :allTags="allTags"
+    :allFolders="allUserFolders" :key="selectedBookmark.id" :class="isEditBookmarkModalVisible ? 'is-active' : ''"
+    @close="isEditBookmarkModalVisible = $event" />
 
   <BulmaNotification type="danger" v-if="fetchErrors.length">
     <strong>Some errors occured while trying to fetch data from API.</strong>
@@ -248,7 +260,7 @@ fetchData();
         </p>
       </nav>
       <BulmaTagList v-if="allTags?.length">
-        <BulmaTag v-for="tag in allTags" :key="`tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
+        <BulmaTag v-for="tag in allTags" :key="`tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false" :hasCounter="true"
           @click="filterByTagsList.push(tag)" />
       </BulmaTagList>
     </div>
@@ -381,9 +393,12 @@ fetchData();
               </template>
             </td>
             <td>
+              <button class="button is-link is-small is-inverted" @click="onClickEditBookmark(bookmark)">
+                <Icon name="mdi:book-edit" />
+              </button>
               <a class="button is-link is-small is-inverted"
                 :href="`${config.public.apiBase}/admin/bookmarks/bookmark/${bookmark.id}/change/`" target="_blank">
-                <Icon name="mdi:book-edit" />
+                <Icon name="mdi:cogs" />
               </a>
             </td>
           </tr>

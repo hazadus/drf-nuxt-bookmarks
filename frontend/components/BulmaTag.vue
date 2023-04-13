@@ -15,7 +15,17 @@ const props = defineProps({
     default: "info",
     required: false,
   },
+  isLight: {
+    type: Boolean,
+    default: true,
+    required: false,
+  },
   hasDeleteButton: Boolean,
+  hasCounter: {
+    type: Boolean,
+    default: false,
+    required: false,
+  }
 });
 
 const emit = defineEmits<{
@@ -30,9 +40,9 @@ function onClickDelete() {
 <template>
   <div class="control">
     <div class="tags has-addons">
-      <a :class="`tag is-${props.type} is-light`">{{ tag.title }}</a>
+      <a :class="`tag is-${props.type} ${isLight ? 'is-light' : ''}`">{{ tag.title }}</a>
       <a class="tag is-delete" v-if="props.hasDeleteButton" @click="onClickDelete"></a>
-      <a class="tag" v-else>{{ tag.bookmarks_qty }}</a>
+      <a class="tag" v-else v-if="hasCounter">{{ tag.bookmarks_qty }}</a>
     </div>
   </div>
 </template>
