@@ -1,3 +1,7 @@
+## 14.04.2023, Fri
+
+- 18:00 - Backend: added Sentry integration.
+
 ## 12.04.2023, Wed
 
 - 20:30 - Frontend: "Edit profile" form and buttons created.

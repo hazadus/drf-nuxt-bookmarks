@@ -22,6 +22,20 @@ DEBUG = env.bool("DEBUG", False)
 FRONTEND_URL = env.str("FRONTEND_URL", "http://localhost:3000")
 BACKEND_HOST = env.str("BACKEND_HOST")
 BACKEND_HOST_DOCKER = env.str("BACKEND_HOST_DOCKER")
+SENTRY_DSN = env.str("SENTRY_DSN")
+
+if not DEBUG:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn="https://52feee66205548fea52fbeb261c4be41@o1402378.ingest.sentry.io/4505013053816832",
+        integrations=[
+            DjangoIntegration(),
+        ],
+        traces_sample_rate=0.5,
+        send_default_pii=True,
+    )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
