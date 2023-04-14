@@ -155,7 +155,7 @@ fetchData();
 
   <div class="columns" v-if="isDataFetched && !fetchErrors.length">
     <!-- Left Sidebar -->
-    <div class="column sidebar is-4-tablet is-3-desktop is-2-widescreen">
+    <div class="column sidebar p-0 mt-3 is-3-tablet is-3-desktop is-2-widescreen is-2-fullhd">
       <!-- Built-in Folders list -->
       <nav class="menu">
         <p class="menu-label">
@@ -265,7 +265,7 @@ fetchData();
       </BulmaTagList>
     </div>
 
-    <div class="column">
+    <div class="column bookmarks">
       <h1 class="title ">Bookmarks</h1>
 
       <!-- Level = search, filters -->
@@ -292,7 +292,7 @@ fetchData();
         </div>
 
         <!-- Filters right block -->
-        <div class="level-right">
+        <div class="level-right is-hidden-mobile">
           <p class="level-item">Show:</p>
           <p class="level-item">
             <strong v-if="selectedFilter === 'all'">All</strong>
@@ -365,28 +365,28 @@ fetchData();
       <table class="table is-hoverable is-fullwidth" v-if="bookmarks?.length">
         <thead>
           <tr>
-            <th class="has-text-centered">
+            <th class="cell-favorite">
               <Icon name="material-symbols:star" />
             </th>
-            <th>Title</th>
-            <th>Actions</th>
+            <th class="cell-title">Title</th>
+            <th class="cell-actions">Actions</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
-            <th class="has-text-centered">
+            <th class="cell-favorite">
               <Icon name="material-symbols:star" />
             </th>
-            <th>Title</th>
-            <th>Actions</th>
+            <th class="cell-title">Title</th>
+            <th class="cell-actions">Actions</th>
           </tr>
         </tfoot>
         <tbody>
           <tr v-for="bookmark in bookmarks" :key="`bookmark-id-${bookmark.id}`">
-            <td class="has-text-centered">
+            <td class="cell-favorite has-text-centered">
               <Icon name="material-symbols:star" v-if="bookmark.is_favorite" />
             </td>
-            <td>
+            <td class="cell-title">
               <a :href="bookmark.url" target="_blank">{{ bookmark.title }}</a>
               <template v-if="bookmark.tags.length">
                 <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags"
@@ -395,7 +395,7 @@ fetchData();
                 </span>
               </template>
             </td>
-            <td>
+            <td class="cell-actions">
               <button class="button is-link is-small is-inverted" @click="onClickEditBookmark(bookmark)">
                 <Icon name="mdi:book-edit" />
               </button>
@@ -418,11 +418,57 @@ fetchData();
 .sidebar {
   position: sticky;
   display: inline-block;
-  vertical-align: top;
+  /* Won't stick without vh: */
+  max-height: 100vh;
   overflow-y: hidden;
   top: 0;
   bottom: 0;
   background-color: white;
   z-index: 1;
+}
+
+
+.cell-favorite {
+  width: 24px;
+  padding-left: 12px;
+  padding-right: 0;
+  text-align: center;
+}
+
+.cell-actions {
+  width: 94px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center !important;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    /* 
+      "Unstick" sidebar on mobile screens.
+      Otherwise, it will hinder the content.
+    */
+    position: relative;
+  }
+
+  .bookmarks {
+    padding-top: 24px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .cell-favorite {
+    padding-left: 0;
+  }
+
+  .cell-title {
+    padding-right: 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .cell-actions {
+    width: 64px;
+  }
 }
 </style>
