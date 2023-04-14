@@ -93,7 +93,7 @@ async function onClickSaveChanges() {
 <template>
   <div class="modal">
     <div class="modal-background" @click="closeModal"></div>
-    <div class="modal-card" style="width: calc(100vw - 100px) !important;">
+    <div class="modal-card the-card">
       <section class="modal-card-body">
         <!-- Content ... -->
         <div class="columns">
@@ -119,20 +119,21 @@ async function onClickSaveChanges() {
               </div>
             </div>
 
-            <div class="field">
-              <label class="label">Description</label>
-              <div class="control">
-                <textarea class="textarea" placeholder="Bookmark description"
-                  v-model="editableBookmark.description"></textarea>
-              </div>
-            </div>
           </div>
 
-          <div class="column is-4">
+          <div class="column is-4 cover-image ">
             <!-- Cover image -->
-            <figure class="image is-16by9 mt-6" v-if="editableBookmark.image_url">
+            <figure class="image is-16by9 " v-if="editableBookmark.image_url">
               <img :src="editableBookmark.image_url">
             </figure>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="Bookmark description"
+              v-model="editableBookmark.description"></textarea>
           </div>
         </div>
 
@@ -221,3 +222,25 @@ async function onClickSaveChanges() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.the-card {
+  width: calc(100vw - 100px) !important;
+}
+
+.cover-image {
+  margin-top: 36px;
+}
+
+@media (max-width: 768px) {
+  .the-card {
+    width: calc(100vw - 10px) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .cover-image {
+    margin-top: 0;
+  }
+}
+</style>
