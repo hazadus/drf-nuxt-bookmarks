@@ -45,6 +45,9 @@ class TagSerializer(serializers.ModelSerializer):
     Serializer for Tag model.
     """
 
+    # NB: this is to get `id` field in nested serializers - we need it in `BookmarkUpdateSerializer.update()`
+    id = serializers.IntegerField(read_only=False)
+
     class Meta:
         model = Tag
         fields = [
@@ -129,6 +132,7 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
     """
 
     folder = FolderSerializer(many=False)
+    tags = TagSerializer(many=True)
 
     class Meta:
         model = Bookmark
@@ -138,6 +142,7 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
             "description",
             "image_url",
             "folder",
+            "tags",
             "is_favorite",
             "is_read",
             "is_archived",
@@ -161,6 +166,15 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
                 instance.folder = Folder.objects.get(pk=folder_id)
         else:
             instance.folder = None
+
+        # Remove all tag relations
+        instance.tags.clear()
+
+        if tags := validated_data.get("tags"):
+            for tag_data in tags:
+                tag = Tag.objects.filter(id=tag_data.get("id")).first()
+                if tag not in instance.tags.all():
+                    instance.tags.add(tag)
 
         instance.save()
         return instance

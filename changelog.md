@@ -2,6 +2,7 @@
 
 - 18:00 - Backend: added Sentry integration.
 - 18:30 - Frontend: tags can be added and removed in Bookmark editor (only existing tags).
+- 19:15 - Backend: tags now saved in DB.
 
 ## 13.04.2023, Thu
 
