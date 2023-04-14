@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,8 +12,8 @@ from .serializers import (
     BookmarkCreateFromTelegramSerializer,
     BookmarkListSerializer,
     TagListSerializer,
-    FolderSerializer,
     FolderListSerializer,
+    BookmarkUpdateSerializer,
 )
 from .utils import parse_url_info
 
@@ -128,3 +129,22 @@ def bookmark_create_from_telegram(request: Request) -> Response:
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BookmarkUpdateView(UpdateAPIView):
+    """
+    Partially update bookmark data. Return updated data.
+    """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = Bookmark.objects.all()
+    serializer_class = BookmarkUpdateSerializer
+
+    def put(self, request, *args, **kwargs):
+        """
+        PATCH method must be used to partially update bookmark data.
+        Return updated data.
+        """
+        return self.partial_update(request, *args, **kwargs)

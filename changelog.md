@@ -1,6 +1,15 @@
 ## 14.04.2023, Fri
 
 - 18:00 - Backend: added Sentry integration.
+- 18:30 - Frontend: tags can be added and removed in Bookmark editor (only existing tags).
+- 19:15 - Backend: tags now saved in DB.
+
+## 13.04.2023, Thu
+
+- 19:00 - Frontend: implemented modal form for bookmark editing (tags only displayed for now, can't be changed 
+  removed or added).
+- 19:20 - Backend: `BookmarkUpdateView` (`bookmarks/update/<int:pk>/`) endpoint created.
+- 21:20 - Front + Back: Bookmark edit form wired with API.
 
 ## 12.04.2023, Wed
 
