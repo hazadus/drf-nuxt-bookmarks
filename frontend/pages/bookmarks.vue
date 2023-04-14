@@ -449,6 +449,7 @@ fetchData();
       Otherwise, it will hinder the content.
     */
     position: relative;
+    max-height: 100%;
   }
 
   .bookmarks {
