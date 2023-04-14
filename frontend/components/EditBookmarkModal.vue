@@ -60,10 +60,10 @@ async function onClickSaveChanges() {
 
   const formData = {
     // NB: DRF won't accept URLs with spaces and stuff, hence `encodeURI`:
-    url: encodeURI(editableBookmark.value.url),
+    url: editableBookmark.value.url.trim().length ? encodeURI(editableBookmark.value.url) : "",
     title: editableBookmark.value.title,
     description: editableBookmark.value.description,
-    image_url: encodeURI(editableBookmark.value.image_url),
+    image_url: editableBookmark.value.image_url.trim().length ? encodeURI(editableBookmark.value.image_url) : "",
     folder: editableBookmark.value.folder,
     tags: assignedTags.value,
     is_favorite: editableBookmark.value.is_favorite,
