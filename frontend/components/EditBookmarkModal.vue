@@ -26,6 +26,7 @@ const authStore = useAuthStore();
 const config = useRuntimeConfig();
 
 const editableBookmark: Ref<Bookmark> = ref(props.bookmark);
+const assignedTags: Ref<Tag[]> = ref(props.bookmark.tags);
 const selectedFolderID: Ref<number> = ref(0);
 
 if (props.bookmark.folder?.id) {
@@ -34,6 +35,11 @@ if (props.bookmark.folder?.id) {
   // This is to prevent weird 400 errors when patching with `null` value.
   editableBookmark.value.folder = undefined;
 }
+
+const availableTags = computed(() => {
+  // All site tags except tags already assigned to the bookmark
+  return props.allTags.filter((tag) => assignedTags.value.filter((assignedTag) => assignedTag.id === tag.id).length === 0);
+});
 
 function closeModal() {
   emit("close", false);
@@ -58,6 +64,7 @@ async function onClickSaveChanges() {
     description: editableBookmark.value.description,
     image_url: editableBookmark.value.image_url,
     folder: editableBookmark.value.folder,
+    tags: assignedTags.value,
     is_favorite: editableBookmark.value.is_favorite,
     is_read: editableBookmark.value.is_read,
     is_archived: editableBookmark.value.is_archived,
@@ -175,9 +182,9 @@ async function onClickSaveChanges() {
               <label class="label">Assigned Tags</label>
               <div class="control">
 
-                <BulmaTagList v-if="editableBookmark.tags.length">
-                  <BulmaTag v-for="tag in editableBookmark.tags" :tag="tag" :hasDeleteButton="true"
-                    :key="`assigned-tag-${tag.id}`">
+                <BulmaTagList v-if="assignedTags.length">
+                  <BulmaTag v-for="tag in assignedTags" :tag="tag" :hasDeleteButton="true" :key="`assigned-tag-${tag.id}`"
+                    @delete="assignedTags = assignedTags.filter((tag) => tag.id != $event.id)">
                     {{ tag.title }}
                   </BulmaTag>
                 </BulmaTagList>
@@ -186,15 +193,15 @@ async function onClickSaveChanges() {
             </div>
           </div>
 
-          <!-- Assigned Tags -->
+          <!-- Available Tags -->
           <div class="column is-4">
             <div class="field">
               <label class="label">Available Tags</label>
               <div class="control">
 
-                <BulmaTagList v-if="allTags.length">
-                  <BulmaTag v-for="tag in allTags" :tag="tag" :hasDeleteButton="false" :hasCounter="true"
-                    :key="`all-tags-${tag.id}`">
+                <BulmaTagList v-if="availableTags.length">
+                  <BulmaTag v-for="tag in availableTags" :tag="tag" :hasDeleteButton="false" :hasCounter="true"
+                    :key="`all-tags-${tag.id}`" @clickTag="assignedTags.push(tag)">
                     {{ tag.title }}
                   </BulmaTag>
                 </BulmaTagList>
