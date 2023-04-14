@@ -1,6 +1,10 @@
 from django.db.models import Count, Q
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.generics import UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,6 +18,7 @@ from .serializers import (
     TagListSerializer,
     FolderListSerializer,
     BookmarkUpdateSerializer,
+    BookmarkCreateFromWebSerializer,
 )
 from .utils import parse_url_info
 
@@ -127,6 +132,37 @@ def bookmark_create_from_telegram(request: Request) -> Response:
         bookmark.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def bookmark_create_from_web(request: Request) -> Response:
+    """
+    Create new bookmark. Assign to authenticated user.
+
+    Post data example:
+    {
+        "url": "https://ru.vuejs.org/v2/cookbook/dockerize-vuejs-app.html"
+    }
+    """
+    serializer = BookmarkCreateFromWebSerializer(data=request.data)
+
+    if serializer.is_valid():
+        bookmark = serializer.save()
+
+        title, description, image_url = parse_url_info(serializer.data.get("url"))
+        bookmark.title = title
+        bookmark.description = description
+        bookmark.image_url = image_url
+        bookmark.user = request.user
+        bookmark.save()
+
+        # Return detailed bookmark info to the user:
+        detail_serializer = BookmarkListSerializer(instance=bookmark, many=False)
+        return Response(detail_serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

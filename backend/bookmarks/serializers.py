@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import CustomUser
-from users.serializers import CustomUserTelegramIDSerializer
+from users.serializers import CustomUserTelegramIDSerializer, CustomUserSerializer
 
 from .models import Bookmark, Folder, Tag
 
@@ -101,7 +101,7 @@ class BookmarkListSerializer(serializers.ModelSerializer):
 
 class BookmarkCreateFromTelegramSerializer(serializers.ModelSerializer):
     """
-    Serializer for Bookmark model - for creating new bookmarks.
+    Serializer for Bookmark model - for creating new bookmarks via Telegram bot.
     """
 
     user = CustomUserTelegramIDSerializer(many=False)
@@ -121,6 +121,26 @@ class BookmarkCreateFromTelegramSerializer(serializers.ModelSerializer):
         telegram_id = validated_data.pop("user").get("telegram_id")
         # NB: we checked existence of user with `telegram_id` in `CustomUserTelegramIDSerializer.validate_telegram_id()`
         user = CustomUser.objects.filter(telegram_id=telegram_id).first()
+        bookmark = Bookmark.objects.create(user=user, **validated_data)
+        return bookmark
+
+
+class BookmarkCreateFromWebSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Bookmark model - for creating new bookmarks via web frontend.
+    """
+
+    class Meta:
+        model = Bookmark
+        fields = [
+            "url",
+        ]
+
+    def create(self, validated_data):
+        """
+        Override to create bookmark with random user - we will change it in the view.
+        """
+        user = CustomUser.objects.all().first()
         bookmark = Bookmark.objects.create(user=user, **validated_data)
         return bookmark
 

@@ -7,18 +7,45 @@ definePageMeta({
   middleware: "auth",
 });
 
+const authStore = useAuthStore();
 const config = useRuntimeConfig();
 
 const url: Ref<string> = ref("");
 const errors: Ref<string[]> = ref([]);
 const addedBookmarks: Ref<Bookmark[]> = ref([]);
 
-function submitForm() {
-  console.log("Add URL: ", url.value);
+async function submitForm() {
+  errors.value = [];
+
+  const formData = {
+    user: authStore.user,
+    url: url.value,
+  }
+
+  const { data, error } = await useFetch(() => `${config.public.apiBase}/api/v1/bookmarks/create/`, {
+    method: "POST",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+
+  if (error.value) {
+    const errorMessage = "Error updating user information " + error.value?.message;
+    console.error(errorMessage);
+    errors.value.push(errorMessage);
+    return;
+  }
+
+  const newBookmark = data.value as Bookmark;
+  addedBookmarks.value.push(newBookmark);
+  url.value = "";
 }
 </script>
 
 <template>
+  <Title>Add new bookmark | Bookmarks</Title>
+
   <h2 class="title is-size-2">Add bookmark</h2>
   <BulmaNotification type="secondary">
     <div class="icon-text">
@@ -51,8 +78,8 @@ function submitForm() {
         <strong>An error has occured while trying to add new bookmark!</strong>
       </span>
     </div>
-    <p class="block">
-      Error description goes here...
+    <p class="block" v-for="error in errors" :key="error">
+      {{ error }}.
     </p>
   </BulmaNotification>
 
