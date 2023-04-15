@@ -1,3 +1,8 @@
+## 15.04.2023, Sat
+
+- 00:10 - Frontend: created "Add new bookmark" page.
+- 00:50 - Front + Back: wired up to create new bookmarks via web page.
+
 ## 14.04.2023, Fri
 
 - 18:00 - Backend: added Sentry integration.

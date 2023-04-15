@@ -39,9 +39,10 @@ async function onClickLogOut() {
       <div class="navbar-menu" :class="showMobileMenu ? 'is-active' : ''">
         <div class="navbar-start">
           <!-- Menu items -->
-          <a class="navbar-item" href="#" @click="showMobileMenu = false">
+          <NuxtLink to="/add/" class="navbar-item" :class="route.path === '/add/' ? 'is-active' : ''"
+            @click="showMobileMenu = false">
             Add
-          </a>
+          </NuxtLink>
           <NuxtLink to="/bookmarks/" class="navbar-item" :class="route.path === '/bookmarks/' ? 'is-active' : ''"
             @click="showMobileMenu = false">
             Bookmarks
