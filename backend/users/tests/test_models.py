@@ -13,7 +13,7 @@ class CustomUserModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        new_user = CustomUser.objects.create_user(cls.username, password=cls.password)
+        CustomUser.objects.create_user(cls.username, password=cls.password)
 
     def test_custom_user_str(self):
         """

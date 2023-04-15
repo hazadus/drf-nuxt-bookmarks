@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import CustomUser
-from users.serializers import CustomUserSerializer, CustomUserTelegramIDSerializer
+from users.serializers import CustomUserTelegramIDSerializer
 
 from .models import Bookmark, Folder, Tag
 
@@ -206,21 +206,20 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
             else instance.is_archived
         )
 
-        # Take care of nested objects
-        if folder_data := validated_data.get("folder"):
-            if folder_id := folder_data.get("id"):
-                instance.folder = Folder.objects.get(pk=folder_id)
-        else:
-            instance.folder = None
-
-        # Remove all tag relations
+        # Clear folder and all tag relations
+        instance.folder = None
         instance.tags.clear()
 
-        if tags := validated_data.get("tags"):
-            for tag_data in tags:
-                tag = Tag.objects.filter(id=tag_data.get("id")).first()
-                if tag not in instance.tags.all():
-                    instance.tags.add(tag)
+        # Take care of nested objects
+        if folder_data := validated_data.get("folder"):
+            folder_id = folder_data.get("id")
+            instance.folder = Folder.objects.get(pk=folder_id) if folder_id else None
+
+        tags = validated_data.get("tags") if validated_data.get("tags") else []
+
+        for tag_data in tags:
+            tag = Tag.objects.filter(id=tag_data.get("id")).first()
+            instance.tags.add(tag)
 
         instance.save()
         return instance

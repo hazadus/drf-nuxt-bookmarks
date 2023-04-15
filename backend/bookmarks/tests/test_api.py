@@ -24,7 +24,7 @@ class BookmarksAPITest(APITestCase):
     auth_token = None
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls):  # noqa: max-complexity: 4
         cls.new_user = CustomUser.objects.create_user(
             cls.username,
             password=cls.password,
@@ -245,7 +245,6 @@ class BookmarksAPITest(APITestCase):
             format="json",  # Don't forget this to handle nested objects and arrays
             **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
         )
-        print(bookmark_data)
         bookmark_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(bookmark_data["title"], "New title 2")
