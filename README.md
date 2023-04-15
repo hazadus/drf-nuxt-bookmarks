@@ -8,8 +8,7 @@ The project is in development right now! Recent changes are list in [changelog.m
 Any questions or ideas are welcome in project's [Issues](https://github.com/hazadus/drf-nuxt-bookmarks/issues) on 
 GitHub.
 
-You can see the live demo (which I use myself and update daily) here: http://92.255.109.128/. No sign up page yet, 
-though 😇!
+You can see the live demo (which I use myself and update daily) here: https://bookmarks.hazadus.ru/.
 
 ## Tech stack used
 
@@ -58,6 +57,8 @@ Some interesting resources that I found and used while developing this project.
   - [StackOverflow: Django Rest Framework partial update](https://stackoverflow.com/a/41112919).
 - Issue: [DRF ImageField serializes entire URL with domain name](https://forum.djangoproject.com/t/drf-imagefield-serializes-entire-url-with-domain-name/6975).
   - [Overriding serialization and deserialization behavior](https://www.django-rest-framework.org/api-guide/serializers/#to_representationself-instance).
+- To pass auth token in the tests, you can use the following syntax: `self.client.get(url, **{"HTTP_AUTHORIZATION": 
+  "Token " + self.auth_token})`. See [answer on SO](https://stackoverflow.com/a/58174009/20197519) for further details.
 
 
 ### Frontend

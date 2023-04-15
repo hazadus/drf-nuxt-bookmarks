@@ -3,6 +3,7 @@
 - 00:10 - Frontend: created "Add new bookmark" page.
 - 00:50 - Front + Back: wired up to create new bookmarks via web page.
 - 16:00 - Frontend: "Add bookmark" page UI tweaks.
+- 22:30 - Backend: added some tests. Total test coverage is 100%! Fixed some bugs along the way.
 
 ## 14.04.2023, Fri
 

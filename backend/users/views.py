@@ -4,8 +4,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import CustomUserSerializer
 from .models import CustomUser
+from .serializers import CustomUserSerializer
 
 
 class LoggedInUserDetailView(APIView):
@@ -31,6 +31,7 @@ class LoggedInUserDetailView(APIView):
 class UserUpdateView(UpdateAPIView):
     """
     Partially update user info. Return updated data.
+    "PATCH" method must be used to partially update the data.
     """
 
     authentication_classes = [authentication.TokenAuthentication]
@@ -38,10 +39,3 @@ class UserUpdateView(UpdateAPIView):
 
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-
-    def put(self, request, *args, **kwargs):
-        """
-        PATCH method must be used to partially update user info.
-        Return updated data.
-        """
-        return self.partial_update(request, *args, **kwargs)
