@@ -1,5 +1,5 @@
 from django.db.models import Count, Q
-from rest_framework import status
+from rest_framework import authentication, permissions, status
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -9,16 +9,15 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import authentication, permissions
 
-from .models import Bookmark, Tag, Folder
+from .models import Bookmark, Folder, Tag
 from .serializers import (
     BookmarkCreateFromTelegramSerializer,
-    BookmarkListSerializer,
-    TagListSerializer,
-    FolderListSerializer,
-    BookmarkUpdateSerializer,
     BookmarkCreateFromWebSerializer,
+    BookmarkListSerializer,
+    BookmarkUpdateSerializer,
+    FolderListSerializer,
+    TagListSerializer,
 )
 from .utils import parse_url_info
 
@@ -178,9 +177,9 @@ class BookmarkUpdateView(UpdateAPIView):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkUpdateSerializer
 
-    def put(self, request, *args, **kwargs):
-        """
-        PATCH method must be used to partially update bookmark data.
-        Return updated data.
-        """
-        return self.partial_update(request, *args, **kwargs)
+    # def put(self, request, *args, **kwargs):
+    #     """
+    #     PATCH method must be used to partially update bookmark data.
+    #     Return updated data.
+    #     """
+    #     return self.partial_update(request, *args, **kwargs)

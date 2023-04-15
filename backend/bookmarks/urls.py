@@ -1,12 +1,12 @@
 from django.urls import path
 
 from .views import (
-    TagListView,
-    FolderListView,
     BookmarkListView,
+    BookmarkUpdateView,
+    FolderListView,
+    TagListView,
     bookmark_create_from_telegram,
     bookmark_create_from_web,
-    BookmarkUpdateView,
 )
 
 urlpatterns = [

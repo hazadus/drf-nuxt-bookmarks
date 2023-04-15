@@ -12,7 +12,7 @@ def parse_url_info(url: str) -> List[str]:
     request = requests.get(url)
     html = BeautifulSoup(request.content, "html.parser")
 
-    title = html.title.string
+    title = html.title.string if html.title else "Unknown Title"
     description = html.find("meta", property="og:description")
     image_url = html.find("meta", property="og:image")
 

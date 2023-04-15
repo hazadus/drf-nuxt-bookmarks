@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import CustomUser
-from users.serializers import CustomUserTelegramIDSerializer, CustomUserSerializer
+from users.serializers import CustomUserTelegramIDSerializer
 
 from .models import Bookmark, Folder, Tag
 
@@ -172,29 +172,54 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
         """
         Override `update` to deal with nested objects.
         """
-        instance.url = validated_data.get("url")
-        instance.title = validated_data.get("title")
-        instance.description = validated_data.get("description")
-        instance.image_url = validated_data.get("image_url")
-        instance.is_favorite = validated_data.get("is_favorite")
-        instance.is_read = validated_data.get("is_read")
-        instance.is_archived = validated_data.get("is_archived")
+        instance.url = (
+            validated_data.get("url") if validated_data.get("url") else instance.url
+        )
+        instance.title = (
+            validated_data.get("title")
+            if validated_data.get("title")
+            else instance.title
+        )
+        instance.description = (
+            validated_data.get("description")
+            if validated_data.get("description")
+            else instance.description
+        )
+        instance.image_url = (
+            validated_data.get("image_url")
+            if validated_data.get("image_url")
+            else instance.image_url
+        )
+        instance.is_favorite = (
+            validated_data.get("is_favorite")
+            if validated_data.get("is_favorite")
+            else instance.is_favorite
+        )
+        instance.is_read = (
+            validated_data.get("is_read")
+            if validated_data.get("is_read")
+            else instance.is_read
+        )
+        instance.is_archived = (
+            validated_data.get("is_archived")
+            if validated_data.get("is_archived")
+            else instance.is_archived
+        )
+
+        # Clear folder and all tag relations
+        instance.folder = None
+        instance.tags.clear()
 
         # Take care of nested objects
         if folder_data := validated_data.get("folder"):
-            if folder_id := folder_data.get("id"):
-                instance.folder = Folder.objects.get(pk=folder_id)
-        else:
-            instance.folder = None
+            folder_id = folder_data.get("id")
+            instance.folder = Folder.objects.get(pk=folder_id) if folder_id else None
 
-        # Remove all tag relations
-        instance.tags.clear()
+        tags = validated_data.get("tags") if validated_data.get("tags") else []
 
-        if tags := validated_data.get("tags"):
-            for tag_data in tags:
-                tag = Tag.objects.filter(id=tag_data.get("id")).first()
-                if tag not in instance.tags.all():
-                    instance.tags.add(tag)
+        for tag_data in tags:
+            tag = Tag.objects.filter(id=tag_data.get("id")).first()
+            instance.tags.add(tag)
 
         instance.save()
         return instance
