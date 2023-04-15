@@ -38,7 +38,7 @@ async function submitForm() {
   }
 
   const newBookmark = data.value as Bookmark;
-  addedBookmarks.value.push(newBookmark);
+  addedBookmarks.value.unshift(newBookmark);
   url.value = "";
 }
 </script>
@@ -70,6 +70,7 @@ async function submitForm() {
   </form>
 
   <BulmaNotification v-if="errors.length" type="danger" class="mt-5">
+    <!-- Error list -->
     <div class="icon-text mb-3">
       <span class="icon has-text-warning is-hidden-mobile">
         <Icon name="material-symbols:dangerous-rounded" />
@@ -83,10 +84,24 @@ async function submitForm() {
     </p>
   </BulmaNotification>
 
-  <!-- List new bookmarks -->
+  <!-- List added bookmarks -->
   <div class="box mt-5" v-for="bookmark in addedBookmarks" :key="`added-bkmrk-${bookmark.id}`">
-    <a :href="bookmark.url" target="_blank">
-      {{ bookmark.title }}
-    </a>
+    <div class="columns">
+      <div class="column" :class="bookmark.image_url ? 'is-8' : 'is-12'">
+        <!-- Link title and description -->
+        <a :href="bookmark.url" target="_blank" class="title is-size-5">
+          {{ bookmark.title }}
+        </a>
+        <p v-if="bookmark.description" class="mt-4">
+          {{ bookmark.description }}
+        </p>
+      </div>
+      <div class="column is-4" v-if="bookmark.image_url">
+        <!-- Cover image -->
+        <figure class="image is-16by9">
+          <img :src="bookmark.image_url">
+        </figure>
+      </div>
+    </div>
   </div>
 </template>

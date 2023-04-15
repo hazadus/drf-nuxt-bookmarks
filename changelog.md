@@ -2,6 +2,7 @@
 
 - 00:10 - Frontend: created "Add new bookmark" page.
 - 00:50 - Front + Back: wired up to create new bookmarks via web page.
+- 16:00 - Frontend: "Add bookmark" page UI tweaks.
 
 ## 14.04.2023, Fri
 
