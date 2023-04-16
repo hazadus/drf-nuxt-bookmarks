@@ -1,14 +1,14 @@
 # drf-nuxt-bookmarks
 
 Web bookmarking service consisting of Django REST Framework API backend, Telegram bot to receive URLs, Celery worker 
-(process tasks passed by Telegram bot), and Nuxt/Vue frontend, written in TypeScript.
+(process background tasks, e.g. downloads and Telegram notifications), and Nuxt/Vue frontend, written in TypeScript.
 
-The project is in development right now! Recent changes are list in [changelog.md](./changelog.md).
+The project is in development right now! Recent changes are listed in [changelog.md](./changelog.md).
 
 Any questions or ideas are welcome in project's [Issues](https://github.com/hazadus/drf-nuxt-bookmarks/issues) on 
 GitHub.
 
-You can see the live demo (which I use myself and update daily) here: https://bookmarks.hazadus.ru/.
+You can check out the live demo (which I use myself and update daily) here: https://bookmarks.hazadus.ru/.
 
 ## Tech stack used
 
@@ -20,6 +20,8 @@ You can see the live demo (which I use myself and update daily) here: https://bo
   - [djoser](https://djoser.readthedocs.io/en/latest/introduction.html): REST implementation of Django 
     authentication system. `djoser` library provides a set of Django Rest Framework views to handle basic actions 
     such  as registration, login, logout, password reset and account activation.
+  - [django-cors-headers](https://github.com/adamchainz/django-cors-headers): Django app for handling the server 
+    headers required for Cross-Origin Resource Sharing (CORS).
 - Telegram bot: [pyTelegramBotAPI](https://pypi.org/project/pyTelegramBotAPI/)
   - [requests](https://requests.readthedocs.io/en/latest/): Requests allows you to send HTTP/1.1 requests extremely 
     easily. There’s no need to manually add query strings to your URLs, or to form-encode your POST data.
@@ -71,15 +73,17 @@ class="navbar-dropdown is-right" :key="route.path">`.
 
 ## How to start the project
 
-The project consists of two parts - backend and frontend, and you need to run them simultaneously.
+The project consists of three parts - backend, frontend, and the Telegram bot - and you need to run them simultaneously.
 
-First of all you have to clone the repository to your local directory:
+First of all, you have to clone the repository to your local directory:
 
 ```bash
 git clone https://github.com/hazadus/drf-nuxt-bookmarks
 ```
 
 ### Start in Development mode
+
+#### Backend (API)
 
 In first shell window, create Python virtual environment for backend and install project dependencies:
 
@@ -123,6 +127,8 @@ python -m manage createsuperuser
 python -m manage runserver
 ```
 
+#### Frontend (Nuxt Dev Server)
+
 In second shell window, `cd` to `frontend` directory and create `.env` file:
 
 ```bash
@@ -142,6 +148,22 @@ Then, install the dependencies for Nuxt app, and run the frontend development se
 
 Visit `http://localhost:3000` in your browser to see the working project.
 Django admin panel is available at `http://127.0.0.1:8000/admin/`.
+
+#### Telegram bot
+
+In the third terminal, `cd ./bot`, `touch ./.env` to create config file, and then edit it with `nano ./.env`:
+
+```
+BOT_TOKEN=your_telegram_bot_token
+API_BASE_URL=http://127.0.0.1:8000
+```
+
+Then activate the virtual environment, and run the bot:
+
+```bash
+source ../frontend/.venv/bin/activate
+python main.py
+```
 
 ## Deploy
 
@@ -164,11 +186,12 @@ services:
     volumes:
       - ./backend:/code
     environment:
-      - "SECRET_KEY=<the-secret-key>"
+      - "SECRET_KEY=your_secret_key"
       - "DEBUG=False"
-      # Change this to your IP or host name:
-      - "BACKEND_HOST=92.255.109.128"
+      - "BACKEND_HOST=bookmarks.hazadus.ru"
+      - "FRONTEND_URL=https://bookmarks.hazadus.ru"
       - "BACKEND_HOST_DOCKER=api"
+      - "SENTRY_DSN=your_sentry_dsn"
   bot:
     container_name: "bkmrks-bot"
     build: ./bot/
@@ -176,22 +199,21 @@ services:
     volumes:
       - ./bot:/code
     environment:
-      - "BOT_TOKEN=<your-bot-token>"
-      # Change this to your IP or host name:
-      - "API_BASE_URL=http://92.255.109.128"
+      - "BOT_TOKEN=your_bot_token"
+      - "API_BASE_URL=https://bookmarks.hazadus.ru"
   node:
       container_name: "bkmrks-node"
       build: ./frontend/
       command: node .output/server/index.mjs
       environment:
-        # Change this to your IP or host name:
-        - "NUXT_PUBLIC_API_BASE=http://92.255.109.128"
+        - "NUXT_PUBLIC_API_BASE=https://bookmarks.hazadus.ru"
         - "NITRO_HOST=0.0.0.0"
         - "NITRO_PORT=3000"
   nginx:
     container_name: "bkmrks-nginx"
     image: nginx:1.23-alpine
     ports:
+      - "443:443"
       - "80:80"
     volumes:
       - ./backend:/code
@@ -200,6 +222,7 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./backend/media:/media
       - ./backend/staticfiles:/staticfiles
+      - /etc/letsencrypt/archive/bookmarks.hazadus.ru/:/certs
     depends_on:
       - api
 ```
