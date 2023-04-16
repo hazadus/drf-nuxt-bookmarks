@@ -1,3 +1,7 @@
+## 16.04.2023, Sun
+
+- 22:00 - Frontend: created "Add new folder" component UI.
+
 ## 15.04.2023, Sat
 
 - 00:10 - Frontend: created "Add new bookmark" page.

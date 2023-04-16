@@ -250,6 +250,9 @@ fetchData();
               </span>
             </a>
           </li>
+          <li>
+            <AddFolderMenuItem />
+          </li>
         </ul>
       </nav>
 
