@@ -251,21 +251,23 @@ fetchData();
             </a>
           </li>
           <li>
-            <AddFolderMenuItem />
+            <AddFolderMenuItem @created="fetchData" />
           </li>
         </ul>
       </nav>
 
       <!-- Tags list -->
-      <nav class="menu mt-5">
-        <p class="menu-label mb-3">
-          Your Tags
-        </p>
-      </nav>
-      <BulmaTagList v-if="allTags?.length">
-        <BulmaTag v-for="tag in allTags" :key="`all-tags-tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
-          :hasCounter="true" @click="filterByTagsList.push(tag)" />
-      </BulmaTagList>
+      <template v-if="allTags?.length">
+        <nav class="menu mt-5">
+          <p class="menu-label mb-3">
+            Your Tags
+          </p>
+        </nav>
+        <BulmaTagList>
+          <BulmaTag v-for="tag in allTags" :key="`all-tags-tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
+            :hasCounter="true" @click="filterByTagsList.push(tag)" />
+        </BulmaTagList>
+      </template>
     </div>
 
     <div class="column bookmarks">

@@ -12,6 +12,8 @@ const config = useRuntimeConfig();
 
 const errors: Ref<string[]> = ref([]);
 const allUserFolders: Ref<Folder[] | null> = ref(null);
+const newFolderTitle: Ref<string> = ref("");
+const isLoading: Ref<boolean> = ref(false);
 
 async function fetchFolderData() {
   errors.value = [];
@@ -31,7 +33,38 @@ async function fetchFolderData() {
 }
 
 
-function submitCreateFolderForm() { }
+async function submitCreateFolderForm() {
+  if (!newFolderTitle.value.length) {
+    return;
+  }
+
+  isLoading.value = true;
+
+  const formData = {
+    user_id: authStore.user?.id,
+    title: newFolderTitle.value,
+  };
+
+  const { data: folderData, error: folderCreateError } = await useFetch(() => `${config.public.apiBase}/api/v1/folders/create/`, {
+    method: "POST",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+
+  if (folderCreateError.value) {
+    console.error("Error creating new folder: " + folderCreateError.value?.message);
+    alert("Something went wrong. Please try again!");
+    isLoading.value = false;
+    return;
+  }
+
+  newFolderTitle.value = "";
+  isLoading.value = false;
+
+  fetchFolderData();
+}
 
 fetchFolderData();
 </script>
@@ -59,15 +92,17 @@ fetchFolderData();
       </BulmaNotification>
 
       <table class="table" v-if="allUserFolders">
-        <EditFoldersTableRow v-for="folder in allUserFolders" :key="`folder-id-${folder.id}`" :folder="folder" />
+        <EditFoldersTableRow v-for="folder in allUserFolders" :key="`folder-id-${folder.id}`" :folder="folder"
+          @deleted="fetchFolderData" @updated="fetchFolderData" />
       </table>
 
       <form @submit.prevent="submitCreateFolderForm">
         <div class="field">
           <label class="label">Create new folder:</label>
           <div class="control">
-            <input class="input mr-1 new-folder-input" type="text" placeholder="New folder title" maxlength="16">
-            <button class="button is-success">
+            <input class="input mr-1 new-folder-input" v-model="newFolderTitle" type="text" placeholder="New folder title"
+              maxlength="16" :disabled="isLoading">
+            <button class="button is-success" :disabled="isLoading" :class="isLoading ? 'is-loading' : ''">
               <Icon name="mdi:plus" />
             </button>
           </div>

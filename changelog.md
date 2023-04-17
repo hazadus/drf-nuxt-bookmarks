@@ -2,6 +2,7 @@
 
 - 15:00 - Frontend: implemented "Manage folders" page UI.
 - 19:40 - Backend: created endpoints to create, update and delete user folders.
+- 20:30 - Frontend: wired up to create, edit and delete user folders.
 
 ## 16.04.2023, Sun
 

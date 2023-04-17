@@ -5,7 +5,7 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
-from rest_framework.generics import UpdateAPIView, DestroyAPIView
+from rest_framework.generics import DestroyAPIView, UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,8 +18,8 @@ from .serializers import (
     BookmarkUpdateSerializer,
     FolderCreateSerializer,
     FolderListSerializer,
-    TagListSerializer,
     FolderSerializer,
+    TagListSerializer,
 )
 from .utils import parse_url_info
 

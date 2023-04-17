@@ -3,13 +3,13 @@ from django.urls import path
 from .views import (
     BookmarkListView,
     BookmarkUpdateView,
+    FolderDeleteView,
     FolderListView,
+    FolderUpdateView,
     TagListView,
     bookmark_create_from_telegram,
     bookmark_create_from_web,
     folder_create,
-    FolderUpdateView,
-    FolderDeleteView,
 )
 
 urlpatterns = [

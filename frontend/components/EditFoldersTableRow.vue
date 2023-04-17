@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import type { Folder } from '@/types';
-import { is } from '@babel/types';
 
 const props = defineProps({
   folder: {
@@ -9,19 +9,74 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits<{
+  (e: "updated", isUpdated: boolean): void;
+  (e: "deleted", isDeleted: boolean): void;
+}>();
+
+const authStore = useAuthStore();
+const config = useRuntimeConfig();
+
 const isLoading: Ref<boolean> = ref(false);
 const isEditing: Ref<boolean> = ref(false);
 const changedFolderTitle: Ref<string> = ref(props.folder.title);
+const titleInputElement: Ref<HTMLInputElement | null> = ref(null);
 
-function onClickDelete() { }
+async function onClickDelete() {
+  isLoading.value = true;
+
+  const { error: folderDeleteError } = await useFetch(() => `${config.public.apiBase}/api/v1/folders/delete/${props.folder.id}/`, {
+    method: "DELETE",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+  });
+
+  if (folderDeleteError.value) {
+    console.error("Error deleting the folder: " + folderDeleteError.value?.message);
+    alert("Something went wrong. Please try again!");
+    return;
+  }
+
+  emit("deleted", true);
+  isLoading.value = false;
+}
 
 function onClickEdit() {
   isEditing.value = true;
+  nextTick(() => {
+    titleInputElement.value?.focus();
+  });
 }
 
-function onClickSave() {
+async function onClickSave() {
+  if (!changedFolderTitle.value.length) {
+    return;
+  }
+
   isLoading.value = true;
-  //isEditing.value = false;
+
+  const { error: folderUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/folders/update/${props.folder.id}/`, {
+    method: "PATCH",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: {
+      title: changedFolderTitle.value,
+    },
+  });
+
+  if (folderUpdateError.value) {
+    console.error("Error updating the folder: " + folderUpdateError.value?.message);
+    alert("Something went wrong. Please try again!");
+    isLoading.value = false;
+    return;
+  }
+
+  emit("updated", true);
+
+  isLoading.value = false;
+  isEditing.value = false;
 }
 
 function onClickCancelSave() {
@@ -49,7 +104,7 @@ function onClickCancelSave() {
       <div class="field" v-else>
         <p class="control has-icons-left has-icons-right mr-1">
           <input class="input" type="text" placeholder="Folder title" maxlength="16" v-model="changedFolderTitle"
-            :disabled="isLoading">
+            ref="titleInputElement" @keydown.enter="onClickSave" :disabled="isLoading">
           <span class="icon is-left">
             <Icon name="mdi:folder" />
           </span>
