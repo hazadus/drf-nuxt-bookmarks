@@ -3,6 +3,7 @@ import json
 from rest_framework.test import APITestCase
 
 from bookmarks.models import Bookmark, Folder, Tag
+from bookmarks.serializers import FolderSerializer
 from users.models import CustomUser
 
 NUMBER_OF_TAGS = 10
@@ -108,6 +109,95 @@ class BookmarksAPITest(APITestCase):
             self.assertEqual(
                 folder_list[i]["bookmarks_qty"], NUMBER_OF_BOOKMARKS_IN_FOLDER
             )
+
+    def test_folder_create_api(self):
+        """
+        Ensure that `folder_create`:
+        - is located at defined URL;
+        - folder can't be created with wrong (non-existent) user id;
+        - folder can't be created for user another that authenticated one;
+        - returns newly created Folder object.
+        """
+        new_folder_title = "New Folder 1"
+        url = "/api/v1/folders/create/"
+        response = self.client.post(
+            url,
+            {
+                "user_id": self.new_user.pk,
+                "title": new_folder_title,
+            },
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        folder_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(folder_data["user_id"], self.new_user.pk)
+        self.assertEqual(folder_data["title"], new_folder_title)
+
+        # Try with non-existent user id
+        response = self.client.post(
+            url,
+            {
+                "user_id": 100,
+                "title": new_folder_title,
+            },
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # Try with another user
+        new_user2 = CustomUser.objects.create_user(
+            "testuser2",
+            password="password2",
+        )
+        response = self.client.post(
+            url,
+            {
+                "user_id": new_user2.pk,
+                "title": new_folder_title,
+            },
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_folder_update_api(self):
+        """
+        Ensure that `FolderUpdateView`:
+        - is located at defined URL;
+        - partially updates folder data with "PATCH" method;
+        - returns updated data.
+        """
+        updated_folder_title = "Updated Folder Title"
+        folder = Folder.objects.all().first()
+        serializer = FolderSerializer(instance=folder, many=False)
+        data = serializer.data
+        data["title"] = updated_folder_title
+        url = f"/api/v1/folders/update/{folder.pk}/"
+        response = self.client.patch(
+            url,
+            data=data,
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        folder_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(folder_data["title"], updated_folder_title)
+
+    def test_folder_delete_api(self):
+        """
+        Ensure that `FolderDeleteView`:
+        - is located at defined URL;
+        - Set `folder=None` for all bookmarks in the folder before actually deleting it.
+        """
+        folder = Folder.objects.all().first()
+        bookmark_ids = list(folder.bookmarks.all().values_list("id", flat=True))
+        url = f"/api/v1/folders/delete/{folder.pk}/"
+        response = self.client.delete(
+            url,
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        self.assertEqual(response.status_code, 204)
+        # Check that bookmarks from the folder are still alive:
+        for _id in bookmark_ids:
+            self.assertEqual(Bookmark.objects.get(pk=_id).folder, None)
 
     def test_bookmark_list_api(self):
         """

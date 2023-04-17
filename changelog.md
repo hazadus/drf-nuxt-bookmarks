@@ -1,3 +1,13 @@
+## 17.04.2023, Mon
+
+- 15:00 - Frontend: implemented "Manage folders" page UI.
+- 19:40 - Backend: created endpoints to create, update and delete user folders.
+- 20:30 - Frontend: wired up to create, edit and delete user folders.
+
+## 16.04.2023, Sun
+
+- 22:00 - Frontend: created "Add new folder" component UI for "Bookmarks" page sidebar.
+
 ## 15.04.2023, Sat
 
 - 00:10 - Frontend: created "Add new bookmark" page.

@@ -91,6 +91,16 @@ async function onClickLogOut() {
                   </span>
                 </span>
               </NuxtLink>
+              <NuxtLink to="/folders/" class="navbar-item" @click="showMobileMenu = false">
+                <span class="icon-text">
+                  <span class="icon">
+                    <Icon name="material-symbols:folder-managed-rounded" />
+                  </span>
+                  <span>
+                    Folders
+                  </span>
+                </span>
+              </NuxtLink>
               <a class="navbar-item" @click="onClickLogOut()">
                 <span class="icon-text">
                   <span class="icon">

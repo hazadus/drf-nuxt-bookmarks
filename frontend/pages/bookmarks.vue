@@ -250,19 +250,24 @@ fetchData();
               </span>
             </a>
           </li>
+          <li>
+            <AddFolderMenuItem @created="fetchData" />
+          </li>
         </ul>
       </nav>
 
       <!-- Tags list -->
-      <nav class="menu mt-5">
-        <p class="menu-label mb-3">
-          Your Tags
-        </p>
-      </nav>
-      <BulmaTagList v-if="allTags?.length">
-        <BulmaTag v-for="tag in allTags" :key="`all-tags-tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
-          :hasCounter="true" @click="filterByTagsList.push(tag)" />
-      </BulmaTagList>
+      <template v-if="allTags?.length">
+        <nav class="menu mt-5">
+          <p class="menu-label mb-3">
+            Your Tags
+          </p>
+        </nav>
+        <BulmaTagList>
+          <BulmaTag v-for="tag in allTags" :key="`all-tags-tag-id-${tag.id}`" :tag="tag" :hasDeleteButton="false"
+            :hasCounter="true" @click="filterByTagsList.push(tag)" />
+        </BulmaTagList>
+      </template>
     </div>
 
     <div class="column bookmarks">
@@ -386,7 +391,7 @@ fetchData();
             <td class="cell-favorite has-text-centered">
               <Icon name="material-symbols:star" v-if="bookmark.is_favorite" />
             </td>
-            <td class="cell-title">
+            <td class="cell-title is-vcentered ">
               <a :href="bookmark.url" target="_blank">{{ bookmark.title }}</a>
               <template v-if="bookmark.tags.length">
                 <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags"

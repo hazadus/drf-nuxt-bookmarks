@@ -40,6 +40,38 @@ class FolderListSerializer(serializers.ModelSerializer):
         ]
 
 
+class FolderCreateSerializer(serializers.Serializer):
+    """
+    Serializer used to create Folders via web frontend.
+    """
+
+    user_id = serializers.IntegerField()
+    title = serializers.CharField(max_length=64)
+
+    @staticmethod
+    def validate_user_id(value):
+        """
+        Check if user with `user_id` exists in DB.
+        Reference: https://www.django-rest-framework.org/api-guide/serializers/#field-level-validation
+        """
+        user = CustomUser.objects.filter(pk=value).first()
+        if not user:
+            raise serializers.ValidationError(
+                f"User with user_id={value} does not exist!"
+            )
+        return value
+
+    def create(self, validated_data):
+        """
+        Create and return Folder with `title` for user with `user_id`.
+        """
+        user = CustomUser.objects.get(pk=validated_data.get("user_id"))
+        return Folder.objects.create(
+            user=user,
+            title=validated_data.get("title"),
+        )
+
+
 class TagSerializer(serializers.ModelSerializer):
     """
     Serializer for Tag model.
@@ -172,39 +204,13 @@ class BookmarkUpdateSerializer(serializers.ModelSerializer):
         """
         Override `update` to deal with nested objects.
         """
-        instance.url = (
-            validated_data.get("url") if validated_data.get("url") else instance.url
-        )
-        instance.title = (
-            validated_data.get("title")
-            if validated_data.get("title")
-            else instance.title
-        )
-        instance.description = (
-            validated_data.get("description")
-            if validated_data.get("description")
-            else instance.description
-        )
-        instance.image_url = (
-            validated_data.get("image_url")
-            if validated_data.get("image_url")
-            else instance.image_url
-        )
-        instance.is_favorite = (
-            validated_data.get("is_favorite")
-            if validated_data.get("is_favorite")
-            else instance.is_favorite
-        )
-        instance.is_read = (
-            validated_data.get("is_read")
-            if validated_data.get("is_read")
-            else instance.is_read
-        )
-        instance.is_archived = (
-            validated_data.get("is_archived")
-            if validated_data.get("is_archived")
-            else instance.is_archived
-        )
+        instance.url = validated_data.get("url", instance.url)
+        instance.title = validated_data.get("title", instance.title)
+        instance.description = validated_data.get("description", instance.description)
+        instance.image_url = validated_data.get("image_url", instance.image_url)
+        instance.is_favorite = validated_data.get("is_favorite", instance.is_favorite)
+        instance.is_read = validated_data.get("is_read", instance.is_read)
+        instance.is_archived = validated_data.get("is_archived", instance.is_archived)
 
         # Clear folder and all tag relations
         instance.folder = None
