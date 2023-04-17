@@ -9,7 +9,7 @@
 
       <div class="column is-9">
         <p>
-          The idea behind this project was to create a web app to collect, classify and store links to
+          The idea behind this project is to create a web app to collect, classify and store links to
           various useful web resources. I use it myself every day and find it very convenient.
         </p>
         <p>
@@ -42,28 +42,61 @@
       Project was built with passion using these amazing tools. I just can't express how great and fun they are!
     </p>
 
-    <ul>
-      <li>
-        <Icon name="logos:django-icon" /> <b>Django</b> for backend.
-      </li>
-      <li>
-        <b>Django REST Framework</b> for API.
-      </li>
-      <li>
-        <Icon name="logos:nuxt-icon" /> <b>Nuxt</b> and
-        <Icon name="logos:vue" /> <b>Vue</b> for frontend.
-      </li>
-      <li>
-        <Icon name="logos:bulma" /> <b>Bulma</b> for styling.
-      </li>
-      <li>
-        <Icon name="logos:nginx" /> <b>Nginx</b> as reverse proxy.
-      </li>
-      <li>
-        <Icon name="logos:docker-icon" /> <b>Docker Compose</b> <em>to run them all</em> on
-        <Icon name="logos:ubuntu" /> <b>Ubuntu</b> server!
-      </li>
-    </ul>
+    <div class="columns">
+      <div class="column is-6">
+        <ul>
+          <li>
+            <Icon name="logos:django-icon" /> <b>Django</b> for backend.
+          </li>
+          <li>
+            <b>Django REST Framework</b> for API.
+          </li>
+          <li>
+            <Icon name="logos:gunicorn" /> <b>Gunicorn</b> as WSGI server.
+          </li>
+          <li>
+            <Icon name="logos:nodejs" /> <b>Node</b> and <b>Nitro</b> to serve frontend.
+          </li>
+          <li>
+            <Icon name="logos:nginx" /> <b>Nginx</b> as reverse proxy.
+          </li>
+          <li>
+            <Icon name="logos:telegram" /> <b>Telegram API</b> for bot implementation.
+          </li>
+          <li>
+            <Icon name="logos:docker-icon" /> <b>Docker Compose</b> <em>to run them all</em> on
+            <Icon name="logos:ubuntu" /> <b>Ubuntu</b> server!
+          </li>
+          <li>
+            <Icon name="logos:pycharm" /> Backend written in <b>PyCharm Professional</b>.
+          </li>
+          <li>
+            Proudly hosted on <a href="https://timeweb.cloud">Timeweb.cloud</a>.
+          </li>
+        </ul>
+      </div>
+
+      <div class="column is-6">
+        <ul>
+          <li>
+            <Icon name="logos:nuxt-icon" /> <b>Nuxt</b> and
+            <Icon name="logos:vue" /> <b>Vue</b> for frontend.
+          </li>
+          <li>
+            <Icon name="logos:vueuse" /> <b>VueUse</b> for data fetching and other stuff.
+          </li>
+          <li>
+            <b>Pinia</b> for state management.
+          </li>
+          <li>
+            <Icon name="logos:bulma" /> <b>Bulma</b> for styling.
+          </li>
+          <li>
+            <Icon name="logos:visual-studio-code" /> Frontend written in <b>Visual Studio Code</b>.
+          </li>
+        </ul>
+      </div>
+    </div>
 
     <h3>References and links</h3>
     <p>
