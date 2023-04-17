@@ -389,7 +389,7 @@ fetchData();
             <td class="cell-favorite has-text-centered">
               <Icon name="material-symbols:star" v-if="bookmark.is_favorite" />
             </td>
-            <td class="cell-title">
+            <td class="cell-title is-vcentered ">
               <a :href="bookmark.url" target="_blank">{{ bookmark.title }}</a>
               <template v-if="bookmark.tags.length">
                 <span class="tag is-info is-light ml-1" v-for="tag in bookmark.tags"

@@ -2,7 +2,15 @@
 const isCreating: Ref<boolean> = ref(false);
 const newFolderTitle: Ref<string> = ref("");
 
-function onClickAdd() {
+function onClickAddFolderMenu() {
+  isCreating.value = true;
+  // Auto-focus on input element:
+  nextTick(() => {
+    (document.querySelector(".new-folder-title-input") as HTMLInputElement).focus();
+  });
+}
+
+function onClickAddButton() {
   alert(newFolderTitle.value);
 }
 
@@ -14,7 +22,7 @@ function onClickCancel() {
 
 <template>
   <template v-if="!isCreating">
-    <a class="has-text-grey-light" @click="isCreating = true">
+    <a class="has-text-grey-light" @click="onClickAddFolderMenu">
       <span class="icon-text">
         <span class="icon">
           <Icon name="mdi:folder-plus" />
@@ -27,16 +35,16 @@ function onClickCancel() {
   </template>
 
   <template v-else>
-    <div class="field has-addons">
+    <div class="field has-addons mt-1">
       <p class="control">
-        <input class="input is-small" type="text" placeholder="New folder title" maxlength="16" v-model="newFolderTitle"
-          @keyup.enter="onClickAdd">
+        <input class="input is-small new-folder-title-input" type="text" placeholder="New folder title" maxlength="16"
+          v-model="newFolderTitle" @keyup.enter="onClickAddButton">
       </p>
 
       <p class="control">
       <div class="field has-addons">
         <p class="control">
-          <button class="button is-small is-success" @click="onClickAdd">
+          <button class="button is-small is-success" @click="onClickAddButton">
             <span class="icon is-small">
               <Icon name="mdi:plus" />
             </span>

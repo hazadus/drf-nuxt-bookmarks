@@ -1,6 +1,10 @@
+## 17.04.2023, Mon
+
+- 15:00 - Frontend: implemented "Manage folders" page UI.
+
 ## 16.04.2023, Sun
 
-- 22:00 - Frontend: created "Add new folder" component UI.
+- 22:00 - Frontend: created "Add new folder" component UI for "Bookmarks" page sidebar.
 
 ## 15.04.2023, Sat
 
