@@ -5,7 +5,7 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, DestroyAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,8 +16,10 @@ from .serializers import (
     BookmarkCreateFromWebSerializer,
     BookmarkListSerializer,
     BookmarkUpdateSerializer,
+    FolderCreateSerializer,
     FolderListSerializer,
     TagListSerializer,
+    FolderSerializer,
 )
 from .utils import parse_url_info
 
@@ -85,6 +87,66 @@ class FolderListView(APIView):
         )
         serializer = FolderListSerializer(folders, many=True)
         return Response(serializer.data)
+
+
+@api_view(["POST"])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def folder_create(request: Request) -> Response:
+    """
+    Create new folder.
+    """
+    serializer = FolderCreateSerializer(data=request.data)
+
+    if serializer.is_valid():
+        # User for new folder must be equal to authenticated one:
+        if not serializer.validated_data.get("user_id") == request.user.pk:
+            return Response(
+                {"error": "Folder can be created only for authenticated user."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FolderUpdateView(UpdateAPIView):
+    """
+    Partially update folder data. Return updated data.
+    """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+
+
+class FolderDeleteView(DestroyAPIView):
+    """
+    Delete the folder. Set `folder=None` for all bookmarks in the folder.
+    """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Set `folder=None` for all bookmarks in the folder before actually deleting it.
+        """
+        instance = self.get_object()
+        bookmarks = instance.bookmarks.all()
+        if bookmarks:
+            for bookmark in bookmarks:
+                bookmark.folder = None
+                bookmark.save()
+
+        return self.destroy(request, *args, **kwargs)
 
 
 class BookmarkListView(APIView):
@@ -176,10 +238,3 @@ class BookmarkUpdateView(UpdateAPIView):
 
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkUpdateSerializer
-
-    # def put(self, request, *args, **kwargs):
-    #     """
-    #     PATCH method must be used to partially update bookmark data.
-    #     Return updated data.
-    #     """
-    #     return self.partial_update(request, *args, **kwargs)

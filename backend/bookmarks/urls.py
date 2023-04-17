@@ -7,11 +7,17 @@ from .views import (
     TagListView,
     bookmark_create_from_telegram,
     bookmark_create_from_web,
+    folder_create,
+    FolderUpdateView,
+    FolderDeleteView,
 )
 
 urlpatterns = [
     path("tags/", TagListView.as_view()),
     path("folders/", FolderListView.as_view()),
+    path("folders/create/", folder_create),
+    path("folders/update/<int:pk>/", FolderUpdateView.as_view()),
+    path("folders/delete/<int:pk>/", FolderDeleteView.as_view()),
     path("bookmarks/", BookmarkListView.as_view()),
     path("bookmarks/create_from_telegram/", bookmark_create_from_telegram),
     path("bookmarks/create/", bookmark_create_from_web),
