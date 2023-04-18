@@ -1,3 +1,6 @@
+## 18.04.2023, Tue
+- 14:00 - Frontend: UI tweaks, see issue #35.
+
 ## 17.04.2023, Mon
 
 - 15:00 - Frontend: implemented "Manage folders" page UI.

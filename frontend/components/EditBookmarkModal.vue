@@ -41,6 +41,14 @@ const availableTags = computed(() => {
   return props.allTags.filter((tag) => assignedTags.value.filter((assignedTag) => assignedTag.id === tag.id).length === 0);
 });
 
+async function onClickShare() {
+  navigator.share({
+    title: props.bookmark.title,
+    text: props.bookmark.description,
+    url: props.bookmark.url,
+  });
+}
+
 function closeModal() {
   emit("close", false);
 }
@@ -216,6 +224,10 @@ async function onClickSaveChanges() {
 
       </section>
       <footer class="modal-card-foot">
+        <button class="button mr-5" @click="onClickShare">
+          <span>Share</span>
+          <Icon name="material-symbols:share" />
+        </button>
         <button class="button" @click="closeModal">Cancel</button>
         <button class="button is-success" @click="onClickSaveChanges">Save changes</button>
       </footer>

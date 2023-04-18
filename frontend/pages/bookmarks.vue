@@ -425,11 +425,19 @@ fetchData();
   display: inline-block;
   /* Won't stick without vh: */
   max-height: 100vh;
-  overflow-y: hidden;
   top: 0;
   bottom: 0;
-  background-color: white;
   z-index: 1;
+  overflow-y: scroll;
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 
@@ -455,6 +463,7 @@ fetchData();
     */
     position: relative;
     max-height: 100%;
+    overflow-y: hidden;
   }
 
   .bookmarks {
