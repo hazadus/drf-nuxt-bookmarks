@@ -12,10 +12,13 @@ const config = useRuntimeConfig();
 
 const url: Ref<string> = ref("");
 const errors: Ref<string[]> = ref([]);
+const isLoading: Ref<boolean> = ref(false);
 const addedBookmarks: Ref<Bookmark[]> = ref([]);
+const urlInputElement: Ref<HTMLInputElement | null> = ref(null);
 
 async function submitForm() {
   errors.value = [];
+  isLoading.value = true;
 
   const formData = {
     user: authStore.user,
@@ -34,13 +37,22 @@ async function submitForm() {
     const errorMessage = "Error updating user information " + error.value?.message;
     console.error(errorMessage);
     errors.value.push(errorMessage);
+    isLoading.value = false;
     return;
   }
 
   const newBookmark = data.value as Bookmark;
   addedBookmarks.value.unshift(newBookmark);
   url.value = "";
+  isLoading.value = false;
+  nextTick(() => {
+    urlInputElement.value?.focus();
+  });
 }
+
+onMounted(() => {
+  urlInputElement.value?.focus();
+});
 </script>
 
 <template>
@@ -62,9 +74,11 @@ async function submitForm() {
     <div class="field">
       <label class="label">Create bookmark for URL:</label>
       <div class="control">
-        <input class="input mr-3" type="url" placeholder="e.g.: https://bookmarks.hazadus.ru" v-model="url"
-          style="width: calc(100% - 70px - 12px);">
-        <button class="button is-success">Add</button>
+        <input ref="urlInputElement" v-model="url" :disabled="isLoading" class="input mr-3" type="url"
+          placeholder="e.g.: https://bookmarks.hazadus.ru" style="width: calc(100% - 70px - 12px);">
+        <button class="button is-success" :class="isLoading ? 'is-loading' : ''">
+          Add
+        </button>
       </div>
     </div>
   </form>

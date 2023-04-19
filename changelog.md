@@ -1,3 +1,7 @@
+## 19.04.2023, Wed
+
+- 22:30 - Frontend: added loading indicator when adding new bookmark (issue #35).
+
 ## 18.04.2023, Tue
 - 14:00 - Frontend: UI tweaks, see issue #35.
 
