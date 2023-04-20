@@ -18,15 +18,15 @@ const allUserFolders: Ref<Folder[] | null> = ref(null);
 const fetchErrors: Ref<string[]> = ref([]);
 
 // App UI state:
-const selectedFolder: Ref<string> = ref("inbox");
-const selectedFilter: Ref<string> = ref("all");
+const selectedFolder: Ref<"all" | "inbox" | "favorites" | "archived" | "userFolder"> = ref("inbox");
+const selectedFilter: Ref<"all" | "read" | "unread"> = ref("all");
 const selectedUserFolderId: Ref<number> = ref(1);
 const filterByTagsList: Ref<Tag[]> = ref([]);
 const searchString: Ref<string> = ref("");
 const isEditBookmarkModalVisible: Ref<boolean> = ref(true);
 const selectedBookmark: Ref<Bookmark | null> = ref(null);
 const isRefreshing: Ref<boolean> = ref(false);
-const isLoading: Ref<boolean> = ref(false);
+const isLoading: Ref<boolean> = ref(true);
 
 async function fetchData() {
   const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
@@ -60,6 +60,8 @@ async function fetchData() {
   if (foldersError.value) {
     fetchErrors.value.push(foldersError.value.message);
   }
+
+  isLoading.value = false;
 }
 
 async function onClickRefresh() {
@@ -142,9 +144,7 @@ function onClickEditBookmark(bookmark: Bookmark) {
 /*
   Do the initial data fetching
 */
-isLoading.value = true;
-await fetchData();
-isLoading.value = false;
+fetchData();
 </script>
 
 <template>
