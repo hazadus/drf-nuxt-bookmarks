@@ -25,6 +25,8 @@ const filterByTagsList: Ref<Tag[]> = ref([]);
 const searchString: Ref<string> = ref("");
 const isEditBookmarkModalVisible: Ref<boolean> = ref(true);
 const selectedBookmark: Ref<Bookmark | null> = ref(null);
+const isRefreshing: Ref<boolean> = ref(false);
+const isLoading: Ref<boolean> = ref(false);
 
 async function fetchData() {
   const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
@@ -58,6 +60,12 @@ async function fetchData() {
   if (foldersError.value) {
     fetchErrors.value.push(foldersError.value.message);
   }
+}
+
+async function onClickRefresh() {
+  isRefreshing.value = true;
+  await fetchData();
+  isRefreshing.value = false;
 }
 
 const isDataFetched = computed(() => {
@@ -134,11 +142,17 @@ function onClickEditBookmark(bookmark: Bookmark) {
 /*
   Do the initial data fetching
 */
-fetchData();
+isLoading.value = true;
+await fetchData();
+isLoading.value = false;
 </script>
 
 <template>
   <Title>Your Bookmarks | Bookmarks</Title>
+
+  <div class="is-flex" v-if="isLoading">
+    <div class="loader"></div>
+  </div>
 
   <!-- NB: `:key="selectedBookmark.id"` is to re-render component on each `selectedBookmark` change. -->
   <EditBookmarkModal v-if="selectedBookmark && allTags && allUserFolders" :bookmark="selectedBookmark" :allTags="allTags"
@@ -312,7 +326,10 @@ fetchData();
             <a v-else @click="selectedFilter = 'read'">Read</a>
           </p>
           <p class="level-item">
-            <button class="button is-info" @click="fetchData">Refresh</button>
+            <button class="button is-info" :class="isRefreshing ? 'is-loading' : ''" :disabled="isRefreshing"
+              @click="onClickRefresh">
+              Refresh
+            </button>
           </p>
         </div>
       </nav>
@@ -420,6 +437,27 @@ fetchData();
 </template>
 
 <style scoped>
+.loader {
+  border: 8px solid #cccccc;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.1s linear infinite;
+  display: inline-block;
+  margin: 8px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .sidebar {
   position: sticky;
   display: inline-block;

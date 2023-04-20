@@ -28,6 +28,7 @@ const config = useRuntimeConfig();
 const editableBookmark: Ref<Bookmark> = ref(props.bookmark);
 const assignedTags: Ref<Tag[]> = ref(props.bookmark.tags);
 const selectedFolderID: Ref<number> = ref(0);
+const isSaving: Ref<boolean> = ref(false);
 
 if (props.bookmark.folder?.id) {
   selectedFolderID.value = props.bookmark.folder.id;
@@ -57,6 +58,7 @@ async function onClickSaveChanges() {
   /*
     Send updated bookmark data to API using "PATCH" method (partial update).
   */
+  isSaving.value = true;
 
   if (selectedFolderID.value) {
     // Find folder object with selected id
@@ -90,10 +92,12 @@ async function onClickSaveChanges() {
   if (bookmarkUpdateError.value) {
     console.error("Error updating bookmark data: " + bookmarkUpdateError.value?.message);
     alert("Something went wrong. Please try again!");
+    isSaving.value = false;
     return;
   }
 
   emit("updated", true);
+  isSaving.value = false;
   closeModal();
 }
 </script>
@@ -109,21 +113,24 @@ async function onClickSaveChanges() {
             <div class="field">
               <label class="label">Title</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Bookmark title" v-model="editableBookmark.title">
+                <input class="input" type="text" placeholder="Bookmark title" v-model="editableBookmark.title"
+                  :disabled="isSaving">
               </div>
             </div>
 
             <div class="field">
               <label class="label">Bookmark URL</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.url">
+                <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.url"
+                  :disabled="isSaving">
               </div>
             </div>
 
             <div class="field">
               <label class="label">Image URL</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.image_url">
+                <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.image_url"
+                  :disabled="isSaving">
               </div>
             </div>
 
@@ -140,8 +147,8 @@ async function onClickSaveChanges() {
         <div class="field">
           <label class="label">Description</label>
           <div class="control">
-            <textarea class="textarea" placeholder="Bookmark description"
-              v-model="editableBookmark.description"></textarea>
+            <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
+              :disabled="isSaving"></textarea>
           </div>
         </div>
 
@@ -153,7 +160,7 @@ async function onClickSaveChanges() {
               <div class="control">
                 <div class="select">
 
-                  <select v-model="selectedFolderID">
+                  <select v-model="selectedFolderID" :disabled="isSaving">
                     <option value="0">
                       None
                     </option>
@@ -171,15 +178,15 @@ async function onClickSaveChanges() {
               <label class="label">Status</label>
               <div class="control">
                 <label class="checkbox mr-2">
-                  <input type="checkbox" v-model="editableBookmark.is_favorite">
+                  <input type="checkbox" v-model="editableBookmark.is_favorite" :disabled="isSaving">
                   Favorite
                 </label>
                 <label class="checkbox mr-2">
-                  <input type="checkbox" v-model="editableBookmark.is_read">
+                  <input type="checkbox" v-model="editableBookmark.is_read" :disabled="isSaving">
                   Read
                 </label>
                 <label class="checkbox">
-                  <input type="checkbox" v-model="editableBookmark.is_archived">
+                  <input type="checkbox" v-model="editableBookmark.is_archived" :disabled="isSaving">
                   Archived
                 </label>
               </div>
@@ -228,8 +235,13 @@ async function onClickSaveChanges() {
           <span>Share</span>
           <Icon name="material-symbols:share" />
         </button>
-        <button class="button" @click="closeModal">Cancel</button>
-        <button class="button is-success" @click="onClickSaveChanges">Save changes</button>
+        <button class="button" @click="closeModal" :disabled="isSaving">
+          Cancel
+        </button>
+        <button class="button is-success" :class="isSaving ? 'is-loading' : ''" @click="onClickSaveChanges"
+          :disabled="isSaving">
+          Save changes
+        </button>
       </footer>
     </div>
   </div>
