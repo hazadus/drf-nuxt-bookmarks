@@ -5,6 +5,7 @@
 - 10:45 - Frontend: "Sign up" page translated.
 - 11:05 - Frontend: "Log in" page translated.
 - 11:30 - Frontend: "Add Bookmark" page translated.
+- 14:15 - Frontend: "User profile" page translated.
 
 ## 20.04.2023, Thu
 
