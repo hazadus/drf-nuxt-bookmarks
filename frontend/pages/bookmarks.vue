@@ -2,6 +2,11 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import type { Bookmark, Tag, Folder } from '@/types';
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 // "auth" middleware redirects user to login page if not authenticated:
 definePageMeta({
   middleware: "auth",
@@ -147,8 +152,65 @@ function onClickEditBookmark(bookmark: Bookmark) {
 fetchData();
 </script>
 
+<i18n lang="yaml">
+  en:
+    page_title: "Your Bookmarks"
+    page_header: "Bookmarks"
+    error_header: "Some errors occured while trying to fetch data from API."
+    menu_group_folders: "Folders"
+    folders_all: "All"
+    folders_inbox: "Inbox"
+    folders_favorites: "Favorites"
+    folders_archived: "Archived"
+    menu_group_your_folders: "Your Folders"
+    menu_group_your_tags: "Your Tags"
+    level_item_bkmrks_shown: "shown"
+    level_item_bkmrks_total: "total"
+    search_field_placeholder: "Start typing to search..."
+    search_button: "Search"
+    filter_show_title: "Show"
+    filter_show_all: "All"
+    filter_show_unread: "Unread"
+    filter_show_read: "Read"
+    button_refresh: "Refresh"
+    level_search_title: "Look for"
+    button_reset: "Reset"
+    level_tag_filter_title: "Filter by"
+    table_th_title: "Title"
+    table_th_actions: "Actions"
+    notify_no_bookmarks: "Sorry, there's no bookmarks matching applied filters."
+  ru:
+    page_title: "Ваши Закладки"
+    page_header: "Закладки"
+    error_header: "При получении данных с сервера возникли ошибки."
+    menu_group_folders: "Папки"
+    folders_all: "Все"
+    folders_inbox: "Входящие"
+    folders_favorites: "Избранные"
+    folders_archived: "Архив"
+    menu_group_your_folders: "Ваши папки"
+    menu_group_your_tags: "Ваши теги"
+    level_item_bkmrks_shown: "видно"
+    level_item_bkmrks_total: "всего"
+    search_field_placeholder: "Печатайте, чтобы искать..."
+    search_button: "Найти"
+    filter_show_title: "Показать"
+    filter_show_all: "Все"
+    filter_show_unread: "Непрочит."
+    filter_show_read: "Прочит."
+    button_refresh: "Обновить"
+    level_search_title: "Искать"
+    button_reset: "Сброс"
+    level_tag_filter_title: "Фильтр по"
+    table_th_title: "Название"
+    table_th_actions: "Действия"
+    notify_no_bookmarks: "Нет закладок, подходящих под заданные фильтры."
+</i18n>
+
 <template>
-  <Title>Your Bookmarks | Bookmarks</Title>
+  <Title>
+    {{ t("page_title") }} | Bookmarks
+  </Title>
 
   <div class="is-flex" v-if="isLoading">
     <div class="loader"></div>
@@ -160,7 +222,9 @@ fetchData();
     @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" />
 
   <BulmaNotification type="danger" v-if="fetchErrors.length">
-    <strong>Some errors occured while trying to fetch data from API.</strong>
+    <strong>
+      {{ t("error_header") }}
+    </strong>
     <br>
     <template v-for="error in fetchErrors" :key="error">
       {{ error }}<br>
@@ -173,7 +237,7 @@ fetchData();
       <!-- Built-in Folders list -->
       <nav class="menu">
         <p class="menu-label">
-          Folders
+          {{ t("menu_group_folders") }}
         </p>
         <ul class="menu-list">
           <li>
@@ -183,7 +247,7 @@ fetchData();
                   <Icon name="mdi:database" />
                 </span>
                 <span class="mr-3">
-                  All
+                  {{ t("folders_all") }}
                 </span>
                 <span class="tag is-light" :key="`totalBookmarksQty-${totalBookmarksQty}`">
                   {{ totalBookmarksQty }}
@@ -198,7 +262,7 @@ fetchData();
                   <Icon name="mdi:inbox" />
                 </span>
                 <span class="mr-3">
-                  Inbox
+                  {{ t("folders_inbox") }}
                 </span>
                 <span class="tag is-light" :key="`inboxBookmarks-${inboxBookmarks?.length}`">
                   {{ inboxBookmarks?.length }}
@@ -213,7 +277,7 @@ fetchData();
                   <Icon name="material-symbols:star" />
                 </span>
                 <span class="mr-3">
-                  Favorites
+                  {{ t("folders_favorites") }}
                 </span>
                 <span class="tag is-light" :key="`favoriteBookmarks-${favoriteBookmarks?.length}`">
                   {{ favoriteBookmarks?.length }}
@@ -228,7 +292,7 @@ fetchData();
                   <Icon name="mdi:archive" />
                 </span>
                 <span class="mr-3">
-                  Archived
+                  {{ t("folders_archived") }}
                 </span>
                 <span class="tag is-light" :key="`archivedBookmarks-${archivedBookmarks?.length}`">
                   {{ archivedBookmarks?.length }}
@@ -242,15 +306,15 @@ fetchData();
       <!-- User-created folders list -->
       <nav class="menu mt-4">
         <p class="menu-label">
-          Your Folders
+          {{ t("menu_group_your_folders") }}
         </p>
         <ul class="menu-list">
           <li v-for="folder in allUserFolders" :key="`folder-id-${folder.id}`">
             <a href="#" :class="selectedFolder === 'userFolder' && selectedUserFolderId === folder.id ? 'is-active' : ''"
               @click="{
-                selectedFolder='userFolder';
-                selectedUserFolderId=folder.id;
-              }">
+                  selectedFolder='userFolder';
+                  selectedUserFolderId=folder.id;
+                }">
               <span class="icon-text">
                 <span class="icon">
                   <Icon name="mdi:folder" />
@@ -274,7 +338,7 @@ fetchData();
       <template v-if="allTags?.length">
         <nav class="menu mt-5">
           <p class="menu-label mb-3">
-            Your Tags
+            {{ t("menu_group_your_tags") }}
           </p>
         </nav>
         <BulmaTagList>
@@ -285,7 +349,9 @@ fetchData();
     </div>
 
     <div class="column bookmarks">
-      <h1 class="title ">Bookmarks</h1>
+      <h1 class="title ">
+        {{ t("page_header") }}
+      </h1>
 
       <!-- Level = search, filters -->
       <nav class="level">
@@ -293,17 +359,18 @@ fetchData();
         <div class="level-left">
           <div class="level-item">
             <p class="subtitle is-5">
-              <strong>{{ bookmarks.length }}</strong> shown, {{ totalBookmarksQty }} total
+              <strong>{{ bookmarks.length }}</strong> {{ t("level_item_bkmrks_shown") }}, {{ totalBookmarksQty }} {{
+                t("level_item_bkmrks_total") }}
             </p>
           </div>
           <div class="level-item is-hidden-tablet-only">
             <div class="field has-addons">
               <p class="control">
-                <input class="input" type="text" placeholder="Start typing to search..." v-model="searchString">
+                <input class="input" type="text" :placeholder="t('search_field_placeholder')" v-model="searchString">
               </p>
               <p class="control">
                 <button class="button">
-                  Search
+                  {{ t("search_button") }}
                 </button>
               </p>
             </div>
@@ -312,23 +379,25 @@ fetchData();
 
         <!-- Filters right block -->
         <div class="level-right is-hidden-mobile">
-          <p class="level-item">Show:</p>
           <p class="level-item">
-            <strong v-if="selectedFilter === 'all'">All</strong>
-            <a v-else @click="selectedFilter = 'all'">All</a>
+            {{ t("filter_show_title") }}:
           </p>
           <p class="level-item">
-            <strong v-if="selectedFilter === 'unread'">Unread</strong>
-            <a v-else @click="selectedFilter = 'unread'">Unread</a>
+            <strong v-if="selectedFilter === 'all'">{{ t("filter_show_all") }}</strong>
+            <a v-else @click="selectedFilter = 'all'">{{ t("filter_show_all") }}</a>
           </p>
           <p class="level-item">
-            <strong v-if="selectedFilter === 'read'">Read</strong>
-            <a v-else @click="selectedFilter = 'read'">Read</a>
+            <strong v-if="selectedFilter === 'unread'">{{ t("filter_show_unread") }}</strong>
+            <a v-else @click="selectedFilter = 'unread'">{{ t("filter_show_unread") }}</a>
+          </p>
+          <p class="level-item">
+            <strong v-if="selectedFilter === 'read'">{{ t("filter_show_read") }}</strong>
+            <a v-else @click="selectedFilter = 'read'">{{ t("filter_show_read") }}</a>
           </p>
           <p class="level-item">
             <button class="button is-info" :class="isRefreshing ? 'is-loading' : ''" :disabled="isRefreshing"
               @click="onClickRefresh">
-              Refresh
+              {{ t("button_refresh") }}
             </button>
           </p>
         </div>
@@ -340,7 +409,7 @@ fetchData();
         <div class="level-left">
           <div class="level-item">
             <p class="subtitle is-5">
-              Look for:
+              {{ t("level_search_title") }}:
             </p>
           </div>
           <div class="level-item">
@@ -351,7 +420,9 @@ fetchData();
         <!-- Right side -->
         <div class="level-right">
           <p class="level-item">
-            <button class="button is-warning" @click="searchString = ''">Reset</button>
+            <button class="button is-warning" @click="searchString = ''">
+              {{ t("button_reset") }}
+            </button>
           </p>
         </div>
       </nav>
@@ -363,7 +434,7 @@ fetchData();
         <div class="level-left">
           <div class="level-item">
             <p class="subtitle is-5">
-              Filter by:
+              {{ t("level_tag_filter_title") }}:
             </p>
           </div>
           <div class="level-item">
@@ -378,7 +449,9 @@ fetchData();
         <!-- Right side -->
         <div class="level-right">
           <p class="level-item">
-            <button class="button is-warning" @click="filterByTagsList = []">Reset</button>
+            <button class="button is-warning" @click="filterByTagsList = []">
+              {{ t("button_reset") }}
+            </button>
           </p>
         </div>
       </nav>
@@ -390,8 +463,12 @@ fetchData();
             <th class="cell-favorite">
               <Icon name="material-symbols:star" />
             </th>
-            <th class="cell-title">Title</th>
-            <th class="cell-actions">Actions</th>
+            <th class="cell-title">
+              {{ t("table_th_title") }}
+            </th>
+            <th class="cell-actions">
+              {{ t("table_th_actions") }}
+            </th>
           </tr>
         </thead>
         <tfoot>
@@ -399,8 +476,12 @@ fetchData();
             <th class="cell-favorite">
               <Icon name="material-symbols:star" />
             </th>
-            <th class="cell-title">Title</th>
-            <th class="cell-actions">Actions</th>
+            <th class="cell-title">
+              {{ t("table_th_title") }}
+            </th>
+            <th class="cell-actions">
+              {{ t("table_th_actions") }}
+            </th>
           </tr>
         </tfoot>
         <tbody>
@@ -430,7 +511,7 @@ fetchData();
         </tbody>
       </table>
       <BulmaNotification v-else>
-        Sorry, there's no bookmarks matching applied filters.
+        {{ t("notify_no_bookmarks") }}
       </BulmaNotification>
     </div>
   </div>

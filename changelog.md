@@ -1,8 +1,20 @@
+## 21.04.2023, Fri
+
+- 09:50 - Frontend: Footer translated.
+- 10:15 - Frontend: NavBar translated.
+- 10:45 - Frontend: "Sign up" page translated.
+- 11:05 - Frontend: "Log in" page translated.
+- 11:30 - Frontend: "Add Bookmark" page translated.
+- 14:15 - Frontend: "User profile" page translated.
+- 16:00 - Frontend: "Folders" page translated.
+- 16:35 - Frontend: "Bookmarks" page translated.
+
 ## 20.04.2023, Thu
 
 - 20:30 - Frontend: added loading indicator on "Refresh" button (issue #35).
 - 20:45 - Frontend: added loading indicator on "Save changes" button (issue #35).
 - 21:00 - Frontend: added loading indicator on the Bookmarks page on initial data fetch (issue #35).
+- 22:00 - Frontend: `nuxt/i18n` configured.
 
 ## 19.04.2023, Wed
 

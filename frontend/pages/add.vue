@@ -2,6 +2,11 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import type { Bookmark } from '@/types';
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 // "auth" middleware redirects user to login page if not authenticated:
 definePageMeta({
   middleware: "auth",
@@ -34,7 +39,7 @@ async function submitForm() {
   });
 
   if (error.value) {
-    const errorMessage = "Error updating user information " + error.value?.message;
+    const errorMessage = t("error_adding_bookmark") + error.value?.message;
     console.error(errorMessage);
     errors.value.push(errorMessage);
     isLoading.value = false;
@@ -55,29 +60,55 @@ onMounted(() => {
 });
 </script>
 
-<template>
-  <Title>Add new bookmark | Bookmarks</Title>
+<i18n lang="yaml">
+  en:
+    page_title: "Add new bookmark"
+    page_header: "Add bookmark"
+    info_text: "Enter an URL below and press \"Add\" or hit Enter key to create a new bookmark."
+    label_input_url: "Create bookmark for URL"
+    button_add: "Add"
+    error_header: "An error has occured while trying to add new bookmark!"
+    error_adding_bookmark: "Error creating new bookmark: "
+  ru:
+    page_title: "Добавить новую закладку"
+    page_header: "Добавить закладку"
+    info_text: "Введите ссылку в поле снизу и нажмите кнопку \"Добавить\" или клавишу Enter, чтобы создать новую закладку."
+    label_input_url: "Создать закладку для URL"
+    button_add: "Добавить"
+    error_header: "При создании новой закладки произошла ошибка!"
+    error_adding_bookmark: "Ошибка при создании закладки: "
+</i18n>
 
-  <h2 class="title is-size-2">Add bookmark</h2>
+<template>
+  <Title>
+    {{ t("page_title") }} | Bookmarks
+  </Title>
+
+  <h2 class="title is-size-2">
+    {{ t("page_header") }}
+  </h2>
+
   <BulmaNotification type="secondary">
     <div class="icon-text">
       <span class="icon has-text-info is-hidden-mobile">
         <Icon name="mdi:information-variant-circle" />
       </span>
       <span>
-        Enter an URL below and press "Add" or hit Enter key to create a new bookmark.
+        {{ t("info_text") }}
       </span>
     </div>
   </BulmaNotification>
 
   <form @submit.prevent="submitForm">
     <div class="field">
-      <label class="label">Create bookmark for URL:</label>
+      <label class="label">
+        {{ t("label_input_url") }}:
+      </label>
       <div class="control">
         <input ref="urlInputElement" v-model="url" :disabled="isLoading" class="input mr-3" type="url"
-          placeholder="e.g.: https://bookmarks.hazadus.ru" style="width: calc(100% - 70px - 12px);">
+          placeholder="https://bookmarks.hazadus.ru" style="width: calc(100% - 110px - 12px);">
         <button class="button is-success" :class="isLoading ? 'is-loading' : ''">
-          Add
+          {{ t("button_add") }}
         </button>
       </div>
     </div>
@@ -90,7 +121,9 @@ onMounted(() => {
         <Icon name="material-symbols:dangerous-rounded" />
       </span>
       <span>
-        <strong>An error has occured while trying to add new bookmark!</strong>
+        <strong>
+          {{ t("error_header") }}
+        </strong>
       </span>
     </div>
     <p class="block" v-for="error in errors" :key="error">
