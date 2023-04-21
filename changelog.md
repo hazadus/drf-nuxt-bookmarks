@@ -3,6 +3,7 @@
 - 09:50 - Frontend: Footer translated.
 - 10:15 - Frontend: NavBar translated.
 - 10:45 - Frontend: "Sign up" page translated.
+- 11:05 - Frontend: "Log in" page translated.
 
 ## 20.04.2023, Thu
 

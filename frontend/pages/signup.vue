@@ -64,7 +64,7 @@ onBeforeMount(() => {
 
 <i18n lang="yaml">
   en:
-    page_title: "Create new user account | Bookmarks"
+    page_title: "Create new user account"
     page_header: "Sign up"
     page_header_subtitle: "Create new user account"
     label_username: "Username"
@@ -77,7 +77,7 @@ onBeforeMount(() => {
     error_password_too_short: "The password is too short."
     error_passwords_must_match: "Passwords must match."
   ru:
-    page_title: "Создание новой учетной записи | Bookmarks"
+    page_title: "Создание новой учетной записи"
     page_header: "Регистрация"
     page_header_subtitle: "Создайте новую учетную запись"
     label_username: "Имя пользователя"
@@ -93,7 +93,7 @@ onBeforeMount(() => {
 
 <template>
   <Title>
-    {{ t("page_title") }}
+    {{ t("page_title") }} | Bookmarks
   </Title>
 
   <div class="columns">

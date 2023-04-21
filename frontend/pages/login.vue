@@ -2,6 +2,11 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import type { User } from "@/types";
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const router = useRouter();
@@ -28,7 +33,7 @@ async function submitForm() {
   });
 
   if (loginError.value) {
-    error.value = "Login error " + loginError.value?.message;
+    error.value = t("error_logging_in") + loginError.value?.message;
     return;
   }
 
@@ -42,7 +47,7 @@ async function submitForm() {
   });
 
   if (userDataError.value) {
-    error.value = "Error fetching user information " + userDataError.value?.message;
+    error.value = t("error_fetching_user_info") + userDataError.value?.message;
     return;
   }
 
@@ -62,24 +67,59 @@ onBeforeMount(() => {
 });
 </script>
 
+<i18n lang="yaml">
+  en:
+    page_title: "Log in"
+    page_header: "Log in"
+    page_header_subtitle: "Log into the site with your account."
+    label_username: "Username"
+    label_password: "Password"
+    button_log_in: "Log In"
+    link_sign_up: "Sign up"
+    link_sign_up_description: "if you don't have an account yet."
+    error_logging_in: "Login error: "
+    error_fetching_user_info: "Error fetching user information: "
+  ru:
+    page_title: "Войти"
+    page_header: "Войти"
+    page_header_subtitle: "Зайдите на сайт с вашей учетной записью"
+    label_username: "Имя пользователя"
+    label_password: "Пароль"
+    button_log_in: "Войти"
+    link_sign_up: "Зарегистрируйтесь"
+    link_sign_up_description: "если у вас ещё нет учетной записи."
+    error_logging_in: "Ошибка входа: "
+    error_fetching_user_info: "Error fetching user information: "
+</i18n>
+
 <template>
-  <Title>Log in | Bookmarks</Title>
+  <Title>
+    {{ t("page_title") }} | Bookmarks
+  </Title>
 
   <div class="columns">
     <div class="column is-4 is-offset-4">
       <div class="box">
-        <h1 class="title is-size-2">Log in</h1>
-        <h2 class="subtitle">Log into the site with your account.</h2>
+        <h1 class="title is-size-2">
+          {{ t("page_header") }}
+        </h1>
+        <h2 class="subtitle">
+          {{ t("page_header_subtitle") }}
+        </h2>
         <form @submit.prevent="submitForm">
           <div class="field">
-            <label>Username:</label>
+            <label>
+              {{ t("label_username") }}:
+            </label>
             <div class="control">
               <input v-model="username" type="text" class="input" />
             </div>
           </div>
 
           <div class="field">
-            <label>Password:</label>
+            <label>
+              {{ t("label_password") }}:
+            </label>
             <div class="control">
               <input v-model="password" type="password" class="input" />
             </div>
@@ -91,7 +131,9 @@ onBeforeMount(() => {
 
           <div class="field">
             <div class="control has-text-right">
-              <button class="button is-success">Log in</button>
+              <button class="button is-success">
+                {{ t("button_log_in") }}
+              </button>
             </div>
           </div>
 
@@ -99,9 +141,9 @@ onBeforeMount(() => {
 
           <p>
             <NuxtLink to="/signup/" class="is-link">
-              Sign up
+              {{ t("link_sign_up") }}
             </NuxtLink>
-            if you don't have an account yet.
+            {{ t("link_sign_up_description") }}
           </p>
         </form>
       </div>
