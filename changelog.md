@@ -7,6 +7,7 @@
 - 11:30 - Frontend: "Add Bookmark" page translated.
 - 14:15 - Frontend: "User profile" page translated.
 - 16:00 - Frontend: "Folders" page translated.
+- 16:35 - Frontend: "Bookmarks" page translated.
 
 ## 20.04.2023, Thu
 
