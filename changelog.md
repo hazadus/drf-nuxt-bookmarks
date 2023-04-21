@@ -1,3 +1,7 @@
+## 21.04.2023, Fri
+
+- 09:50 - Frontend: Footer translated.
+
 ## 20.04.2023, Thu
 
 - 20:30 - Frontend: added loading indicator on "Refresh" button (issue #35).
