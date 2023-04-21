@@ -22,3 +22,8 @@ services:
     environment:
       - "BOT_TOKEN="
       - "API_BASE_URL=http://api:8000"
+  redis:
+     container_name: "bkmrks-redis"
+     image: redis:7.0.4
+     volumes:
+       - ./docker/redis/data/:/data
