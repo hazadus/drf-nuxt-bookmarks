@@ -1,6 +1,7 @@
 ## 21.04.2023, Fri
 
 - 09:50 - Frontend: Footer translated.
+- 10:15 - Frontend: NavBar translated.
 
 ## 20.04.2023, Thu
 

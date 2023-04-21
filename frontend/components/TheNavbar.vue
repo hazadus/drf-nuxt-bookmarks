@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -11,13 +16,34 @@ const showMobileMenu: Ref<boolean> = ref(false);
 async function onClickLogOut() {
   /*
     Delete auth data from local storage.
-    Forward user to login page if succeeded.
+    Forward user to login page.
   */
   showMobileMenu.value = false;
   authStore.logOut();
   router.push("/login/");
 }
 </script>
+
+<i18n lang="yaml">
+  en:
+    menu_add: "Add"
+    menu_bookmarks: "Bookmarks"
+    menu_about: "About"
+    button_sign_up: "Sign Up"
+    button_log_in: "Log In"
+    menu_profile: "Profile"
+    menu_folders: "Folders"
+    menu_sign_out: "Sign Out"
+  ru:
+    menu_add: "Добавить"
+    menu_bookmarks: "Закладки"
+    menu_about: "О проекте"
+    button_sign_up: "Регистрация"
+    button_log_in: "Войти"
+    menu_profile: "Профиль"
+    menu_folders: "Папки"
+    menu_sign_out: "Выйти"
+</i18n>
 
 <template>
   <nav class="navbar has-shadow is-link">
@@ -41,15 +67,15 @@ async function onClickLogOut() {
           <!-- Menu items -->
           <NuxtLink to="/add/" class="navbar-item" :class="route.path === '/add/' ? 'is-active' : ''"
             @click="showMobileMenu = false">
-            Add
+            {{ t("menu_add") }}
           </NuxtLink>
           <NuxtLink to="/bookmarks/" class="navbar-item" :class="route.path === '/bookmarks/' ? 'is-active' : ''"
             @click="showMobileMenu = false">
-            Bookmarks
+            {{ t("menu_bookmarks") }}
           </NuxtLink>
           <NuxtLink to="/about/" class="navbar-item" :class="route.path === '/about/' ? 'is-active' : ''"
             @click="showMobileMenu = false">
-            About
+            {{ t("menu_about") }}
           </NuxtLink>
         </div>
 
@@ -58,10 +84,12 @@ async function onClickLogOut() {
           <div class="navbar-item">
             <div class="buttons" v-if="!authStore.isAuthenticated">
               <NuxtLink to="/signup/" class="button is-primary" @click="showMobileMenu = false">
-                <strong>Sign up</strong>
+                <strong>
+                  {{ t("button_sign_up") }}
+                </strong>
               </NuxtLink>
               <NuxtLink to="/login/" class="button is-light" @click="showMobileMenu = false">
-                Log in
+                {{ t("button_log_in") }}
               </NuxtLink>
             </div>
           </div>
@@ -87,7 +115,7 @@ async function onClickLogOut() {
                     <Icon name="mdi:book-account" />
                   </span>
                   <span>
-                    Profile
+                    {{ t("menu_profile") }}
                   </span>
                 </span>
               </NuxtLink>
@@ -97,7 +125,7 @@ async function onClickLogOut() {
                     <Icon name="material-symbols:folder-managed-rounded" />
                   </span>
                   <span>
-                    Folders
+                    {{ t("menu_folders") }}
                   </span>
                 </span>
               </NuxtLink>
@@ -107,7 +135,7 @@ async function onClickLogOut() {
                     <Icon name="mdi:logout" />
                   </span>
                   <span>
-                    Sign Out
+                    {{ t("menu_sign_out") }}
                   </span>
                 </span>
               </a>
