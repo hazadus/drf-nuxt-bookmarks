@@ -3,6 +3,7 @@
 - 20:30 - Frontend: added loading indicator on "Refresh" button (issue #35).
 - 20:45 - Frontend: added loading indicator on "Save changes" button (issue #35).
 - 21:00 - Frontend: added loading indicator on the Bookmarks page on initial data fetch (issue #35).
+- 22:00 - Frontend: `nuxt/i18n` configured.
 
 ## 19.04.2023, Wed
 

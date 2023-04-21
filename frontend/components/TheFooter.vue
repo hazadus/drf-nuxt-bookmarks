@@ -1,8 +1,24 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 const authStore = useAuthStore();
 </script>
+
+<i18n lang="yaml">
+  en:
+    home: "Home"
+    add_bookmark: "Add Bookmark"
+    view_bookmarks: "View Bookmarks"
+  ru:
+    home: "Главная"
+    add_bookmark: "Создать Закладку"
+    view_bookmarks: "Все Закладки"
+</i18n>
 
 <template>
   <footer class="footer">
@@ -11,6 +27,9 @@ const authStore = useAuthStore();
         <div class="column is-6">
           <p>
             &copy; <a href="https://github.com/hazadus/">hazadus</a>, 2023.
+          </p>
+          <p>
+            <LangSwitcher />
           </p>
         </div>
 
@@ -22,7 +41,7 @@ const authStore = useAuthStore();
                   <span class="icon">
                     <Icon name="material-symbols:roofing-outline" />
                   </span>
-                  <span>Home</span>
+                  <span>{{ t("home") }}</span>
                 </span>
               </NuxtLink>
             </li>
@@ -32,7 +51,7 @@ const authStore = useAuthStore();
                   <span class="icon">
                     <Icon name="material-symbols:bookmark-add" />
                   </span>
-                  <span>Add Bookmark</span>
+                  <span>{{ t("add_bookmark") }}</span>
                 </span>
               </NuxtLink>
             </li>
@@ -42,7 +61,7 @@ const authStore = useAuthStore();
                   <span class="icon">
                     <Icon name="material-symbols:bookmarks" />
                   </span>
-                  <span>View Bookmarks</span>
+                  <span>{{ t("view_bookmarks") }}</span>
                 </span>
               </NuxtLink>
             </li>
