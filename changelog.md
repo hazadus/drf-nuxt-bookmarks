@@ -9,6 +9,7 @@
 - 16:00 - Frontend: "Folders" page translated.
 - 16:35 - Frontend: "Bookmarks" page translated.
 - 17:15 - Backend: added Redis.
+- 17:30 - Backend: added Celery.
 
 ## 20.04.2023, Thu
 
