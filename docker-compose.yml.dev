@@ -22,3 +22,17 @@ services:
     environment:
       - "BOT_TOKEN="
       - "API_BASE_URL=http://api:8000"
+  redis:
+     container_name: "bkmrks-redis"
+     image: redis:7.0.4
+     volumes:
+       - ./docker/redis/data/:/data
+  worker:
+     container_name: "bkmrks-worker"
+     build: ./backend/
+     volumes:
+       - ./backend:/code
+     command: ['celery', '--workdir=/code', '-A', 'django_project', 'worker']
+     environment:
+       - "DEBUG=True"
+       - "TELEGRAM_BOT_TOKEN="

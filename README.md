@@ -62,6 +62,9 @@ Some interesting resources that I found and used while developing this project.
 - To pass auth token in the tests, you can use the following syntax: `self.client.get(url, **{"HTTP_AUTHORIZATION": 
   "Token " + self.auth_token})`. See [answer on SO](https://stackoverflow.com/a/58174009/20197519) for further details.
 - [DRF Object level permissions](https://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/#object-level-permissions)
+- Issue: [Deleting an model instance doesn't call the delete() method of related instances (even though they are 
+  removed)](https://code.djangoproject.com/ticket/12034).
+  - [Django signals - post_delete](https://docs.djangoproject.com/en/4.0/ref/signals/#post-delete)
 
 ### Frontend
 

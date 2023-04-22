@@ -31,6 +31,20 @@ services:
         - "NUXT_PUBLIC_API_BASE=http://localhost"
         - "NITRO_HOST=0.0.0.0"
         - "NITRO_PORT=3000"
+  redis:
+     container_name: "bkmrks-redis"
+     image: redis:7.0.4
+     volumes:
+       - ./docker/redis/data/:/data
+  worker:
+     container_name: "bkmrks-worker"
+     build: ./backend/
+     volumes:
+       - ./backend:/code
+     command: ['celery', '--workdir=/code', '-A', 'django_project', 'worker']
+     environment:
+       - "DEBUG=False"
+       - "TELEGRAM_BOT_TOKEN="
   nginx:
     container_name: "bkmrks-nginx"
     image: nginx:1.23-alpine

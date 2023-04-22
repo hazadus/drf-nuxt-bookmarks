@@ -3,6 +3,8 @@
 - 10:25 - Backend: added `IsOwnerOnly` permission to (almost) all views in `bookmarks/views.py`.
 - 10:40 - Backend: created `BookmarkDeleteView` (`bookmarks/delete/<int:pk>/`) endpoint.
 - 11:10 - Frontend: added "Delete" button in bookmark edit modal, wired up with backend.
+- 13:00 - Backend: created `Download` model. Updated download task.
+- 14:30 - Backend: fixed issue when downloaded video file wasn't deleted with the model instance.
 
 ## 21.04.2023, Fri
 
@@ -14,6 +16,8 @@
 - 14:15 - Frontend: "User profile" page translated.
 - 16:00 - Frontend: "Folders" page translated.
 - 16:35 - Frontend: "Bookmarks" page translated.
+- 17:15 - Backend: added Redis.
+- 17:30 - Backend: added Celery.
 
 ## 20.04.2023, Thu
 
