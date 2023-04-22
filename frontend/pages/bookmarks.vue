@@ -219,7 +219,7 @@ fetchData();
   <!-- NB: `:key="selectedBookmark.id"` is to re-render component on each `selectedBookmark` change. -->
   <EditBookmarkModal v-if="selectedBookmark && allTags && allUserFolders" :bookmark="selectedBookmark" :allTags="allTags"
     :allFolders="allUserFolders" :key="selectedBookmark.id" :class="isEditBookmarkModalVisible ? 'is-active' : ''"
-    @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" />
+    @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" @deleted="fetchData()" />
 
   <BulmaNotification type="danger" v-if="fetchErrors.length">
     <strong>

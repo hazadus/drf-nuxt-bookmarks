@@ -35,6 +35,7 @@ async function onClickDelete() {
   if (folderDeleteError.value) {
     console.error("Error deleting the folder: " + folderDeleteError.value?.message);
     alert("Something went wrong. Please try again!");
+    isLoading.value = false;
     return;
   }
 

@@ -21,6 +21,7 @@ from .serializers import (
     FolderSerializer,
     TagListSerializer,
 )
+from .permissions import IsOwnerOnly
 from .utils import parse_url_info
 
 
@@ -62,7 +63,10 @@ class FolderListView(APIView):
     """
 
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
 
     @staticmethod
     def get(request: Request) -> Response:
@@ -118,7 +122,10 @@ class FolderUpdateView(UpdateAPIView):
     """
 
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
 
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
@@ -130,7 +137,10 @@ class FolderDeleteView(DestroyAPIView):
     """
 
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
 
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
@@ -155,7 +165,10 @@ class BookmarkListView(APIView):
     """
 
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
 
     @staticmethod
     def get(request: Request) -> Response:
@@ -234,7 +247,25 @@ class BookmarkUpdateView(UpdateAPIView):
     """
 
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
 
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkUpdateSerializer
+
+
+class BookmarkDeleteView(DestroyAPIView):
+    """
+    Delete the Bookmark.
+    """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOnly,
+    ]
+
+    queryset = Bookmark.objects.all()
+    serializer_class = BookmarkListSerializer
