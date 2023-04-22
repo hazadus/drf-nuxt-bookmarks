@@ -10,6 +10,10 @@ class Download(models.Model):
     """
 
     class Status(models.TextChoices):
+        """
+        Status choices for Downloads.
+        """
+
         PENDING = "PG", _("Pending")
         COMPLETED = "CD", _("Completed")
         FAILED = "FD", _("Failed")

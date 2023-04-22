@@ -6,12 +6,13 @@ from celery import shared_task
 from django.conf import settings
 from pytube import YouTube
 
-from .models import Download
 from bookmarks.models import Bookmark
+
+from .models import Download
 
 
 @shared_task
-def download_bookmark(bookmark_id: int) -> None:
+def download_bookmark(bookmark_id: int) -> None:  # noqa: max-complexity: 5
     """
     Add URL to download queue.
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from downloads.serializers import DownloadSerializer
 from users.models import CustomUser
 from users.serializers import CustomUserTelegramIDSerializer
 
@@ -111,6 +112,7 @@ class BookmarkListSerializer(serializers.ModelSerializer):
 
     folder = FolderSerializer(many=False)
     tags = TagSerializer(many=True)
+    downloads = DownloadSerializer(many=True)
 
     class Meta:
         model = Bookmark
@@ -123,6 +125,7 @@ class BookmarkListSerializer(serializers.ModelSerializer):
             "image_url",
             "folder",
             "tags",
+            "downloads",
             "is_favorite",
             "is_read",
             "is_archived",

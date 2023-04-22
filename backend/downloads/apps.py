@@ -7,6 +7,6 @@ class DownloadsConfig(AppConfig):
 
     def ready(self):
         try:
-            import downloads.signals
+            import downloads.signals  # noqa: F401
         except ImportError:
             pass
