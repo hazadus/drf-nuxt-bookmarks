@@ -42,3 +42,10 @@ class Download(models.Model):
 
     def __str__(self):
         return self.title
+
+    def delete(self, *args, **kwargs):
+        """
+        Delete file with Download instance.
+        """
+        self.file.delete(save=False)
+        super().delete(*args, **kwargs)

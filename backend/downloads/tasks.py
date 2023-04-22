@@ -48,7 +48,7 @@ def download_bookmark(bookmark_id: int) -> None:
             download.title = yt.title
             download.status = Download.Status.COMPLETED
             download.bookmark = bookmark
-            download.file.name = "/videos/{filename}".format(
+            download.file.name = "videos/{filename}".format(
                 filename=output_filename,
             )
             download.file_size = file_stats.st_size
