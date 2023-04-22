@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    BookmarkDeleteView,
     BookmarkListView,
     BookmarkUpdateView,
     FolderDeleteView,
@@ -10,7 +11,6 @@ from .views import (
     bookmark_create_from_telegram,
     bookmark_create_from_web,
     folder_create,
-    BookmarkDeleteView,
 )
 
 urlpatterns = [

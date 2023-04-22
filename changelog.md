@@ -3,6 +3,7 @@
 - 10:25 - Backend: added `IsOwnerOnly` permission to (almost) all views in `bookmarks/views.py`.
 - 10:40 - Backend: created `BookmarkDeleteView` (`bookmarks/delete/<int:pk>/`) endpoint.
 - 11:10 - Frontend: added "Delete" button in bookmark edit modal, wired up with backend.
+- 13:00 - Backend: created `Download` model. Updated download task.
 
 ## 21.04.2023, Fri
 
