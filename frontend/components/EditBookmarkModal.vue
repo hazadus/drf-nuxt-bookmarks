@@ -20,6 +20,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: "close", isVisible: boolean): void;
   (e: "updated", isUpdated: boolean): void;
+  (e: "deleted", isDeleted: boolean): void;
 }>();
 
 const authStore = useAuthStore();
@@ -28,7 +29,7 @@ const config = useRuntimeConfig();
 const editableBookmark: Ref<Bookmark> = ref(props.bookmark);
 const assignedTags: Ref<Tag[]> = ref(props.bookmark.tags);
 const selectedFolderID: Ref<number> = ref(0);
-const isSaving: Ref<boolean> = ref(false);
+const isFetching: Ref<boolean> = ref(false);
 
 if (props.bookmark.folder?.id) {
   selectedFolderID.value = props.bookmark.folder.id;
@@ -41,6 +42,34 @@ const availableTags = computed(() => {
   // All site tags except tags already assigned to the bookmark
   return props.allTags.filter((tag) => assignedTags.value.filter((assignedTag) => assignedTag.id === tag.id).length === 0);
 });
+
+async function onClickDelete() {
+  let isConfirmed = confirm("Are you sure you want to delete this bookmark?\n\n" + props.bookmark.title);
+
+  if (!isConfirmed) {
+    return;
+  }
+
+  isFetching.value = true;
+
+  const { error: bookmarkDeleteError } = await useFetch(() => `${config.public.apiBase}/api/v1/bookmarks/delete/${props.bookmark.id}/`, {
+    method: "DELETE",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+  });
+
+  if (bookmarkDeleteError.value) {
+    console.error("Error deleting the folder: " + bookmarkDeleteError.value?.message);
+    alert("Something went wrong. Please try again!");
+    isFetching.value = false;
+    return;
+  }
+
+  emit("deleted", true);
+  isFetching.value = false;
+  closeModal();
+}
 
 async function onClickShare() {
   navigator.share({
@@ -58,7 +87,7 @@ async function onClickSaveChanges() {
   /*
     Send updated bookmark data to API using "PATCH" method (partial update).
   */
-  isSaving.value = true;
+  isFetching.value = true;
 
   if (selectedFolderID.value) {
     // Find folder object with selected id
@@ -92,12 +121,12 @@ async function onClickSaveChanges() {
   if (bookmarkUpdateError.value) {
     console.error("Error updating bookmark data: " + bookmarkUpdateError.value?.message);
     alert("Something went wrong. Please try again!");
-    isSaving.value = false;
+    isFetching.value = false;
     return;
   }
 
   emit("updated", true);
-  isSaving.value = false;
+  isFetching.value = false;
   closeModal();
 }
 </script>
@@ -114,7 +143,7 @@ async function onClickSaveChanges() {
               <label class="label">Title</label>
               <div class="control">
                 <input class="input" type="text" placeholder="Bookmark title" v-model="editableBookmark.title"
-                  :disabled="isSaving">
+                  :disabled="isFetching">
               </div>
             </div>
 
@@ -122,7 +151,7 @@ async function onClickSaveChanges() {
               <label class="label">Bookmark URL</label>
               <div class="control">
                 <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.url"
-                  :disabled="isSaving">
+                  :disabled="isFetching">
               </div>
             </div>
 
@@ -130,7 +159,7 @@ async function onClickSaveChanges() {
               <label class="label">Image URL</label>
               <div class="control">
                 <input class="input" type="text" placeholder="Cover image URL" v-model="editableBookmark.image_url"
-                  :disabled="isSaving">
+                  :disabled="isFetching">
               </div>
             </div>
 
@@ -148,7 +177,7 @@ async function onClickSaveChanges() {
           <label class="label">Description</label>
           <div class="control">
             <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
-              :disabled="isSaving"></textarea>
+              :disabled="isFetching"></textarea>
           </div>
         </div>
 
@@ -160,7 +189,7 @@ async function onClickSaveChanges() {
               <div class="control">
                 <div class="select">
 
-                  <select v-model="selectedFolderID" :disabled="isSaving">
+                  <select v-model="selectedFolderID" :disabled="isFetching">
                     <option value="0">
                       None
                     </option>
@@ -178,15 +207,15 @@ async function onClickSaveChanges() {
               <label class="label">Status</label>
               <div class="control">
                 <label class="checkbox mr-2">
-                  <input type="checkbox" v-model="editableBookmark.is_favorite" :disabled="isSaving">
+                  <input type="checkbox" v-model="editableBookmark.is_favorite" :disabled="isFetching">
                   Favorite
                 </label>
                 <label class="checkbox mr-2">
-                  <input type="checkbox" v-model="editableBookmark.is_read" :disabled="isSaving">
+                  <input type="checkbox" v-model="editableBookmark.is_read" :disabled="isFetching">
                   Read
                 </label>
                 <label class="checkbox">
-                  <input type="checkbox" v-model="editableBookmark.is_archived" :disabled="isSaving">
+                  <input type="checkbox" v-model="editableBookmark.is_archived" :disabled="isFetching">
                   Archived
                 </label>
               </div>
@@ -231,15 +260,18 @@ async function onClickSaveChanges() {
 
       </section>
       <footer class="modal-card-foot">
+        <button class="button is-danger" @click="onClickDelete" :disabled="isFetching">
+          Delete
+        </button>
         <button class="button mr-5" @click="onClickShare">
           <span>Share</span>
           <Icon name="material-symbols:share" />
         </button>
-        <button class="button" @click="closeModal" :disabled="isSaving">
+        <button class="button" @click="closeModal" :disabled="isFetching">
           Cancel
         </button>
-        <button class="button is-success" :class="isSaving ? 'is-loading' : ''" @click="onClickSaveChanges"
-          :disabled="isSaving">
+        <button class="button is-success" :class="isFetching ? 'is-loading' : ''" @click="onClickSaveChanges"
+          :disabled="isFetching">
           Save changes
         </button>
       </footer>
