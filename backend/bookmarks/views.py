@@ -22,7 +22,6 @@ from .serializers import (
     TagListSerializer,
 )
 from .utils import parse_url_info
-from .tasks import demo_celery_task
 
 
 class TagListView(APIView):
@@ -224,7 +223,6 @@ def bookmark_create_from_web(request: Request) -> Response:
 
         # Return detailed bookmark info to the user:
         detail_serializer = BookmarkListSerializer(instance=bookmark, many=False)
-        demo_celery_task(message=title)
         return Response(detail_serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
