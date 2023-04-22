@@ -5,7 +5,8 @@
 - 11:10 - Frontend: added "Delete" button in bookmark edit modal, wired up with backend.
 - 13:00 - Backend: created `Download` model. Updated download task.
 - 14:30 - Backend: fixed issue when downloaded video file wasn't deleted with the model instance.
-- 17:15 - Backend: Added Download model serializer.
+- 17:15 - Backend: added Download model serializer.
+- 18:45 - Frontend: modified Bookmark editor modal to show Downloads-related stuff.
 
 ## 21.04.2023, Fri
 

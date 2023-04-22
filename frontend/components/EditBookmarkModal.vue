@@ -129,6 +129,10 @@ async function onClickSaveChanges() {
   isFetching.value = false;
   closeModal();
 }
+
+function useConvertBytesToMbytes(bytes: number) {
+  return (bytes / (1024 * 1024)).toFixed(1);
+}
 </script>
 
 <template>
@@ -162,7 +166,6 @@ async function onClickSaveChanges() {
                   :disabled="isFetching">
               </div>
             </div>
-
           </div>
 
           <div class="column is-4 cover-image ">
@@ -173,11 +176,68 @@ async function onClickSaveChanges() {
           </div>
         </div>
 
-        <div class="field">
-          <label class="label">Description</label>
-          <div class="control">
-            <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
-              :disabled="isFetching"></textarea>
+        <div class="columns">
+          <!-- Description -->
+          <div class="column is-8">
+            <div class="field">
+              <label class="label">
+                Description
+              </label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
+                  :disabled="isFetching"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="column is-4">
+            <label class="label">
+              Downloads
+            </label>
+
+            <!-- Existing download -->
+            <nav class="level mt-3" v-if="props.bookmark.downloads.length">
+              <!-- File info -->
+              <div class="level-left">
+                <div class="level-item">
+                  <span class="icon-text">
+                    <span class="icon">
+                      <Icon name="bi:filetype-mp4" />
+                    </span>
+                    <span>
+                      <a :href="config.public.apiBase + editableBookmark.downloads[0].file" target="_blank">
+                        Video file
+                      </a>,
+                      {{ useConvertBytesToMbytes(props.bookmark.downloads[0].file_size) }} Mb.
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="level-right">
+                <div class="level-item">
+                  <button class="button is-small is-outlined is-danger">
+                    Delete file
+                  </button>
+                </div>
+              </div>
+            </nav>
+
+            <!-- No downloads yet -->
+            <nav class="level mt-3" v-else>
+              <div class="level-left">
+                <div class="level-item">
+                  <button class="button">
+                    <span>
+                      Download content to server
+                    </span>
+                    <Icon name="material-symbols:cloud-download" />
+                  </button>
+                </div>
+              </div>
+            </nav>
           </div>
         </div>
 
