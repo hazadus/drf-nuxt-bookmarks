@@ -10,6 +10,7 @@ from .views import (
     bookmark_create_from_telegram,
     bookmark_create_from_web,
     folder_create,
+    BookmarkDeleteView,
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path("bookmarks/create_from_telegram/", bookmark_create_from_telegram),
     path("bookmarks/create/", bookmark_create_from_web),
     path("bookmarks/update/<int:pk>/", BookmarkUpdateView.as_view()),
+    path("bookmarks/delete/<int:pk>/", BookmarkDeleteView.as_view()),
 ]

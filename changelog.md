@@ -1,3 +1,8 @@
+## 22.04.2023, Sat
+
+- 10:25 - Backend: added `IsOwnerOnly` permission to (almost) all views in `bookmarks/views.py`.
+- 10:40 - Backend: created `BookmarkDeleteView` (`bookmarks/delete/<int:pk>/`) endpoint.
+
 ## 21.04.2023, Fri
 
 - 09:50 - Frontend: Footer translated.
