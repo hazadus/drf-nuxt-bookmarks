@@ -4,6 +4,7 @@
 - 10:40 - Backend: created `BookmarkDeleteView` (`bookmarks/delete/<int:pk>/`) endpoint.
 - 11:10 - Frontend: added "Delete" button in bookmark edit modal, wired up with backend.
 - 13:00 - Backend: created `Download` model. Updated download task.
+- 14:30 - Backend: fixed issue when downloaded video file wasn't deleted with the model instance.
 
 ## 21.04.2023, Fri
 
