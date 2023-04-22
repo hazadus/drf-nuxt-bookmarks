@@ -339,3 +339,37 @@ class BookmarksAPITest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(bookmark_data["title"], "New title 2")
         self.assertEqual(bookmark_data["folder"], None)
+
+    def test_bookmark_delete_view(self):
+        """
+        Ensure that `BookmarkDeleteView`:
+        - is located at defined URL;
+        - actually deletes the bookmark;
+        - only owner can delete a bookmark.
+        """
+        bookmark = Bookmark.objects.all().first()
+        bookmark_pk = bookmark.pk
+        url = f"/api/v1/bookmarks/delete/{bookmark.pk}/"
+        response = self.client.delete(
+            url,
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(Bookmark.objects.all().filter(pk=bookmark_pk)), 0)
+
+        # Try to delete another user's bookmark
+        new_user2 = CustomUser.objects.create_user(
+            "testuser2",
+            password="password2",
+        )
+        others_bookmark = Bookmark.objects.create(
+            title="Other's bookmark",
+            url="https://www.hazadus.ru/",
+            user=new_user2,
+        )
+        url = f"/api/v1/bookmarks/delete/{others_bookmark.pk}/"
+        response = self.client.delete(
+            url,
+            **{"HTTP_AUTHORIZATION": "Token " + self.auth_token},
+        )
+        self.assertEqual(response.status_code, 403)
