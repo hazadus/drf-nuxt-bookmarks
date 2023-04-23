@@ -31,3 +31,6 @@ up:
 	docker compose logs --follow
 down:
 	docker compose down
+reup:
+	make down
+	make up

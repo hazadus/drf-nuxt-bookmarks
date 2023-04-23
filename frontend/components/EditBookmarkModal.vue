@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
-import type { Bookmark, Tag, Folder } from '@/types';
+import type { Bookmark, Tag, Folder, Download } from '@/types';
 
 const props = defineProps({
   bookmark: {
@@ -21,6 +21,7 @@ const emit = defineEmits<{
   (e: "close", isVisible: boolean): void;
   (e: "updated", isUpdated: boolean): void;
   (e: "deleted", isDeleted: boolean): void;
+  (e: "downloadStarted", isDownloadStarted: boolean): void;
 }>();
 
 const authStore = useAuthStore();
@@ -30,6 +31,7 @@ const editableBookmark: Ref<Bookmark> = ref(props.bookmark);
 const assignedTags: Ref<Tag[]> = ref(props.bookmark.tags);
 const selectedFolderID: Ref<number> = ref(0);
 const isFetching: Ref<boolean> = ref(false);
+const isDownloadStarting: Ref<boolean> = ref(false);
 
 if (props.bookmark.folder?.id) {
   selectedFolderID.value = props.bookmark.folder.id;
@@ -130,6 +132,38 @@ async function onClickSaveChanges() {
   closeModal();
 }
 
+async function onClickDownload() {
+  isDownloadStarting.value = true;
+
+  const formData = {
+    bookmark_id: props.bookmark.id,
+  };
+
+  const { data: downloadData, error: downloadStartError } = await useFetch(() => `${config.public.apiBase}/api/v1/downloads/start/`, {
+    method: "POST",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+
+  if (downloadStartError.value) {
+    console.error("Error starting download: " + downloadStartError.value?.message);
+    alert("Something went wrong, please try again.");
+    isDownloadStarting.value = false;
+    return;
+  }
+
+  const pendingDownload = downloadData.value as Download;
+  if (editableBookmark.value.downloads.length) {
+    editableBookmark.value.downloads[0] = pendingDownload;
+  } else {
+    editableBookmark.value.downloads.push(pendingDownload);
+  }
+  isDownloadStarting.value = false;
+  emit("downloadStarted", true);
+}
+
 function useConvertBytesToMbytes(bytes: number) {
   return (bytes / (1024 * 1024)).toFixed(1);
 }
@@ -197,31 +231,53 @@ function useConvertBytesToMbytes(bytes: number) {
             </label>
 
             <!-- Existing download -->
-            <nav class="level mt-3" v-if="props.bookmark.downloads.length">
-              <!-- File info -->
-              <div class="level-left">
-                <div class="level-item">
-                  <span class="icon-text">
-                    <span class="icon">
-                      <Icon name="bi:filetype-mp4" />
+            <nav class="level mt-3" v-if="editableBookmark.downloads.length"
+              :key="editableBookmark.downloads.length ? editableBookmark.downloads[0].status : editableBookmark.downloads.length">
+              <!-- Download info -->
+              <template v-if="editableBookmark.downloads[0].status === 'CD'">
+                <div class="level-left">
+                  <div class="level-item">
+                    <span class="icon-text">
+                      <span class="icon">
+                        <Icon name="bi:filetype-mp4" />
+                      </span>
+                      <span>
+                        <a :href="config.public.apiBase + editableBookmark.downloads[0].file" target="_blank">
+                          Video file
+                        </a>,
+                        {{ useConvertBytesToMbytes(editableBookmark.downloads[0].file_size) }} Mb.
+                      </span>
                     </span>
-                    <span>
-                      <a :href="config.public.apiBase + editableBookmark.downloads[0].file" target="_blank">
-                        Video file
-                      </a>,
-                      {{ useConvertBytesToMbytes(props.bookmark.downloads[0].file_size) }} Mb.
-                    </span>
-                  </span>
+                  </div>
                 </div>
-              </div>
+                <!-- Buttons -->
+                <div class="level-right">
+                  <div class="level-item">
+                    <button class="button is-small is-outlined is-danger">
+                      Delete file
+                    </button>
+                  </div>
+                </div>
+              </template>
 
-              <!-- Buttons -->
-              <div class="level-right">
-                <div class="level-item">
-                  <button class="button is-small is-outlined is-danger">
-                    Delete file
-                  </button>
+              <template v-else-if="editableBookmark.downloads[0].status === 'FD'">
+                <div class="level-left">
+                  <div class="level-item">
+                    Download failed.
+                  </div>
                 </div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <button class="button is-small is-outlined is-success" @click="onClickDownload"
+                      :disabled="isDownloadStarting">
+                      Retry
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <div class="level-left" v-else>
+                Download pending, please check back later!
               </div>
             </nav>
 
@@ -229,12 +285,16 @@ function useConvertBytesToMbytes(bytes: number) {
             <nav class="level mt-3" v-else>
               <div class="level-left">
                 <div class="level-item">
-                  <button class="button">
+                  <button class="button" @click="onClickDownload" v-if="!isDownloadStarting">
+                    <Icon name="material-symbols:cloud-download" />
                     <span>
                       Download content to server
                     </span>
-                    <Icon name="material-symbols:cloud-download" />
                   </button>
+
+                  <p v-else>
+                    Download starting, please wait...
+                  </p>
                 </div>
               </div>
             </nav>

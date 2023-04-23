@@ -12,4 +12,5 @@ def delete_attached_file(sender, instance, **kwargs):
     Issue: https://code.djangoproject.com/ticket/12034
     Reference: https://docs.djangoproject.com/en/4.0/ref/signals/#post-delete
     """
-    instance.file.delete(save=False)
+    if instance.file:
+        instance.file.delete(save=False)

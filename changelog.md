@@ -1,3 +1,7 @@
+## 23.04.2023, Sun
+
+- 18:20 - Front + Back: "Download" button on the frontend is more or less working. 
+
 ## 22.04.2023, Sat
 
 - 10:25 - Backend: added `IsOwnerOnly` permission to (almost) all views in `bookmarks/views.py`.
