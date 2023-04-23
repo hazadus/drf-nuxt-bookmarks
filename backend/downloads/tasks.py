@@ -30,7 +30,18 @@ def process_download(download_id: int) -> None:  # noqa: max-complexity: 4
         download.save()
 
     if is_youtube_link(url=download.bookmark.url):
-        download_from_youtube(download=download)
+        # There's a bug in pytube causing video sometimes not get downloaded on the first try,
+        # so we have to make some retries.
+        # Issue: https://github.com/pytube/pytube/issues/1542
+        max_retries = 5
+        retry = 1
+        while not download_from_youtube(download=download):
+            retry += 1
+            if retry == max_retries:
+                break
+            else:
+                download.status = Download.Status.PENDING
+                download.save()
     else:
         download.delete()
 
@@ -44,9 +55,10 @@ def is_youtube_link(url: str) -> bool:
     )
 
 
-def download_from_youtube(download: Download) -> None:  # noqa: max-complexity: 4
+def download_from_youtube(download: Download) -> bool:  # noqa: max-complexity: 4
     """
     Download video from YouTube and save it to file.
+    Return True if succeeded, otherwise False.
     """
     url = download.bookmark.url
     yt = YouTube(url)
@@ -81,3 +93,4 @@ def download_from_youtube(download: Download) -> None:  # noqa: max-complexity: 
         download.status = Download.Status.FAILED
     finally:
         download.save()
+        return True if download.status is Download.Status.COMPLETED else False
