@@ -45,6 +45,13 @@ const availableTags = computed(() => {
   return props.allTags.filter((tag) => assignedTags.value.filter((assignedTag) => assignedTag.id === tag.id).length === 0);
 });
 
+const isContentDownloadable = computed(() => {
+  // For now, backend supports only YouTube downloads.
+  return props.bookmark.url.startsWith("https://youtu.be") ||
+    props.bookmark.url.startsWith("https://www.youtube.com") ||
+    props.bookmark.url.startsWith("https://youtube.com");
+});
+
 async function onClickDelete() {
   let isConfirmed = confirm("Are you sure you want to delete this bookmark?\n\n" + props.bookmark.title);
 
@@ -155,11 +162,7 @@ async function onClickDownload() {
   }
 
   const pendingDownload = downloadData.value as Download;
-  if (editableBookmark.value.downloads.length) {
-    editableBookmark.value.downloads[0] = pendingDownload;
-  } else {
-    editableBookmark.value.downloads.push(pendingDownload);
-  }
+  editableBookmark.value.download = pendingDownload;
   isDownloadStarting.value = false;
   emit("downloadStarted", true);
 }
@@ -225,16 +228,16 @@ function useConvertBytesToMbytes(bytes: number) {
           </div>
 
           <!-- Download -->
-          <div class="column is-4">
+          <div class="column is-4" v-if="isContentDownloadable">
             <label class="label">
               Downloads
             </label>
 
             <!-- Existing download -->
-            <nav class="level mt-3" v-if="editableBookmark.downloads.length"
-              :key="editableBookmark.downloads.length ? editableBookmark.downloads[0].status : editableBookmark.downloads.length">
+            <nav class="level mt-3" v-if="editableBookmark.download"
+              :key="editableBookmark.download ? editableBookmark.download.id + editableBookmark.download.status : 0">
               <!-- Download info -->
-              <template v-if="editableBookmark.downloads[0].status === 'CD'">
+              <template v-if="editableBookmark.download.status === 'CD'">
                 <div class="level-left">
                   <div class="level-item">
                     <span class="icon-text">
@@ -242,10 +245,10 @@ function useConvertBytesToMbytes(bytes: number) {
                         <Icon name="bi:filetype-mp4" />
                       </span>
                       <span>
-                        <a :href="config.public.apiBase + editableBookmark.downloads[0].file" target="_blank">
+                        <a :href="config.public.apiBase + editableBookmark.download.file" target="_blank">
                           Video file
                         </a>,
-                        {{ useConvertBytesToMbytes(editableBookmark.downloads[0].file_size) }} Mb.
+                        {{ useConvertBytesToMbytes(editableBookmark.download.file_size) }} Mb.
                       </span>
                     </span>
                   </div>
@@ -260,7 +263,7 @@ function useConvertBytesToMbytes(bytes: number) {
                 </div>
               </template>
 
-              <template v-else-if="editableBookmark.downloads[0].status === 'FD'">
+              <template v-else-if="editableBookmark.download.status === 'FD'">
                 <div class="level-left">
                   <div class="level-item">
                     Download failed.

@@ -30,11 +30,11 @@ class Download(models.Model):
         choices=Status.choices,
         default=Status.PENDING,
     )
-    bookmark = models.ForeignKey(
+    bookmark = models.OneToOneField(
         verbose_name=_("bookmark"),
         to=Bookmark,
         on_delete=models.CASCADE,
-        related_name="downloads",
+        related_name="download",
         blank=True,
         null=True,
         default=None,

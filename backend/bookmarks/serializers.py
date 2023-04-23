@@ -112,7 +112,7 @@ class BookmarkListSerializer(serializers.ModelSerializer):
 
     folder = FolderSerializer(many=False)
     tags = TagSerializer(many=True)
-    downloads = DownloadSerializer(many=True)
+    download = DownloadSerializer(many=False)
 
     class Meta:
         model = Bookmark
@@ -125,7 +125,7 @@ class BookmarkListSerializer(serializers.ModelSerializer):
             "image_url",
             "folder",
             "tags",
-            "downloads",
+            "download",
             "is_favorite",
             "is_read",
             "is_archived",

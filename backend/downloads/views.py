@@ -38,15 +38,15 @@ def download_start_from_web(request: Request) -> Response:  # noqa: max-complexi
             pk=serializer.data.get("bookmark_id"),
         )
 
-        download = bookmark.downloads.all().first()
-
-        if not download:
+        if hasattr(bookmark, "download"):
+            download = bookmark.download
+            if download.status == Download.Status.FAILED:
+                download.status = Download.Status.PENDING
+                download.save()
+        else:
             download = Download()
             download.title = bookmark.title
             download.bookmark = bookmark
-            download.save()
-        elif download.status == Download.Status.FAILED:
-            download.status = Download.Status.PENDING
             download.save()
 
         process_download.delay(download_id=download.pk)

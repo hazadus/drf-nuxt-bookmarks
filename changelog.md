@@ -1,6 +1,8 @@
 ## 23.04.2023, Sun
 
-- 18:20 - Front + Back: "Download" button on the frontend is more or less working. 
+- 18:20 - Front + Back: "Download" button on the frontend is more or less working.
+- 18:30 - Backend: `Download.bookmark` type changed to `OneToOneField`.
+- 18:40 - Front + Back: refactored according to new `Download.bookmark` type.
 
 ## 22.04.2023, Sat
 

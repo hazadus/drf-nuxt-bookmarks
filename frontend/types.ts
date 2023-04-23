@@ -52,7 +52,7 @@ export interface Bookmark {
   image_url: string;
   folder: Folder | undefined;
   tags: Tag[];
-  downloads: Download[];
+  download: Download | undefined;
   is_favorite: boolean;
   is_read: boolean;
   is_archived: boolean;
