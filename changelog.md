@@ -1,3 +1,16 @@
+## 24.04.2023, Mon
+
+- 10:30 - Backend: refactor video download-related code and comments. Used Celery's built-in tools for retrying 
+  failed tasks.
+- 14:00 - Frontend: refactored key-related code for better reactive UI updates.
+
+## 23.04.2023, Sun
+
+- 18:20 - Front + Back: "Download" button on the frontend is more or less working.
+- 18:30 - Backend: `Download.bookmark` type changed to `OneToOneField`.
+- 18:40 - Front + Back: refactored according to new `Download.bookmark` type.
+- 19:40 - Backend: added retries to `download_from_youtube()` because of `pytube` bug.
+
 ## 22.04.2023, Sat
 
 - 10:25 - Backend: added `IsOwnerOnly` permission to (almost) all views in `bookmarks/views.py`.
@@ -5,6 +18,9 @@
 - 11:10 - Frontend: added "Delete" button in bookmark edit modal, wired up with backend.
 - 13:00 - Backend: created `Download` model. Updated download task.
 - 14:30 - Backend: fixed issue when downloaded video file wasn't deleted with the model instance.
+- 17:15 - Backend: added Download model serializer.
+- 18:45 - Frontend: modified Bookmark editor modal to show Downloads-related stuff.
+- 19:00 - Backend: created endpoint to start content download.
 
 ## 21.04.2023, Fri
 

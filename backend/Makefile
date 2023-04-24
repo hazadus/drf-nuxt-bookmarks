@@ -16,3 +16,21 @@ run:
 	make test
 	make interrogate
 	python -m manage runserver
+docker_test:
+	docker compose up -d --build
+	docker exec bkmrks-api coverage run --source='.' -m manage test
+	docker exec bkmrks-api coverage html
+	docker compose down
+up:
+	make format
+	make lint
+	make interrogate
+	docker compose up -d --build
+	docker exec bkmrks-api coverage run --source='.' -m manage test
+	docker exec bkmrks-api coverage html
+	docker compose logs --follow
+down:
+	docker compose down
+reup:
+	make down
+	make up

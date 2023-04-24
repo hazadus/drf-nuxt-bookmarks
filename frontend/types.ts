@@ -33,6 +33,16 @@ export interface Tag {
   bookmarks_qty?: number;
 }
 
+export interface Download {
+  id: ID;
+  title: string;
+  status: string;
+  file: string;
+  file_size: number;
+  created: Date;
+  updated: Date;
+}
+
 export interface Bookmark {
   id: ID;
   user: number;
@@ -42,6 +52,7 @@ export interface Bookmark {
   image_url: string;
   folder: Folder | undefined;
   tags: Tag[];
+  download: Download | undefined;
   is_favorite: boolean;
   is_read: boolean;
   is_archived: boolean;

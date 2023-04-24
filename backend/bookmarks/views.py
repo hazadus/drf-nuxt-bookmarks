@@ -10,8 +10,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from downloads.tasks import download_bookmark
-
 from .models import Bookmark, Folder, Tag
 from .permissions import IsOwnerOnly
 from .serializers import (
@@ -238,9 +236,6 @@ def bookmark_create_from_web(request: Request) -> Response:
 
         # Return detailed bookmark info to the user:
         detail_serializer = BookmarkListSerializer(instance=bookmark, many=False)
-
-        # Download link
-        download_bookmark.delay(bookmark_id=bookmark.pk)
 
         return Response(detail_serializer.data, status=status.HTTP_201_CREATED)
 

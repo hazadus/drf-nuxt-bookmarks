@@ -14,6 +14,7 @@ urlpatterns = [
     # Local apps
     path("api/v1/", include("bookmarks.urls")),
     path("api/v1/", include("users.urls")),
+    path("api/v1/", include("downloads.urls")),
     # Djoser endpoints to manage users:
     path("api/v1/", include("djoser.urls")),
     path("api/v1/", include("djoser.urls.authtoken")),

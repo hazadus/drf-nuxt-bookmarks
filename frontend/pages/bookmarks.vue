@@ -28,56 +28,35 @@ const selectedFilter: Ref<"all" | "read" | "unread"> = ref("all");
 const selectedUserFolderId: Ref<number> = ref(1);
 const filterByTagsList: Ref<Tag[]> = ref([]);
 const searchString: Ref<string> = ref("");
-const isEditBookmarkModalVisible: Ref<boolean> = ref(true);
 const selectedBookmark: Ref<Bookmark | null> = ref(null);
-const isRefreshing: Ref<boolean> = ref(false);
 const isLoading: Ref<boolean> = ref(true);
+const isRefreshing: Ref<boolean> = ref(false);
+const isEditBookmarkModalVisible: Ref<boolean> = ref(true);
 
-async function fetchData() {
-  const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
-    headers: [
-      ["Authorization", "Token " + authStore.token,],
-    ]
-  });
-  const { data: folders, error: foldersError } = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`, {
-    headers: [
-      ["Authorization", "Token " + authStore.token,],
-    ]
-  });
-  const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`, {
-    headers: [
-      ["Authorization", "Token " + authStore.token,],
-    ]
-  });
 
-  allBookmarks.value = bookmarks.value;
-  allTags.value = tags.value;
-  allUserFolders.value = folders.value;
-
-  fetchErrors.value = [];
-
-  if (bookmarksError.value) {
-    fetchErrors.value.push(bookmarksError.value.message);
-  }
-  if (tagsError.value) {
-    fetchErrors.value.push(tagsError.value.message);
-  }
-  if (foldersError.value) {
-    fetchErrors.value.push(foldersError.value.message);
-  }
-
-  isLoading.value = false;
-}
-
-async function onClickRefresh() {
-  isRefreshing.value = true;
-  await fetchData();
-  isRefreshing.value = false;
-}
-
+/*
+  UI-related computed properties
+*/
 const isDataFetched = computed(() => {
   // Whether all needed data fetched from API, or not:
   return allBookmarks.value && allTags.value && allUserFolders.value;
+});
+
+const keyForEditBookmarkModal = computed(() => {
+  // Create unique key for modal, tightly related to the selected bookmark.
+  // This is needed to reactively update modal content, whenever the bookmark us updated.
+  let key: string = "modal";
+
+  if (selectedBookmark.value) {
+    key = `modal-${selectedBookmark.value}`;
+
+    if (selectedBookmark.value.download) {
+      key += `-download-${selectedBookmark.value.download.id}`;
+      key += `-status-${selectedBookmark.value.download.status}`;
+    }
+  }
+
+  return key;
 });
 
 /*
@@ -141,9 +120,57 @@ const bookmarks = computed(() => {
   return filteredBookmarks;
 });
 
+/*
+  Button handlers
+*/
 function onClickEditBookmark(bookmark: Bookmark) {
   selectedBookmark.value = bookmark;
   isEditBookmarkModalVisible.value = true;
+}
+
+async function onClickRefresh() {
+  isRefreshing.value = true;
+  await fetchData();
+  isRefreshing.value = false;
+}
+
+/*
+  API-related functions
+*/
+async function fetchData() {
+  const { data: bookmarks, error: bookmarksError } = await useFetch<Bookmark[]>(() => `${config.public.apiBase}/api/v1/bookmarks/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
+  const { data: folders, error: foldersError } = await useFetch<Folder[]>(() => `${config.public.apiBase}/api/v1/folders/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
+  const { data: tags, error: tagsError } = await useFetch<Tag[]>(() => `${config.public.apiBase}/api/v1/tags/`, {
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ]
+  });
+
+  allBookmarks.value = bookmarks.value;
+  allTags.value = tags.value;
+  allUserFolders.value = folders.value;
+
+  fetchErrors.value = [];
+
+  if (bookmarksError.value) {
+    fetchErrors.value.push(bookmarksError.value.message);
+  }
+  if (tagsError.value) {
+    fetchErrors.value.push(tagsError.value.message);
+  }
+  if (foldersError.value) {
+    fetchErrors.value.push(foldersError.value.message);
+  }
+
+  isLoading.value = false;
 }
 
 /*
@@ -216,10 +243,11 @@ fetchData();
     <div class="loader"></div>
   </div>
 
-  <!-- NB: `:key="selectedBookmark.id"` is to re-render component on each `selectedBookmark` change. -->
+  <!-- NB: `:key="keyForEditBookmarkModal"` is to re-render component on each `selectedBookmark` change. -->
   <EditBookmarkModal v-if="selectedBookmark && allTags && allUserFolders" :bookmark="selectedBookmark" :allTags="allTags"
-    :allFolders="allUserFolders" :key="selectedBookmark.id" :class="isEditBookmarkModalVisible ? 'is-active' : ''"
-    @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" @deleted="fetchData()" />
+    :allFolders="allUserFolders" :key="keyForEditBookmarkModal" :class="isEditBookmarkModalVisible ? 'is-active' : ''"
+    @close="isEditBookmarkModalVisible = $event" @updated="fetchData()" @deleted="fetchData()"
+    @downloadStarted="fetchData()" />
 
   <BulmaNotification type="danger" v-if="fetchErrors.length">
     <strong>

@@ -5,5 +5,6 @@ exclude = [
     "manage.py",
     "users/migrations", "users/admin.py", "users/apps.py",
     "bookmarks/migrations", "bookmarks/admin.py", "bookmarks/apps.py",
+    "downloads/migrations", "downloads/admin.py", "downloads/apps.py",
 ]
 ignore-regex = ["Meta", "__str__", "setUpTestData", "setUp", "get_absolute_url"]

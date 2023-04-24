@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
-import type { Bookmark, Tag, Folder } from '@/types';
+import type { Bookmark, Tag, Folder, Download } from '@/types';
 
 const props = defineProps({
   bookmark: {
@@ -21,6 +21,7 @@ const emit = defineEmits<{
   (e: "close", isVisible: boolean): void;
   (e: "updated", isUpdated: boolean): void;
   (e: "deleted", isDeleted: boolean): void;
+  (e: "downloadStarted", isDownloadStarted: boolean): void;
 }>();
 
 const authStore = useAuthStore();
@@ -30,6 +31,7 @@ const editableBookmark: Ref<Bookmark> = ref(props.bookmark);
 const assignedTags: Ref<Tag[]> = ref(props.bookmark.tags);
 const selectedFolderID: Ref<number> = ref(0);
 const isFetching: Ref<boolean> = ref(false);
+const isDownloadStarting: Ref<boolean> = ref(false);
 
 if (props.bookmark.folder?.id) {
   selectedFolderID.value = props.bookmark.folder.id;
@@ -43,6 +45,27 @@ const availableTags = computed(() => {
   return props.allTags.filter((tag) => assignedTags.value.filter((assignedTag) => assignedTag.id === tag.id).length === 0);
 });
 
+const isContentDownloadable = computed(() => {
+  // For now, backend supports only YouTube downloads.
+  return props.bookmark.url.startsWith("https://youtu.be") ||
+    props.bookmark.url.startsWith("https://www.youtube.com") ||
+    props.bookmark.url.startsWith("https://youtube.com");
+});
+
+const keyForDownloadNav = computed(() => {
+  // This is to reactively update "Download" section of the modal when download status is changed.
+  let key: string = "download";
+
+  if (editableBookmark.value.download) {
+    key = `download-${editableBookmark.value.download.id}-status-${editableBookmark.value.download.status}`;
+  }
+
+  return key;
+});
+
+/*
+  Button handlers
+*/
 async function onClickDelete() {
   let isConfirmed = confirm("Are you sure you want to delete this bookmark?\n\n" + props.bookmark.title);
 
@@ -129,6 +152,41 @@ async function onClickSaveChanges() {
   isFetching.value = false;
   closeModal();
 }
+
+async function onClickDownload() {
+  isDownloadStarting.value = true;
+
+  const formData = {
+    bookmark_id: props.bookmark.id,
+  };
+
+  const { data: downloadData, error: downloadStartError } = await useFetch(() => `${config.public.apiBase}/api/v1/downloads/start/`, {
+    method: "POST",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+
+  if (downloadStartError.value) {
+    console.error("Error starting download: " + downloadStartError.value?.message);
+    alert("Something went wrong, please try again.");
+    isDownloadStarting.value = false;
+    return;
+  }
+
+  const pendingDownload = downloadData.value as Download;
+  editableBookmark.value.download = pendingDownload;
+  isDownloadStarting.value = false;
+  emit("downloadStarted", true);
+}
+
+/*
+  Utility functions
+*/
+function useConvertBytesToMbytes(bytes: number) {
+  return (bytes / (1024 * 1024)).toFixed(1);
+}
 </script>
 
 <template>
@@ -162,7 +220,6 @@ async function onClickSaveChanges() {
                   :disabled="isFetching">
               </div>
             </div>
-
           </div>
 
           <div class="column is-4 cover-image ">
@@ -173,11 +230,93 @@ async function onClickSaveChanges() {
           </div>
         </div>
 
-        <div class="field">
-          <label class="label">Description</label>
-          <div class="control">
-            <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
-              :disabled="isFetching"></textarea>
+        <div class="columns">
+          <!-- Description -->
+          <div class="column is-8">
+            <div class="field">
+              <label class="label">
+                Description
+              </label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Bookmark description" v-model="editableBookmark.description"
+                  :disabled="isFetching"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="column is-4" v-if="isContentDownloadable">
+            <label class="label">
+              Downloads
+            </label>
+
+            <!-- Existing download -->
+            <nav class="level mt-3" v-if="editableBookmark.download" :key="keyForDownloadNav">
+              <!-- Download info -->
+              <template v-if="editableBookmark.download.status === 'CD'">
+                <div class="level-left">
+                  <div class="level-item">
+                    <span class="icon-text">
+                      <span class="icon">
+                        <Icon name="bi:filetype-mp4" />
+                      </span>
+                      <span>
+                        <a :href="config.public.apiBase + editableBookmark.download.file" target="_blank">
+                          Video file
+                        </a>,
+                        {{ useConvertBytesToMbytes(editableBookmark.download.file_size) }} Mb.
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <!-- Buttons -->
+                <div class="level-right">
+                  <div class="level-item">
+                    <button class="button is-small is-outlined is-danger">
+                      Delete file
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <template v-else-if="editableBookmark.download.status === 'FD'">
+                <div class="level-left">
+                  <div class="level-item">
+                    Download failed.
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <button class="button is-small is-outlined is-success" @click="onClickDownload"
+                      :disabled="isDownloadStarting">
+                      Retry
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <div class="level-left" v-else>
+                Download pending, please check back later!
+              </div>
+            </nav>
+
+            <!-- No downloads yet -->
+            <nav class="level mt-3" v-else>
+              <div class="level-left">
+                <div class="level-item">
+                  <button class="button" @click="onClickDownload" v-if="!isDownloadStarting">
+                    <Icon name="material-symbols:cloud-download" />
+                    <span>
+                      Download content to server
+                    </span>
+                  </button>
+
+                  <p v-else>
+                    Download starting, please wait...
+                  </p>
+                </div>
+              </div>
+            </nav>
           </div>
         </div>
 
