@@ -1,3 +1,8 @@
+## 24.04.2023, Mon
+
+- 10:30 - Backend: refactor video download-related code and comments. Used Celery's built-in tools for retrying 
+  failed tasks.
+
 ## 23.04.2023, Sun
 
 - 18:20 - Front + Back: "Download" button on the frontend is more or less working.

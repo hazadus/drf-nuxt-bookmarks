@@ -22,6 +22,9 @@ You can check out the live demo (which I use myself and update daily) here: http
     such  as registration, login, logout, password reset and account activation.
   - [django-cors-headers](https://github.com/adamchainz/django-cors-headers): Django app for handling the server 
     headers required for Cross-Origin Resource Sharing (CORS).
+- [Celery - Distributed Task Queue](https://docs.celeryq.dev/en/stable/index.html): Celery is a simple, flexible, 
+  and reliable distributed system to process vast amounts of messages, while providing operations with the tools 
+  required to maintain such a system. 
 - Telegram bot: [pyTelegramBotAPI](https://pypi.org/project/pyTelegramBotAPI/)
   - [requests](https://requests.readthedocs.io/en/latest/): Requests allows you to send HTTP/1.1 requests extremely 
     easily. There’s no need to manually add query strings to your URLs, or to form-encode your POST data.
@@ -49,6 +52,8 @@ Some interesting resources that I found and used while developing this project.
 - Vue
   - [TypeScript with Composition API](https://vuejs.org/guide/typescript/composition-api.html)
     - [Typing component props](https://vuejs.org/guide/typescript/composition-api.html#typing-component-props)
+- Celery
+  - [Asynchronous Tasks with Django and Celery | TestDriven.io](https://testdriven.io/blog/django-and-celery/)
 
 ## Notes
 

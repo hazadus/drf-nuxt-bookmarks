@@ -21,10 +21,10 @@ def download_start_from_web(request: Request) -> Response:  # noqa: max-complexi
     """
     Check if there's already a download instance for passed bookmark.
     Then either:
-    - create new Download instance with `pending` status, with `bookmark` field set to bookmark with posted id.
+    - create new Download instance with `pending` status, add it to the bookmark;
     - pass existing Download to Celery task.
     Run Celery `process_download` task, with `id` of the Download instance.
-    Return the Download instance, serialized to JSON.
+    Return the detailed Download instance, serialized to JSON.
 
     Post data example:
     {

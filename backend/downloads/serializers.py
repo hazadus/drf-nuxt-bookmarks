@@ -25,7 +25,8 @@ class DownloadSerializer(serializers.ModelSerializer):
 
 class DownloadCreateSerializer(serializers.Serializer):
     """
-    Serializer used to start downloads via web frontend.
+    Serializer used to start download from `bookmark.url` via web frontend.
+    Checks if bookmark with `bookmark_id` exists in DB.
     """
 
     bookmark_id = serializers.IntegerField()

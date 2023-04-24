@@ -8,8 +8,16 @@ from pytube import YouTube
 from .models import Download
 
 
-@shared_task
-def process_download(download_id: int) -> None:  # noqa: max-complexity: 4
+@shared_task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_backoff=2,
+    retry_jitter=True,
+    retry_kwargs={
+        "max_retries": 5,
+    },
+)
+def process_download(self, download_id: int) -> None:  # noqa: max-complexity: 5
     """
     Process Download instance with `download_id` depending on it's status and type.
 
@@ -18,10 +26,17 @@ def process_download(download_id: int) -> None:  # noqa: max-complexity: 4
     - "completed": do nothing and return;
     - "failed": change status to "pending", then retry downloading.
 
-    Bookmark's URL is checked: if it points to YouTube, then we try to download it.
-    Other sites are not supported for now: Download instance gets deleted .
+    Bookmark's URL is checked: if it points to YouTube, then we try to download the video.
+    Other sites are not supported for now: Download instance gets deleted.
+
+    There's a bug in pytube causing video sometimes not get downloaded on the first try,
+    so we have to make some retries. Issue: https://github.com/pytube/pytube/issues/1542
     """
     download = Download.objects.get(pk=download_id)
+
+    if not is_youtube_link(url=download.bookmark.url):
+        download.delete()
+        return
 
     if download.status == Download.Status.COMPLETED:
         return
@@ -29,21 +44,8 @@ def process_download(download_id: int) -> None:  # noqa: max-complexity: 4
         download.status = Download.Status.PENDING
         download.save()
 
-    if is_youtube_link(url=download.bookmark.url):
-        # There's a bug in pytube causing video sometimes not get downloaded on the first try,
-        # so we have to make some retries.
-        # Issue: https://github.com/pytube/pytube/issues/1542
-        max_retries = 5
-        retry = 1
-        while not download_from_youtube(download=download):
-            retry += 1
-            if retry == max_retries:
-                break
-            else:
-                download.status = Download.Status.PENDING
-                download.save()
-    else:
-        download.delete()
+    if not download_from_youtube(download=download):
+        raise Exception()
 
 
 def is_youtube_link(url: str) -> bool:
@@ -57,7 +59,8 @@ def is_youtube_link(url: str) -> bool:
 
 def download_from_youtube(download: Download) -> bool:  # noqa: max-complexity: 4
     """
-    Download video from YouTube and save it to file.
+    Download YouTube video from `download.bookmark.url` and save it to a file in "MEDIA_ROOT/videos" folder.
+    Save title, file name, file size, download status to the `download` instance.
     Return True if succeeded, otherwise False.
     """
     url = download.bookmark.url
