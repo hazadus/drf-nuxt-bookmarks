@@ -52,6 +52,20 @@ const isContentDownloadable = computed(() => {
     props.bookmark.url.startsWith("https://youtube.com");
 });
 
+const keyForDownloadNav = computed(() => {
+  // This is to reactively update "Download" section of the modal when download status is changed.
+  let key: string = "download";
+
+  if (editableBookmark.value.download) {
+    key = `download-${editableBookmark.value.download.id}-status-${editableBookmark.value.download.status}`;
+  }
+
+  return key;
+});
+
+/*
+  Button handlers
+*/
 async function onClickDelete() {
   let isConfirmed = confirm("Are you sure you want to delete this bookmark?\n\n" + props.bookmark.title);
 
@@ -167,6 +181,9 @@ async function onClickDownload() {
   emit("downloadStarted", true);
 }
 
+/*
+  Utility functions
+*/
 function useConvertBytesToMbytes(bytes: number) {
   return (bytes / (1024 * 1024)).toFixed(1);
 }
@@ -234,8 +251,7 @@ function useConvertBytesToMbytes(bytes: number) {
             </label>
 
             <!-- Existing download -->
-            <nav class="level mt-3" v-if="editableBookmark.download"
-              :key="editableBookmark.download ? editableBookmark.download.id + editableBookmark.download.status : 0">
+            <nav class="level mt-3" v-if="editableBookmark.download" :key="keyForDownloadNav">
               <!-- Download info -->
               <template v-if="editableBookmark.download.status === 'CD'">
                 <div class="level-left">
