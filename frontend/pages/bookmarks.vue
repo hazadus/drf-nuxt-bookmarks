@@ -48,7 +48,7 @@ const keyForEditBookmarkModal = computed(() => {
   let key: string = "modal";
 
   if (selectedBookmark.value) {
-    key = `modal-${selectedBookmark.value}`;
+    key = `modal-${selectedBookmark.value.id}`;
 
     if (selectedBookmark.value.download) {
       key += `-download-${selectedBookmark.value.download.id}`;
