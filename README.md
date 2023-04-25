@@ -41,6 +41,9 @@ You can check out the live demo (which I use myself and update daily) here: http
 - VS Code + Volar for frontend development.
 - PyCharm Professional for backend development.
   - BlackConnect plugin.
+- [Selenium](https://selenium-python.readthedocs.io/installation.html) for functional tests.
+  - [xPath Finder](https://addons.mozilla.org/en-US/firefox/addon/xpath_finder/) for Firefox - plugin to get the 
+    elements xPath.
 
 ## References
 

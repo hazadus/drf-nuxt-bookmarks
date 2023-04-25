@@ -256,7 +256,7 @@ function useConvertBytesToMbytes(bytes: number) {
               <template v-if="editableBookmark.download.status === 'CD'">
                 <div class="level-left">
                   <div class="level-item">
-                    <span class="icon-text">
+                    <span class="icon-text" id="downloaded-file-info">
                       <span class="icon">
                         <Icon name="bi:filetype-mp4" />
                       </span>
@@ -304,7 +304,7 @@ function useConvertBytesToMbytes(bytes: number) {
             <nav class="level mt-3" v-else>
               <div class="level-left">
                 <div class="level-item">
-                  <button class="button" @click="onClickDownload" v-if="!isDownloadStarting">
+                  <button class="button" @click="onClickDownload" v-if="!isDownloadStarting" id="button-download">
                     <Icon name="material-symbols:cloud-download" />
                     <span>
                       Download content to server
@@ -399,15 +399,15 @@ function useConvertBytesToMbytes(bytes: number) {
 
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-danger" @click="onClickDelete" :disabled="isFetching">
+        <button class="button is-danger" @click="onClickDelete" :disabled="isFetching" id="button-delete">
           Delete
         </button>
         <button class="button mr-5" @click="onClickShare">
           <span>Share</span>
           <Icon name="material-symbols:share" />
         </button>
-        <button class="button" @click="closeModal" :disabled="isFetching">
-          Cancel
+        <button class="button" @click="closeModal" :disabled="isFetching" id="button-close">
+          Close
         </button>
         <button class="button is-success" :class="isFetching ? 'is-loading' : ''" @click="onClickSaveChanges"
           :disabled="isFetching">

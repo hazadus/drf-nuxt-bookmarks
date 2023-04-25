@@ -424,7 +424,7 @@ fetchData();
           </p>
           <p class="level-item">
             <button class="button is-info" :class="isRefreshing ? 'is-loading' : ''" :disabled="isRefreshing"
-              @click="onClickRefresh">
+              @click="onClickRefresh" id="button-refresh">
               {{ t("button_refresh") }}
             </button>
           </p>
@@ -485,7 +485,7 @@ fetchData();
       </nav>
 
       <!-- Bookmarks list or notification if list is empty -->
-      <table class="table is-hoverable is-fullwidth" v-if="bookmarks?.length">
+      <table class="table is-hoverable is-fullwidth" v-if="bookmarks?.length" id="table-bookmarks">
         <thead>
           <tr>
             <th class="cell-favorite">

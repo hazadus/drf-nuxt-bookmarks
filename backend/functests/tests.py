@@ -13,6 +13,8 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class NewVisitorTest(LiveServerTestCase):
@@ -27,6 +29,8 @@ class NewVisitorTest(LiveServerTestCase):
 
     username = "testuser123"
     password = "testpassword"
+    bookmark_url = "https://www.youtube.com/watch?v=F161MWDg-48"
+    bookmark_title = "Baby Blue"
 
     def setUp(self) -> None:
         # Backup existing DB file
@@ -75,11 +79,9 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element(By.ID, value="input-password2")
         inputbox.send_keys(self.password)
         inputbox.send_keys(Keys.ENTER)
-
         time.sleep(1)
 
         self.assertIn("Log in", self.browser.title)
-
         time.sleep(1)
 
         """
@@ -91,7 +93,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element(By.ID, value="password")
         inputbox.send_keys(self.password)
         inputbox.send_keys(Keys.ENTER)
-
         time.sleep(1)
 
         self.assertIn("Your Bookmarks", self.browser.title)
@@ -106,14 +107,36 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Add an URL
         inputbox = self.browser.find_element(By.ID, value="input-url")
-        inputbox.send_keys("https://testdriven.io/blog/django-drf-elasticsearch/")
+        inputbox.send_keys(self.bookmark_url)
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        time.sleep(2)
 
         # Click "Bookmarks" menu item in the navbar
         menu_item = self.browser.find_element(By.ID, value="navbar-menu-item-bookmarks")
         menu_item.click()
         menu_item.click()
+        time.sleep(1)
+
+        table = self.browser.find_element(By.ID, value="table-bookmarks")
+        self.assertIn(self.bookmark_title, table.text)
+
+        # Find "Edit bookmark" button for added bookmark
+        button = self.browser.find_element(
+            By.XPATH,
+            value="//table[@id='table-bookmarks']/tbody/tr[1]/td[3]/button",
+        )
+        button.click()
+        time.sleep(1)
+
+        # Click "Delete" button, confirmation modal will popup
+        button = self.browser.find_element(By.ID, value="button-delete")
+        button.click()
+
+        # Wait for modal to show, and "click" OK
+        WebDriverWait(self.browser, 10).until(EC.alert_is_present())
+        self.browser.switch_to.alert.accept()
+
+        self.assertNotIn(self.bookmark_title, self.browser.title)
 
         # self.fail("End the test.")
         time.sleep(3)
