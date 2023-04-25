@@ -3,6 +3,7 @@
 - 10:30 - Backend: refactor video download-related code and comments. Used Celery's built-in tools for retrying 
   failed tasks.
 - 14:00 - Frontend: refactored key-related code for better reactive UI updates.
+- 18:00 - Tests: created basic functional test using Selenium.
 
 ## 23.04.2023, Sun
 

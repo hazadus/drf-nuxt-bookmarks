@@ -66,11 +66,11 @@ async function onClickLogOut() {
         <div class="navbar-start">
           <!-- Menu items -->
           <NuxtLink to="/add/" class="navbar-item" :class="route.path === '/add/' ? 'is-active' : ''"
-            @click="showMobileMenu = false">
+            @click="showMobileMenu = false" id="navbar-menu-item-add">
             {{ t("menu_add") }}
           </NuxtLink>
           <NuxtLink to="/bookmarks/" class="navbar-item" :class="route.path === '/bookmarks/' ? 'is-active' : ''"
-            @click="showMobileMenu = false">
+            @click="showMobileMenu = false" id="navbar-menu-item-bookmarks">
             {{ t("menu_bookmarks") }}
           </NuxtLink>
           <NuxtLink to="/about/" class="navbar-item" :class="route.path === '/about/' ? 'is-active' : ''"

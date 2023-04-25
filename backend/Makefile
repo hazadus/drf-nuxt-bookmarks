@@ -34,3 +34,5 @@ down:
 reup:
 	make down
 	make up
+functest:
+	python ./functests/functional_tests.py
