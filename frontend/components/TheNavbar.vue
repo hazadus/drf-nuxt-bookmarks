@@ -83,12 +83,12 @@ async function onClickLogOut() {
           <!-- Buttons -->
           <div class="navbar-item">
             <div class="buttons" v-if="!authStore.isAuthenticated">
-              <NuxtLink to="/signup/" class="button is-primary" @click="showMobileMenu = false">
+              <NuxtLink to="/signup/" class="button is-primary" @click="showMobileMenu = false" id="navbar-button-signup">
                 <strong>
                   {{ t("button_sign_up") }}
                 </strong>
               </NuxtLink>
-              <NuxtLink to="/login/" class="button is-light" @click="showMobileMenu = false">
+              <NuxtLink to="/login/" class="button is-light" @click="showMobileMenu = false" id="navbar-button-login">
                 {{ t("button_log_in") }}
               </NuxtLink>
             </div>

@@ -1,3 +1,7 @@
+## 25.04.2023, Tue
+
+- 15:00 - Tests: functional test extended.
+
 ## 24.04.2023, Mon
 
 - 10:30 - Backend: refactor video download-related code and comments. Used Celery's built-in tools for retrying 

@@ -111,7 +111,7 @@ onBeforeMount(() => {
               {{ t("label_username") }}:
             </label>
             <div class="control">
-              <input v-model="username" type="text" class="input" />
+              <input v-model="username" type="text" class="input" id="input-username" />
             </div>
           </div>
 
@@ -120,7 +120,7 @@ onBeforeMount(() => {
               {{ t("label_password") }}:
             </label>
             <div class="control">
-              <input v-model="password" type="password" class="input" />
+              <input v-model="password" type="password" class="input" id="input-password" />
             </div>
           </div>
 
@@ -129,7 +129,7 @@ onBeforeMount(() => {
               {{ t("label_repeat_password") }}:
             </label>
             <div class="control">
-              <input v-model="password2" type="password" class="input" />
+              <input v-model="password2" type="password" class="input" id="input-password2" />
             </div>
           </div>
 

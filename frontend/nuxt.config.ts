@@ -25,12 +25,8 @@ export default defineNuxtConfig({
         defaultLocale: "en",
         fallbackLocale: "en",
         strategy: "no_prefix",
-        detectBrowserLanguage: {
-          // https://v8.i18n.nuxtjs.org/guide/browser-language-detection
-          useCookie: true,
-          cookieKey: "i18n_redirected",
-          redirectOn: "root",
-        },
+        // https://v8.i18n.nuxtjs.org/guide/browser-language-detection
+        detectBrowserLanguage: false,
       },
     ],
   ],
