@@ -201,7 +201,7 @@ function useConvertBytesToMbytes(bytes: number) {
               <label class="label">Title</label>
               <div class="control">
                 <input class="input" type="text" placeholder="Bookmark title" v-model="editableBookmark.title"
-                  :disabled="isFetching">
+                  :disabled="isFetching" id="input-title">
               </div>
             </div>
 
@@ -410,7 +410,7 @@ function useConvertBytesToMbytes(bytes: number) {
           Close
         </button>
         <button class="button is-success" :class="isFetching ? 'is-loading' : ''" @click="onClickSaveChanges"
-          :disabled="isFetching">
+          :disabled="isFetching" id="button-save">
           Save changes
         </button>
       </footer>

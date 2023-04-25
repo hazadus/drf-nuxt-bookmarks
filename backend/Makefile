@@ -36,3 +36,7 @@ reup:
 	make up
 functest:
 	python -m manage test functests
+docker_functest:
+	docker compose up -d --build
+	python -m manage test functests
+	docker compose down

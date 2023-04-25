@@ -1,6 +1,8 @@
 ## 25.04.2023, Tue
 
 - 15:00 - Tests: functional test extended.
+- 21:45 - Tests: added YouTube video download to functional test, and refactored it to several methods.
+- 22:30 - Tests: added bookmark editing to functional test and refactored it.
 
 ## 24.04.2023, Mon
 
