@@ -3,7 +3,7 @@ lint:
 	python -m isort --check-only --profile black .
 	python -m black . --check
 test:
-	coverage run --source='.' -m manage test
+	coverage run --source='.' -m manage test bookmarks users downloads
 	coverage html
 interrogate:
 	interrogate -vv .
@@ -18,7 +18,7 @@ run:
 	python -m manage runserver
 docker_test:
 	docker compose up -d --build
-	docker exec bkmrks-api coverage run --source='.' -m manage test
+	docker exec bkmrks-api coverage run --source='.' -m manage test bookmarks users downloads
 	docker exec bkmrks-api coverage html
 	docker compose down
 up:
@@ -26,7 +26,7 @@ up:
 	make lint
 	make interrogate
 	docker compose up -d --build
-	docker exec bkmrks-api coverage run --source='.' -m manage test
+	docker exec bkmrks-api coverage run --source='.' -m manage test bookmarks users downloads
 	docker exec bkmrks-api coverage html
 	docker compose logs --follow
 down:
@@ -34,3 +34,9 @@ down:
 reup:
 	make down
 	make up
+functest:
+	python -m manage test functests
+docker_functest:
+	docker compose up -d --build
+	python -m manage test functests
+	docker compose down

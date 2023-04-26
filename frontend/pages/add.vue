@@ -106,7 +106,7 @@ onMounted(() => {
       </label>
       <div class="control">
         <input ref="urlInputElement" v-model="url" :disabled="isLoading" class="input mr-3" type="url"
-          placeholder="https://bookmarks.hazadus.ru" style="width: calc(100% - 110px - 12px);">
+          placeholder="https://bookmarks.hazadus.ru" style="width: calc(100% - 110px - 12px);" id="input-url">
         <button class="button is-success" :class="isLoading ? 'is-loading' : ''">
           {{ t("button_add") }}
         </button>

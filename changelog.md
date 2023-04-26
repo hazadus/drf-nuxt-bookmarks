@@ -1,8 +1,19 @@
+## 26.04.2023, Wed
+
+- 22:10 - Tests: added "Edit user profile" functional test.
+
+## 25.04.2023, Tue
+
+- 15:00 - Tests: functional test extended.
+- 21:45 - Tests: added YouTube video download to functional test, and refactored it to several methods.
+- 22:30 - Tests: added bookmark editing to functional test and refactored it.
+
 ## 24.04.2023, Mon
 
 - 10:30 - Backend: refactor video download-related code and comments. Used Celery's built-in tools for retrying 
   failed tasks.
 - 14:00 - Frontend: refactored key-related code for better reactive UI updates.
+- 18:00 - Tests: created basic functional test using Selenium.
 
 ## 23.04.2023, Sun
 

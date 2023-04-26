@@ -112,7 +112,7 @@ onBeforeMount(() => {
               {{ t("label_username") }}:
             </label>
             <div class="control">
-              <input v-model="username" type="text" class="input" />
+              <input v-model="username" type="text" class="input" id="username" />
             </div>
           </div>
 
@@ -121,7 +121,7 @@ onBeforeMount(() => {
               {{ t("label_password") }}:
             </label>
             <div class="control">
-              <input v-model="password" type="password" class="input" />
+              <input v-model="password" type="password" class="input" id="password" />
             </div>
           </div>
 

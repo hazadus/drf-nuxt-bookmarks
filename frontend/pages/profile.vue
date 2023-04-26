@@ -132,7 +132,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
               {{ t("label_first_name") }}
             </label>
             <div class="control">
-              <input class="input" type="text" placeholder="e.g Alex Smith" v-model="newFirstName" maxlength="16">
+              <input class="input" type="text" placeholder="e.g Alex Smith" v-model="newFirstName" maxlength="16"
+                id="input-first-name">
             </div>
           </div>
 
@@ -141,7 +142,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
               {{ t("label_last_name") }}
             </label>
             <div class="control">
-              <input class="input" type="text" placeholder="e.g Alex Smith" v-model="newLastName" maxlength="16">
+              <input class="input" type="text" placeholder="e.g Alex Smith" v-model="newLastName" maxlength="16"
+                id="input-last-name">
             </div>
           </div>
 
@@ -150,7 +152,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
               Telegram ID
             </label>
             <div class="control">
-              <input class="input" type="string" placeholder="e.g. 123456789" v-model="newTelegramID" maxlength="12">
+              <input class="input" type="string" placeholder="e.g. 123456789" v-model="newTelegramID" maxlength="12"
+                id="input-telegram-id">
             </div>
           </div>
 
@@ -177,7 +180,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
               <button class="button is-warning mr-2" @click="onClickCancel">
                 {{ t("button_cancel") }}
               </button>
-              <button class="button is-success">
+              <button class="button is-success" id="button-save-profile">
                 {{ t("button_save") }}
               </button>
             </div>
@@ -235,7 +238,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
 
         <div class="field">
           <div class="control">
-            <button class="button is-success" @click="isEditing = true">
+            <button class="button is-success" @click="isEditing = true" id="button-edit-profile">
               {{ t("button_edit_profile") }}
             </button>
           </div>

@@ -66,11 +66,11 @@ async function onClickLogOut() {
         <div class="navbar-start">
           <!-- Menu items -->
           <NuxtLink to="/add/" class="navbar-item" :class="route.path === '/add/' ? 'is-active' : ''"
-            @click="showMobileMenu = false">
+            @click="showMobileMenu = false" id="navbar-menu-item-add">
             {{ t("menu_add") }}
           </NuxtLink>
           <NuxtLink to="/bookmarks/" class="navbar-item" :class="route.path === '/bookmarks/' ? 'is-active' : ''"
-            @click="showMobileMenu = false">
+            @click="showMobileMenu = false" id="navbar-menu-item-bookmarks">
             {{ t("menu_bookmarks") }}
           </NuxtLink>
           <NuxtLink to="/about/" class="navbar-item" :class="route.path === '/about/' ? 'is-active' : ''"
@@ -83,12 +83,12 @@ async function onClickLogOut() {
           <!-- Buttons -->
           <div class="navbar-item">
             <div class="buttons" v-if="!authStore.isAuthenticated">
-              <NuxtLink to="/signup/" class="button is-primary" @click="showMobileMenu = false">
+              <NuxtLink to="/signup/" class="button is-primary" @click="showMobileMenu = false" id="navbar-button-signup">
                 <strong>
                   {{ t("button_sign_up") }}
                 </strong>
               </NuxtLink>
-              <NuxtLink to="/login/" class="button is-light" @click="showMobileMenu = false">
+              <NuxtLink to="/login/" class="button is-light" @click="showMobileMenu = false" id="navbar-button-login">
                 {{ t("button_log_in") }}
               </NuxtLink>
             </div>
@@ -96,7 +96,7 @@ async function onClickLogOut() {
 
           <!-- Profile drop-down -->
           <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
-            <div class="navbar-link">
+            <div class="navbar-link" id="navbar-menu-user">
               <figure class="image mr-2 is-hidden-mobile is-hidden-tablet-only">
                 <img class="is-rounded"
                   style="width: 32px !important; height: 32px !important; max-height: 32px !important;"
@@ -109,7 +109,7 @@ async function onClickLogOut() {
             </div>
             <!-- NB: `key` added to re-render menu (thus, hide dropdown) on each route change. -->
             <div class="navbar-dropdown is-right" :key="route.path">
-              <NuxtLink to="/profile/" class="navbar-item" @click="showMobileMenu = false">
+              <NuxtLink to="/profile/" class="navbar-item" @click="showMobileMenu = false" id="navbar-menu-user-profile">
                 <span class="icon-text">
                   <span class="icon">
                     <Icon name="mdi:book-account" />
