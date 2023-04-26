@@ -1,3 +1,7 @@
+## 26.04.2023, Wed
+
+- 22:10 - Tests: added "Edit user profile" functional test.
+
 ## 25.04.2023, Tue
 
 - 15:00 - Tests: functional test extended.

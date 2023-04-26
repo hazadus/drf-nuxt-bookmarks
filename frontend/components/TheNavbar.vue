@@ -96,7 +96,7 @@ async function onClickLogOut() {
 
           <!-- Profile drop-down -->
           <div class="navbar-item has-dropdown is-hoverable" v-if="authStore.isAuthenticated">
-            <div class="navbar-link">
+            <div class="navbar-link" id="navbar-menu-user">
               <figure class="image mr-2 is-hidden-mobile is-hidden-tablet-only">
                 <img class="is-rounded"
                   style="width: 32px !important; height: 32px !important; max-height: 32px !important;"
@@ -109,7 +109,7 @@ async function onClickLogOut() {
             </div>
             <!-- NB: `key` added to re-render menu (thus, hide dropdown) on each route change. -->
             <div class="navbar-dropdown is-right" :key="route.path">
-              <NuxtLink to="/profile/" class="navbar-item" @click="showMobileMenu = false">
+              <NuxtLink to="/profile/" class="navbar-item" @click="showMobileMenu = false" id="navbar-menu-user-profile">
                 <span class="icon-text">
                   <span class="icon">
                     <Icon name="mdi:book-account" />

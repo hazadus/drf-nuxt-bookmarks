@@ -27,6 +27,9 @@ class NewVisitorTest(LiveServerTestCase):
 
     username = "testuser123"
     password = "testpassword"
+    first_name = "Ivan"
+    last_name = "Petrov"
+    telegram_id = "123456789"
     # Use short YouTube video to test downloading
     bookmark_url = "https://www.youtube.com/watch?v=F161MWDg-48"
     bookmark_title = "Baby Blue"
@@ -77,6 +80,8 @@ class NewVisitorTest(LiveServerTestCase):
         """
         # Sign up and log in must be done in the first place, or other tests won't work.
         self.do_test_signup_and_login()
+        # Test profile update page
+        self.do_test_update_profile()
         # Then we add a bookmark...
         self.do_test_add_bookmark()
         # Edit bookmark
@@ -214,6 +219,9 @@ class NewVisitorTest(LiveServerTestCase):
         button.click()
 
     def do_test_delete_bookmark(self):
+        """
+        Test "Delete" button in EditBookmarlModal.
+        """
         self.click_navbar_menu_bookmarks()
         self.click_bookmarks_table_first_row_edit_button()
 
@@ -230,5 +238,38 @@ class NewVisitorTest(LiveServerTestCase):
         # Check that deleted bookmark is not listed on the page (there must be no table at all)
         table = self.browser.find_element(By.TAG_NAME, value="body")
         self.assertNotIn(self.bookmark_title, table.text)
+
+        time.sleep(1)
+
+    def do_test_update_profile(self):
+        """
+        Test "Edit profile" page.
+        """
+        menu = self.browser.find_element(By.ID, value="navbar-menu-user")
+        menu.click()
+        menu = self.browser.find_element(By.ID, value="navbar-menu-user-profile")
+        menu.click()
+        button = self.browser.find_element(By.ID, value="button-edit-profile")
+        button.click()
+
+        # Fill the form and save
+        inputbox = self.browser.find_element(By.ID, value="input-first-name")
+        inputbox.click()
+        inputbox.send_keys(self.first_name)
+        inputbox = self.browser.find_element(By.ID, value="input-last-name")
+        inputbox.click()
+        inputbox.send_keys(self.last_name)
+        inputbox = self.browser.find_element(By.ID, value="input-telegram-id")
+        inputbox.click()
+        inputbox.send_keys(self.telegram_id)
+
+        button = self.browser.find_element(By.ID, value="button-save-profile")
+        button.click()
+        time.sleep(1)
+
+        body = self.browser.find_element(By.TAG_NAME, value="body")
+        self.assertIn(self.first_name, body.text)
+        self.assertIn(self.last_name, body.text)
+        self.assertIn(self.telegram_id, body.text)
 
         time.sleep(1)
