@@ -5,6 +5,8 @@ omit =
     ./django_project/asgi.py
     ./django_project/wsgi.py
     ./django_project/celery.py
+    ./django_project/spawn_redis.py
+    ./functests/tests.py
     ./bookmarks/migrations/*.*
     ./users/migrations/*.*
     ./*/__init__.py

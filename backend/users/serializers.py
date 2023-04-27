@@ -34,6 +34,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     Detailed User model serializer.
     """
 
+    disk_space_used = serializers.DecimalField(max_digits=6, decimal_places=1)
+
     class Meta:
         model = CustomUser
         fields = (
@@ -44,6 +46,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "profile_image",
+            "disk_quota",
+            "disk_space_used",
             "is_active",
             "is_staff",
             "is_superuser",

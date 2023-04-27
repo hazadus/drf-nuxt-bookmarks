@@ -54,6 +54,8 @@ class UsersAPITest(APITestCase):
         self.assertEqual(user_details["username"], self.username)
         self.assertEqual(user_details["first_name"], self.first_name)
         self.assertEqual(user_details["last_name"], self.last_name)
+        self.assertEqual(user_details["disk_quota"], 0)
+        self.assertEqual(user_details["disk_space_used"], "0.0")
 
     def test_user_update_api(self):
         """
