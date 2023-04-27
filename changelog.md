@@ -2,6 +2,7 @@
 
 - 18:00 - Backend: extended `CustomUser` model and `CustomUserSerializer` with `disk_quota`, `disk_space_used` 
   fields. Fields added to test (`test_logged_in_user_detail_api`).
+- 20:00 - Frontend: added meaningful messages on server errors (i.e. not enough quota) when starting download.
 
 ## 26.04.2023, Wed
 

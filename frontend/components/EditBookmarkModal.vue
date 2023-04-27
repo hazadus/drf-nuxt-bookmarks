@@ -154,6 +154,10 @@ async function onClickSaveChanges() {
 }
 
 async function onClickDownload() {
+  interface DownloadErrorData {
+    bookmark_id: string[];
+  }
+
   isDownloadStarting.value = true;
 
   const formData = {
@@ -169,8 +173,10 @@ async function onClickDownload() {
   });
 
   if (downloadStartError.value) {
-    console.error("Error starting download: " + downloadStartError.value?.message);
-    alert("Something went wrong, please try again.");
+    const serverErrors = downloadStartError.value.data as DownloadErrorData;
+    const serverErrorsText = serverErrors.bookmark_id.join("\n");
+    console.error("Error starting download: " + serverErrorsText + downloadStartError.value?.message);
+    alert("Something went wrong:\n\n" + serverErrorsText);
     isDownloadStarting.value = false;
     return;
   }
