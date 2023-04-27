@@ -1,3 +1,8 @@
+## 27.04.2023, Thu
+
+- 18:00 - Backend: extended `CustomUser` model and `CustomUserSerializer` with `disk_quota`, `disk_space_used` 
+  fields. Fields added to test (`test_logged_in_user_detail_api`).
+
 ## 26.04.2023, Wed
 
 - 22:10 - Tests: added "Edit user profile" functional test.

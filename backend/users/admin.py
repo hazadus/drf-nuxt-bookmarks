@@ -13,7 +13,8 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
         "username",
-        "email",
+        "disk_quota",
+        "disk_space_used",
         "telegram_id",
         "is_staff",
     ]
@@ -25,6 +26,7 @@ class CustomUserAdmin(UserAdmin):
                 "fields": (
                     "telegram_id",
                     "profile_image",
+                    "disk_quota",
                 )
             },
         ),
@@ -37,6 +39,7 @@ class CustomUserAdmin(UserAdmin):
                 "fields": (
                     "telegram_id",
                     "profile_image",
+                    "disk_quota",
                 )
             },
         ),
