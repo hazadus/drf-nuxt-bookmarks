@@ -13,6 +13,8 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_image: string;
+  disk_quota: number;
+  disk_space_used: number;
   is_active: boolean;
   is_staff: boolean;
   is_superuser: boolean;
