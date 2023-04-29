@@ -1,3 +1,7 @@
+## 29.04.2023, Sat
+
+- 17:30 - Frontend: added disk usage info to user profile.
+
 ## 27.04.2023, Thu
 
 - 18:00 - Backend: extended `CustomUser` model and `CustomUserSerializer` with `disk_quota`, `disk_space_used` 

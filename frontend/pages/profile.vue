@@ -20,6 +20,14 @@ const newFirstName: Ref<string | undefined> = ref(authStore.user?.first_name);
 const newLastName: Ref<string | undefined> = ref(authStore.user?.last_name);
 const newTelegramID: Ref<string | undefined> = ref(authStore.user?.telegram_id);
 
+const diskQuotaUsedPercent = computed(() => {
+  if (authStore.user) {
+    let used = authStore.user?.disk_space_used;
+    let quota = authStore.user?.disk_quota;
+    return (used / quota * 100).toFixed(1);
+  }
+});
+
 function onClickCancel() {
   newFirstName.value = authStore.user?.first_name;
   newLastName.value = authStore.user?.last_name;
@@ -82,6 +90,9 @@ function useFormatDateTime(dateObj: Date | undefined) {
     page_subheader_edit_profile: "Edit your profile"
     label_first_name: "First name"
     label_last_name: "Last name"
+    label_disk_quota: "Disk quota"
+    label_disk_space_used: "Disk space used"
+    label_megabytes: "Mb"
     info_header: "Information"
     info_line_1: "Telegram ID is needed to add bookmarks to your account via our"
     info_link_title: "Telegram bot"
@@ -97,6 +108,9 @@ function useFormatDateTime(dateObj: Date | undefined) {
     page_subheader_edit_profile: "Изменить данные пользователя"
     label_first_name: "Имя"
     label_last_name: "Фамилия"
+    label_disk_quota: "Доступно на диске"
+    label_disk_space_used: "Занято места на диске"
+    label_megabytes: "Мб"
     info_header: "Информация"
     info_line_1: "Телеграм ID нужен, чтобы добавлять закладки в вашу учетную запись через нашего"
     info_link_title: "Телеграм бота"
@@ -220,6 +234,23 @@ function useFormatDateTime(dateObj: Date | undefined) {
                 Telegram ID:
               </td>
               <td>{{ authStore.user?.telegram_id }}</td>
+            </tr>
+            <tr>
+              <td>
+                {{ t("label_disk_quota") }}:
+              </td>
+              <td>
+                {{ authStore.user?.disk_quota }} {{ t("label_megabytes") }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ t("label_disk_space_used") }}:
+              </td>
+              <td>
+                {{ authStore.user?.disk_space_used }} {{ t("label_megabytes") }} / {{ diskQuotaUsedPercent }}%
+                <progress class="progress is-primary" :value="diskQuotaUsedPercent" max="100">15%</progress>
+              </td>
             </tr>
             <tr>
               <td>
