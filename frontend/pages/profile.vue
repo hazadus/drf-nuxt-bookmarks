@@ -24,7 +24,10 @@ const diskQuotaUsedPercent = computed(() => {
   if (authStore.user) {
     let used = authStore.user?.disk_space_used;
     let quota = authStore.user?.disk_quota;
-    return (used / quota * 100).toFixed(1);
+
+    return quota ? (used / quota * 100).toFixed(0) : 0;
+  } else {
+    return 0;
   }
 });
 
@@ -249,7 +252,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
               </td>
               <td>
                 {{ authStore.user?.disk_space_used }} {{ t("label_megabytes") }} / {{ diskQuotaUsedPercent }}%
-                <progress class="progress is-primary" :value="diskQuotaUsedPercent" max="100">15%</progress>
+                <progress class="progress is-primary" :value="diskQuotaUsedPercent" max="100"></progress>
               </td>
             </tr>
             <tr>
