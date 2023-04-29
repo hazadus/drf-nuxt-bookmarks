@@ -19,6 +19,8 @@ const isEditing: Ref<boolean> = ref(false);
 const newFirstName: Ref<string | undefined> = ref(authStore.user?.first_name);
 const newLastName: Ref<string | undefined> = ref(authStore.user?.last_name);
 const newTelegramID: Ref<string | undefined> = ref(authStore.user?.telegram_id);
+const fileInputElement: Ref<HTMLInputElement | null> = ref(null);
+const selectedFileName: Ref<string | undefined> = ref(undefined);
 
 const diskQuotaUsedPercent = computed(() => {
   if (authStore.user) {
@@ -30,6 +32,10 @@ const diskQuotaUsedPercent = computed(() => {
     return 0;
   }
 });
+
+function onSelectFile() {
+  selectedFileName.value = fileInputElement.value?.files?.item(0)?.name;
+}
 
 function onClickCancel() {
   newFirstName.value = authStore.user?.first_name;
@@ -44,16 +50,22 @@ async function submitForm() {
     (authStore.user?.first_name === newFirstName.value)
     && (authStore.user?.last_name === newLastName.value)
     && (authStore.user?.telegram_id === newTelegramID.value)
+    && (!fileInputElement.value?.files?.length)
   ) {
     // If nothing changed, don't bother the API:
     isEditing.value = false;
     return;
   }
 
-  const formData = {
-    first_name: newFirstName.value,
-    last_name: newLastName.value,
-    telegram_id: newTelegramID,
+  let formData = new FormData;
+
+  formData.append("first_name", newFirstName.value ? newFirstName.value : "");
+  formData.append("last_name", newLastName.value ? newLastName.value : "");
+  formData.append("telegram_id", newTelegramID.value ? newTelegramID.value : "");
+
+  if (fileInputElement.value?.files?.length) {
+    const image = fileInputElement.value.files.item(0) as File;
+    formData.append("profile_image", image);
   }
 
   const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
@@ -90,7 +102,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
 <i18n lang="yaml">
   en:
     page_header: "Your profile"
-    page_subheader_edit_profile: "Edit your profile"
+    page_subheader_edit_profile: "Edit profile info"
     label_first_name: "First name"
     label_last_name: "Last name"
     label_disk_quota: "Disk quota"
@@ -100,6 +112,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
     info_line_1: "Telegram ID is needed to add bookmarks to your account via our"
     info_link_title: "Telegram bot"
     info_line_2: "Send any message to the bot, and it will answer with your ID in the reply."
+    label_set_profile_picture: "Set profile picture"
+    label_choose_a_file: "Choose a file..."
     button_cancel: "Cancel"
     button_save: "Save"
     label_username: "Username"
@@ -118,6 +132,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
     info_line_1: "Телеграм ID нужен, чтобы добавлять закладки в вашу учетную запись через нашего"
     info_link_title: "Телеграм бота"
     info_line_2: "Отправьте любое сообщение боту, и в ответ вы получите ваш Телеграм ID."
+    label_set_profile_picture: "Установить изображение профиля"
+    label_choose_a_file: "Выберите файл..."
     button_cancel: "Отмена"
     button_save: "Сохранить"
     label_username: "Имя пользователя"
@@ -136,14 +152,14 @@ function useFormatDateTime(dateObj: Date | undefined) {
   </h2>
 
   <div class="columns">
-    <div class="column is-9" :key="authStore.user?.id">
+    <div class="column is-6" :key="authStore.user?.id">
 
       <template v-if="isEditing">
         <h4 class="title is-size-4">
           {{ t("page_subheader_edit_profile") }}
         </h4>
 
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="field">
             <label class="label">
               {{ t("label_first_name") }}
@@ -191,6 +207,31 @@ function useFormatDateTime(dateObj: Date | undefined) {
               {{ t("info_line_2") }}
             </p>
           </BulmaNotification>
+
+          <div class="field">
+            <label class="label">
+              {{ t("label_set_profile_picture") }}
+            </label>
+            <div class="control">
+              <div class="file has-name">
+                <label class="file-label">
+                  <input class="file-input" ref="fileInputElement" type="file" name="profile-pic" accept="image/*"
+                    @change="onSelectFile">
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <Icon name="mdi:file-upload-outline" />
+                    </span>
+                    <span class="file-label">
+                      {{ t("label_choose_a_file") }}
+                    </span>
+                  </span>
+                  <span class="file-name">
+                    {{ selectedFileName }}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
 
           <div class="field">
             <div class="control has-text-right">
@@ -279,8 +320,9 @@ function useFormatDateTime(dateObj: Date | undefined) {
         </div>
       </template>
     </div>
-    <div class="column is-3">
-      <figure class="image is-128x128">
+
+    <div class="column is-6">
+      <figure class="image is-1by1">
         <img class="is-rounded" v-if="!authStore.user?.profile_image" src="/images/default_profile_pic.png">
         <img class="is-rounded" v-else :src="config.apiBase + authStore.user?.profile_image">
       </figure>
