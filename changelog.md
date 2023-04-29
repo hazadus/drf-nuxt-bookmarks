@@ -1,6 +1,8 @@
 ## 29.04.2023, Sat
 
 - 17:30 - Frontend: added disk usage info to user profile.
+- 19:50 - Frontend: added "Upload profile picture" form on "User profile"/"Edit profile" page. It works without any 
+  changes on the backend!
 
 ## 27.04.2023, Thu
 

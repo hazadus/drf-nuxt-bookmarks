@@ -19,6 +19,8 @@ const isEditing: Ref<boolean> = ref(false);
 const newFirstName: Ref<string | undefined> = ref(authStore.user?.first_name);
 const newLastName: Ref<string | undefined> = ref(authStore.user?.last_name);
 const newTelegramID: Ref<string | undefined> = ref(authStore.user?.telegram_id);
+const fileInputElement: Ref<HTMLInputElement | null> = ref(null);
+const selectedFileName: Ref<string | undefined> = ref(undefined);
 
 const diskQuotaUsedPercent = computed(() => {
   if (authStore.user) {
@@ -30,6 +32,10 @@ const diskQuotaUsedPercent = computed(() => {
     return 0;
   }
 });
+
+function onSelectFile() {
+  selectedFileName.value = fileInputElement.value?.files?.item(0)?.name;
+}
 
 function onClickCancel() {
   newFirstName.value = authStore.user?.first_name;
@@ -53,7 +59,7 @@ async function submitForm() {
   const formData = {
     first_name: newFirstName.value,
     last_name: newLastName.value,
-    telegram_id: newTelegramID,
+    telegram_id: newTelegramID.value,
   }
 
   const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
@@ -76,6 +82,24 @@ async function submitForm() {
   isEditing.value = false;
 }
 
+async function onSubmitUploadProfilePictureForm() {
+  let formData = new FormData;
+  if (fileInputElement.value?.files?.length) {
+    const image = fileInputElement.value.files.item(0) as File;
+    formData.append("profile_image", image);
+  } else {
+    return;
+  }
+
+  const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
+    method: "PATCH",
+    headers: [
+      ["Authorization", "Token " + authStore.token,],
+    ],
+    body: formData,
+  });
+}
+
 function useFormatDateTime(dateObj: Date | undefined) {
   if (dateObj) {
     let date = new Date(dateObj);
@@ -90,7 +114,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
 <i18n lang="yaml">
   en:
     page_header: "Your profile"
-    page_subheader_edit_profile: "Edit your profile"
+    page_subheader_edit_profile: "Edit profile info"
     label_first_name: "First name"
     label_last_name: "Last name"
     label_disk_quota: "Disk quota"
@@ -136,7 +160,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
   </h2>
 
   <div class="columns">
-    <div class="column is-9" :key="authStore.user?.id">
+    <div class="column is-6" :key="authStore.user?.id">
 
       <template v-if="isEditing">
         <h4 class="title is-size-4">
@@ -202,6 +226,46 @@ function useFormatDateTime(dateObj: Date | undefined) {
               </button>
             </div>
           </div>
+        </form>
+
+        <h4 class="title is-size-4">
+          Profile picture
+        </h4>
+
+        <form enctype="multipart/form-data" @submit.prevent="onSubmitUploadProfilePictureForm">
+          <div class="field">
+            <label class="label">
+              Upload profile picture
+            </label>
+            <div class="control">
+              <div class="file has-name">
+                <label class="file-label">
+                  <input class="file-input" ref="fileInputElement" type="file" name="profile-pic" accept="image/*"
+                    @change="onSelectFile">
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <Icon name="mdi:file-upload-outline" />
+                    </span>
+                    <span class="file-label">
+                      Choose a file…
+                    </span>
+                  </span>
+                  <span class="file-name">
+                    {{ selectedFileName }}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control has-text-right">
+              <button class="button is-success">
+                Upload
+              </button>
+            </div>
+          </div>
+
         </form>
       </template>
 
@@ -279,8 +343,9 @@ function useFormatDateTime(dateObj: Date | undefined) {
         </div>
       </template>
     </div>
-    <div class="column is-3">
-      <figure class="image is-128x128">
+
+    <div class="column is-6">
+      <figure class="image is-1by1">
         <img class="is-rounded" v-if="!authStore.user?.profile_image" src="/images/default_profile_pic.png">
         <img class="is-rounded" v-else :src="config.apiBase + authStore.user?.profile_image">
       </figure>
