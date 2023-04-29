@@ -50,16 +50,22 @@ async function submitForm() {
     (authStore.user?.first_name === newFirstName.value)
     && (authStore.user?.last_name === newLastName.value)
     && (authStore.user?.telegram_id === newTelegramID.value)
+    && (!fileInputElement.value?.files?.length)
   ) {
     // If nothing changed, don't bother the API:
     isEditing.value = false;
     return;
   }
 
-  const formData = {
-    first_name: newFirstName.value,
-    last_name: newLastName.value,
-    telegram_id: newTelegramID.value,
+  let formData = new FormData;
+
+  formData.append("first_name", newFirstName.value ? newFirstName.value : "");
+  formData.append("last_name", newLastName.value ? newLastName.value : "");
+  formData.append("telegram_id", newTelegramID.value ? newTelegramID.value : "");
+
+  if (fileInputElement.value?.files?.length) {
+    const image = fileInputElement.value.files.item(0) as File;
+    formData.append("profile_image", image);
   }
 
   const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
@@ -80,24 +86,6 @@ async function submitForm() {
   authStore.setUser(user);
 
   isEditing.value = false;
-}
-
-async function onSubmitUploadProfilePictureForm() {
-  let formData = new FormData;
-  if (fileInputElement.value?.files?.length) {
-    const image = fileInputElement.value.files.item(0) as File;
-    formData.append("profile_image", image);
-  } else {
-    return;
-  }
-
-  const { data: userData, error: userUpdateError } = await useFetch(() => `${config.public.apiBase}/api/v1/user/${authStore.user?.id}/`, {
-    method: "PATCH",
-    headers: [
-      ["Authorization", "Token " + authStore.token,],
-    ],
-    body: formData,
-  });
 }
 
 function useFormatDateTime(dateObj: Date | undefined) {
@@ -124,6 +112,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
     info_line_1: "Telegram ID is needed to add bookmarks to your account via our"
     info_link_title: "Telegram bot"
     info_line_2: "Send any message to the bot, and it will answer with your ID in the reply."
+    label_set_profile_picture: "Set profile picture"
+    label_choose_a_file: "Choose a file..."
     button_cancel: "Cancel"
     button_save: "Save"
     label_username: "Username"
@@ -142,6 +132,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
     info_line_1: "Телеграм ID нужен, чтобы добавлять закладки в вашу учетную запись через нашего"
     info_link_title: "Телеграм бота"
     info_line_2: "Отправьте любое сообщение боту, и в ответ вы получите ваш Телеграм ID."
+    label_set_profile_picture: "Установить изображение профиля"
+    label_choose_a_file: "Выберите файл..."
     button_cancel: "Отмена"
     button_save: "Сохранить"
     label_username: "Имя пользователя"
@@ -167,7 +159,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
           {{ t("page_subheader_edit_profile") }}
         </h4>
 
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="field">
             <label class="label">
               {{ t("label_first_name") }}
@@ -217,25 +209,8 @@ function useFormatDateTime(dateObj: Date | undefined) {
           </BulmaNotification>
 
           <div class="field">
-            <div class="control has-text-right">
-              <button class="button is-warning mr-2" @click="onClickCancel">
-                {{ t("button_cancel") }}
-              </button>
-              <button class="button is-success" id="button-save-profile">
-                {{ t("button_save") }}
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <h4 class="title is-size-4">
-          Profile picture
-        </h4>
-
-        <form enctype="multipart/form-data" @submit.prevent="onSubmitUploadProfilePictureForm">
-          <div class="field">
             <label class="label">
-              Upload profile picture
+              {{ t("label_set_profile_picture") }}
             </label>
             <div class="control">
               <div class="file has-name">
@@ -247,7 +222,7 @@ function useFormatDateTime(dateObj: Date | undefined) {
                       <Icon name="mdi:file-upload-outline" />
                     </span>
                     <span class="file-label">
-                      Choose a file…
+                      {{ t("label_choose_a_file") }}
                     </span>
                   </span>
                   <span class="file-name">
@@ -260,12 +235,14 @@ function useFormatDateTime(dateObj: Date | undefined) {
 
           <div class="field">
             <div class="control has-text-right">
-              <button class="button is-success">
-                Upload
+              <button class="button is-warning mr-2" @click="onClickCancel">
+                {{ t("button_cancel") }}
+              </button>
+              <button class="button is-success" id="button-save-profile">
+                {{ t("button_save") }}
               </button>
             </div>
           </div>
-
         </form>
       </template>
 
