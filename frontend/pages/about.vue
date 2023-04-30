@@ -6,7 +6,6 @@
     <h3>The Idea</h3>
 
     <div class="columns">
-
       <div class="column is-9">
         <p>
           The idea behind this project is to create a web app to collect, classify and store links to
@@ -33,7 +32,6 @@
             Logo created by Kandinsky 2.1
           </figcaption>
         </figure>
-
       </div>
     </div>
 
@@ -128,7 +126,8 @@
         Issues</a> section on GitHub.
     </p>
     <p>
-      See also: <a href="https://github.com/users/hazadus/projects/4/views/1">project board</a> and
+      See also: <a href="https://github.com/hazadus/drf-nuxt-bookmarks/blob/main/changelog.md">change log</a>,
+      <a href="https://github.com/users/hazadus/projects/4/views/1">project board</a> and
       <a href="https://github.com/hazadus/drf-nuxt-bookmarks/discussions">discussions</a>.
     </p>
   </div>

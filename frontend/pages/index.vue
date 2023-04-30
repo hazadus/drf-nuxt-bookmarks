@@ -8,10 +8,12 @@ const { t } = useI18n({
 
 const authStore = useAuthStore();
 
-if (authStore.isAuthenticated) {
-  const router = useRouter();
-  router.push("/bookmarks/");
-}
+onBeforeMount(() => {
+  if (authStore.isAuthenticated) {
+    const router = useRouter();
+    router.push("/bookmarks/");
+  }
+});
 </script>
 
 <i18n lang="yaml">
