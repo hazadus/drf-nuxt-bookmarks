@@ -39,14 +39,17 @@
 
     <h3>Realisation</h3>
     <p>
-      Project was built with passion using these amazing tools. I just can't express how great and fun they are!
+      Project was built with love using these amazing tools. I just can't express how great and fun they are!
     </p>
 
     <div class="columns">
       <div class="column is-6">
         <ul>
           <li>
-            <Icon name="logos:django-icon" /> <b>Django</b> for backend.
+            <Icon name="logos:django-icon" /> <b>Django</b> as backend framework.
+          </li>
+          <li>
+            <Icon name="logos:python" /> <b>Python</b> for backend programming.
           </li>
           <li>
             <b>Django REST Framework</b> for API.
@@ -56,6 +59,12 @@
           </li>
           <li>
             <Icon name="logos:nodejs" /> <b>Node</b> and <b>Nitro</b> to serve frontend.
+          </li>
+          <li>
+            <b>Celery</b> for background tasks.
+          </li>
+          <li>
+            <Icon name="logos:redis" /> <b>Redis</b> as message broker for <b>Celery</b>.
           </li>
           <li>
             <Icon name="logos:nginx" /> <b>Nginx</b> as reverse proxy.
@@ -79,8 +88,12 @@
       <div class="column is-6">
         <ul>
           <li>
-            <Icon name="logos:nuxt-icon" /> <b>Nuxt</b> and
-            <Icon name="logos:vue" /> <b>Vue</b> for frontend.
+            <Icon name="logos:nuxt-icon" /> <b>Nuxt</b> framework, based on
+            <Icon name="logos:vue" /> <b>Vue</b>, for frontend.
+          </li>
+          <li>
+            <Icon name="logos:typescript-icon" /> <b>TypeScript</b> for frontend programming. <i>Much</i> more reliable
+            and fun to code than JavaScript!
           </li>
           <li>
             <Icon name="logos:vueuse" /> <b>VueUse</b> for data fetching and other stuff.
@@ -89,7 +102,13 @@
             <b>Pinia</b> for state management.
           </li>
           <li>
+            <b>@nuxtjs/i18n</b> for intetnationalization.
+          </li>
+          <li>
             <Icon name="logos:bulma" /> <b>Bulma</b> for styling.
+          </li>
+          <li>
+            <b>Icônes</b> for icons.
           </li>
           <li>
             <Icon name="logos:visual-studio-code" /> Frontend written in <b>Visual Studio Code</b>.
@@ -107,6 +126,10 @@
     <p>
       Any questions or ideas are welcome in <a href="https://github.com/hazadus/drf-nuxt-bookmarks/issues">project's
         Issues</a> section on GitHub.
+    </p>
+    <p>
+      See also: <a href="https://github.com/users/hazadus/projects/4/views/1">project board</a> and
+      <a href="https://github.com/hazadus/drf-nuxt-bookmarks/discussions">discussions</a>.
     </p>
   </div>
 </template>

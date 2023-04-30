@@ -3,6 +3,7 @@
 - 12:50 - Frontend: added i18n to `AddFolderMenuItem` component.
 - 13:05 - Frontend: refactored "Search" field on "Bookmarks" page.
 - 14:40 - Frontend: created home page with basic app feature list.
+- 15:50 - Frontend: "About" page content updated.
 
 ## 29.04.2023, Sat
 
