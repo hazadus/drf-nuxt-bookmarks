@@ -8,7 +8,13 @@ The project is in development right now! Recent changes are listed in [changelog
 Any questions or ideas are welcome in project's [Issues](https://github.com/hazadus/drf-nuxt-bookmarks/issues) on 
 GitHub.
 
+What's already done and what's planned in terms of app features and used technologies - 
+see [GitHub project page](https://github.com/users/hazadus/projects/4/views/1) and
+read [this discussion thread](https://github.com/hazadus/drf-nuxt-bookmarks/discussions/55) (in Russian).
+
 You can check out the live demo (which I use myself and update daily) here: https://bookmarks.hazadus.ru/.
+
+![screenshot](./frontend/public/images/screenshot_list.png)
 
 ## Tech stack used
 
@@ -249,4 +255,4 @@ python -m manage collectstatic
 - Restart project with `docker compose down`, then `docker compose up -d`.
 - Enjoy! 😃
 
-![image](./frontend/public/images/logo.jpg)
+![logo](./frontend/public/images/logo.jpg)
