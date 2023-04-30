@@ -1,3 +1,7 @@
+## 30.04.2023, Sun
+
+- 12:50 - Frontend: added i18n to `AddFolderMenuItem` component.
+
 ## 29.04.2023, Sat
 
 - 17:30 - Frontend: added disk usage info to user profile.

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/AuthStore';
 
+// https://v8.i18n.nuxtjs.org/guide/per-component-translations
+const { t } = useI18n({
+  useScope: "local"
+});
+
 const emit = defineEmits<{
   (e: "created", isNewFolderCreated: boolean): void;
 }>();
@@ -60,6 +65,15 @@ function onClickCancel() {
 }
 </script>
 
+<i18n lang="yaml">
+  en:
+    menu_item_add_folder: "Add folder..."
+    input_field_placeholder: "New folder title"
+  ru:
+    menu_item_add_folder: "Новая папка..."
+    input_field_placeholder: "Имя новой папки"
+</i18n>
+
 <template>
   <template v-if="!isCreating">
     <a class="has-text-grey-light" @click="onClickAddFolderMenu">
@@ -68,7 +82,9 @@ function onClickCancel() {
           <Icon name="mdi:folder-plus" />
         </span>
         <span class="mr-3">
-          <em>Add folder...</em>
+          <em>
+            {{ t("menu_item_add_folder") }}
+          </em>
         </span>
       </span>
     </a>
@@ -77,8 +93,8 @@ function onClickCancel() {
   <template v-else>
     <div class="field has-addons mt-1">
       <p class="control">
-        <input class="input is-small new-folder-title-input" type="text" placeholder="New folder title" maxlength="16"
-          v-model="newFolderTitle" @keyup.enter="onClickAddButton" :disabled="isLoading">
+        <input class="input is-small new-folder-title-input" type="text" :placeholder="t('input_field_placeholder')"
+          maxlength="16" v-model="newFolderTitle" @keyup.enter="onClickAddButton" :disabled="isLoading">
       </p>
 
       <p class="control">
