@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from './stores/AuthStore';
+import { useAuthStore } from "./stores/AuthStore";
 
 const authStore = useAuthStore();
 
@@ -22,6 +22,6 @@ onBeforeMount(() => {
 @import 'bulma/css/bulma.css';
 
 .page-content-section {
-  min-height: calc(100vh - 52px - 168px);
+  min-height: calc(100vh - 52px - 228px);
 }
-</style> 
+</style>
