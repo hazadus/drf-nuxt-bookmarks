@@ -1,6 +1,7 @@
 ## 30.04.2023, Sun
 
 - 12:50 - Frontend: added i18n to `AddFolderMenuItem` component.
+- 13:05 - Frontend: refactored "Search" field on "Bookmarks" page.
 
 ## 29.04.2023, Sat
 

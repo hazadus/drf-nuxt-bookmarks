@@ -194,7 +194,6 @@ fetchData();
     level_item_bkmrks_shown: "shown"
     level_item_bkmrks_total: "total"
     search_field_placeholder: "Start typing to search..."
-    search_button: "Search"
     filter_show_title: "Show"
     filter_show_all: "All"
     filter_show_unread: "Unread"
@@ -220,7 +219,6 @@ fetchData();
     level_item_bkmrks_shown: "видно"
     level_item_bkmrks_total: "всего"
     search_field_placeholder: "Печатайте, чтобы искать..."
-    search_button: "Найти"
     filter_show_title: "Показать"
     filter_show_all: "Все"
     filter_show_unread: "Непрочит."
@@ -392,14 +390,13 @@ fetchData();
             </p>
           </div>
           <div class="level-item is-hidden-tablet-only">
-            <div class="field has-addons">
-              <p class="control">
-                <input class="input" type="text" :placeholder="t('search_field_placeholder')" v-model="searchString">
-              </p>
-              <p class="control">
-                <button class="button">
-                  {{ t("search_button") }}
-                </button>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="text" :placeholder="t('search_field_placeholder')" v-model="searchString"
+                  @keyup.escape="searchString = ''">
+                <span class="icon is-small is-left">
+                  <Icon name="mdi:magnify" />
+                </span>
               </p>
             </div>
           </div>
