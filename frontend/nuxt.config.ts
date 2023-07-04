@@ -5,6 +5,17 @@ export default defineNuxtConfig({
       apiBase: "http://127.0.0.1:8000",
     },
   },
+  app: {
+    head: {
+      script: [
+        {
+          src: "https://stats.hazadus.ru/script.js",
+          async: true,
+          "data-website-id": "34bc330a-3f55-48ef-b7fc-051a6f309fcf",
+        },
+      ],
+    },
+  },
   modules: [
     "@vueuse/nuxt",
     "nuxt-icon",
