@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/AuthStore';
+import { useAuthStore } from "@/stores/AuthStore";
 
 // https://v8.i18n.nuxtjs.org/guide/per-component-translations
 const { t } = useI18n({
-  useScope: "local"
+  useScope: "local",
 });
 
 const authStore = useAuthStore();
 </script>
 
 <i18n lang="yaml">
-  en:
-    home: "Home"
-    add_bookmark: "Add Bookmark"
-    view_bookmarks: "View Bookmarks"
-    log_in: "Log In"
-    sign_up: "Sign Up"
-    user_profile: "User Profile"
-    manage_folders: "Manage Folders"
-    about_project: "About Project"
-    source_code: "Source Code"
-  ru:
-    home: "Главная"
-    add_bookmark: "Создать Закладку"
-    view_bookmarks: "Все Закладки"
-    log_in: "Войти"
-    sign_up: "Регистрация"
-    user_profile: "Профиль"
-    manage_folders: "Ваши Папки"
-    about_project: "О проекте"
-    source_code: "Исходный код"
+en:
+  home: "Home"
+  add_bookmark: "Add Bookmark"
+  view_bookmarks: "View Bookmarks"
+  log_in: "Log In"
+  sign_up: "Sign Up"
+  user_profile: "User Profile"
+  manage_folders: "Manage Folders"
+  about_project: "About Project"
+  source_code: "Source Code"
+ru:
+  home: "Главная"
+  add_bookmark: "Создать Закладку"
+  view_bookmarks: "Все Закладки"
+  log_in: "Войти"
+  sign_up: "Регистрация"
+  user_profile: "Профиль"
+  manage_folders: "Ваши Папки"
+  about_project: "О проекте"
+  source_code: "Исходный код"
 </i18n>
 
 <template>
@@ -37,9 +37,7 @@ const authStore = useAuthStore();
     <div class="container is-widescreen">
       <div class="columns">
         <div class="column is-6">
-          <p>
-            &copy; <a href="https://github.com/hazadus/">hazadus</a>, 2023.
-          </p>
+          <p>&copy; <a href="https://hazadus.ru/">hazadus</a>, 2023 – 2024.</p>
           <p>
             <LangSwitcher />
           </p>

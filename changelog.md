@@ -1,5 +1,6 @@
 ## 29.12.2023, Fri
 - 16:40 - CI/CD: added GitHub Action - deploy project on push to `main`.
+- 17:00 - Frontend: added links to hazadus.ru in the footer and on About page.
 
 ## 30.04.2023, Sun
 
