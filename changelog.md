@@ -1,3 +1,6 @@
+## 29.12.2023, Fri
+- 16:40 - CI/CD: added GitHub Action - deploy project on push to `main`.
+
 ## 30.04.2023, Sun
 
 - 12:50 - Frontend: added i18n to `AddFolderMenuItem` component.
